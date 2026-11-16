@@ -33,6 +33,17 @@ The final snapshot has 106 source/documentation files including this report.
 The ZIP contains those files and excludes .git; its hash is provided alongside.
 No kernel test or device-verified status was assigned to this curated snapshot.
 
+## Publication follow-up — 2026-11-16
+
+The table above records the earlier export stage. The owner subsequently
+configured Git author identity and the GitHub remote, committed the snapshot,
+and authorized publication. The initial remote commit is preserved by a merge;
+the final publication check uses that real commit as its `--base`.
+See [publication status](publication.md) and the matching GitHub Actions run for
+the published state. The archived initial GitHub license adds one provenance
+text and its explanation beyond the original 106-file export. The original ZIP
+remains an export-stage artifact, not the final merged repository tree.
+
 The repository workflow uses the unchanged official record checker with the
 explicit fork catalog. It checks BASE..HEAD whitespace when a valid base is
 available and uses git show --check on an initial publication. The manual

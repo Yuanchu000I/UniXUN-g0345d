@@ -13,9 +13,10 @@ The organization follows the official guides pinned in source-pins.toml.
 | External firmware inputs and hashes | Known M34 template hash retained; full OEM extraction provenance pending |
 | Standard package entry | Unchanged official template and board package mapping present |
 | End-to-end clean release | Pending; legacy firmware/container integration incomplete |
-| Record CI | Repository-specific workflow provided; GitHub run pending |
+| Record CI | Repository-specific workflow runs on push; check the matching commit in Actions |
 | Manual package CI | Explicit failing prerequisite gate; no artifacts produced |
-| GitHub repository, unixnu topic, website | Not created/verified during local preparation |
+| GitHub repository | Published to Yuanchu000I/UniXUN-g0345d; original initialization history retained |
+| unixnu topic, website | Topic configured during publication; website ingestion remains unverified |
 
 ## Record-checker compatibility
 
@@ -39,33 +40,35 @@ commit pins; do not attempt to fetch their nominal future standalone repositorie
 or describe them as proven devices. These bundled probes do not perform UFS
 transfers, I2C transactions or GPU submission.
 
-## Publish after reviewing the snapshot
+## Publication and future updates
 
-The prepared directory has an independent main-branch Git repository with no
-inherited remote. No commit is fabricated under the user's identity. Configure
-your normal Git author identity if needed, review staged files, then commit:
+The source snapshot was committed using the owner's configured Git identity and
+published to [Yuanchu000I/UniXUN-g0345d](https://github.com/Yuanchu000I/UniXUN-g0345d)
+on 2026-11-16. The repository name retains the owner's chosen spelling.
+Its initial GitHub commit, `3058d69bb630776104fc78731f1d87c6db374210`,
+contained only a GPLv3 license. Both histories are retained by a merge.
+The original license text is archived verbatim at
+[github-initial-LICENSE.txt](provenance/github-initial-LICENSE.txt); see the
+[license provenance note](provenance/github-initial-license.md).
+The inherited root license and component-specific notices remain in effect;
+this archive does not relicense the source snapshot.
+
+For future source updates, review the actual changes and use an existing remote
+base for record ownership checks:
 
 ```sh
 git status --short
-python3 scripts/check-repository.py
+python3 scripts/check-repository.py --base origin/main
 git diff --cached --check
-git commit -m "Publish G0345D experimental M42 device snapshot"
+git commit -m "Describe the source or record change"
+git push origin main
 ```
 
-With an authenticated GitHub CLI, replace the example owner with the actual
-account, then create a new repository (do not use the old G0245D origin):
-
-```sh
-REPOSITORY=YOUR_OWNER/UniXNU-g0345d
-gh repo create "$REPOSITORY" --public --source . --remote origin --push
-gh repo edit "$REPOSITORY" --add-topic unixnu
-gh repo view "$REPOSITORY" --json repositoryTopics --jq '.repositoryTopics[].name'
-```
-
-Verify the remote commit's Porting record job, the unixnu topic and actual device
-catalog page. Request a scan through the upstream project's supported process
-when appropriate. Do not label the gated package workflow a successful release.
-The local export contains no GitHub credentials and no remote publishing was done.
+Verify the matching commit's [Porting record job](https://github.com/Yuanchu000I/UniXUN-g0345d/actions)
+and the repository's `unixnu` topic. Website/device-catalog ingestion remains a
+separate unverified step; request a scan through the upstream project's supported
+process when appropriate. Do not label the gated package workflow a successful
+release. GitHub credentials are not part of the repository.
 
 Before describing this port as meeting every official publication requirement,
 complete the companion firmware repository and lawful external-input manifest,
