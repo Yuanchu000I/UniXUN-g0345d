@@ -1,0 +1,4 @@
+M42/v185 temporary boot; image SHA256 498c23b58b71d64291bf921f7d4f95356fd0aba1fd8b872707df1e9f326ad726; 2026-11-16T10:11:01.4352342+08:00
+Sending 'boot.img' (78072 KB)                      OKAY [  2.002s]
+Booting                                            OKAY [  0.115s]
+Finished. Total time: 2.163s

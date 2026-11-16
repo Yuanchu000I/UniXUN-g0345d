@@ -1,0 +1,104 @@
+diff --git a/scripts/linux/setup-toolchain.py b/scripts/linux/setup-toolchain.py
+index 9047183..dbcf3fc 100755
+--- a/scripts/linux/setup-toolchain.py
++++ b/scripts/linux/setup-toolchain.py
+@@ -135,15 +135,15 @@ def git_checkout(directory, url, ref):
+     run(['git', 'init', '-q', directory])
+     # G0245D: 网络偶发 TLS 中断（GnuTLS recv error -110）会让单次 fetch 失败；加重试避免整段崩掉。
+     last = None
+-    for attempt in range(3):
++    for attempt in range(8):
+         try:
+             run(['git', '-C', directory, 'fetch', '-q', '--depth', '1', url, ref])
+             break
+         except subprocess.CalledProcessError as e:
+             last = e
+-            if attempt < 2:
+-                wait = 5 * (attempt + 1)
+-                print(f"  git fetch 失败（第 {attempt+1}/3 次），{wait}s 后重试…", flush=True)
++            if attempt < 7:
++                wait = 10 * (attempt + 1)
++                print(f"  git fetch 失败（第 {attempt+1}/8 次），{wait}s 后重试…", flush=True)
+                 time.sleep(wait)
+             else:
+                 raise
+diff --git a/scripts/prepare-xnu-source.py b/scripts/prepare-xnu-source.py
+index b664bfb..40004fb 100755
+--- a/scripts/prepare-xnu-source.py
++++ b/scripts/prepare-xnu-source.py
+@@ -20,12 +20,54 @@ URL = f'https://api.github.com/repos/apple-oss-distributions/xnu/contents/iokit/
+ TOKEN = os.environ.get('GITHUB_TOKEN') or os.environ.get('GH_TOKEN')
+ 
+ 
++NO_PROXY_OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
++
++
++def jsdelivr_url(url):
++    """raw.githubusercontent.com/<owner>/<repo>/<ref>/<path> -> jsdelivr CDN,
++    reachable from this network without the proxy."""
++    parts = urllib.parse.urlsplit(url)
++    if parts.hostname != 'raw.githubusercontent.com':
++        return None
++    segments = parts.path.lstrip('/').split('/', 2)
++    if len(segments) < 3 or '@' in segments[2].split('/')[0]:
++        return None
++    owner, repo, rest = segments
++    return f'https://cdn.jsdelivr.net/gh/{owner}/{repo}@{rest}'
++
++
++def fetch_once(url, opener=None, timeout=60):
++    # curl survives where python-urllib's TLS handshake gets reset on this
++    # network.  -x '' ignores the env proxies (the profile exports them), so
++    # this goes DIRECT, which is what we want for the CDN endpoints.
++    result = subprocess.run(['curl', '-sfL', '-x', '', '--max-time', str(timeout),
++                             '-A', 'unixnu-prepare-xnu-source', url], capture_output=True)
++    if result.returncode != 0:
++        raise RuntimeError(f'curl exit {result.returncode} for {url}')
++    return result.stdout
++
++
+ def fetch(url):
+-    request = urllib.request.Request(url, headers={'User-Agent': 'unixnu-prepare-xnu-source'})
+-    if TOKEN and urllib.parse.urlsplit(url).hostname in ('api.github.com', 'raw.githubusercontent.com'):
+-        request.add_header('Authorization', f'Bearer {TOKEN}')
+-    with urllib.request.urlopen(request, timeout=30) as response:
+-        return response.read()
++    import time
++    # Routes tried in order, all DIRECT via curl -x '' (the env proxies are
++    # unreliable from this network): fastly/gcore jsdelivr mirrors, then the
++    # original URL (raw.githubusercontent direct works with curl's TLS).
++    hosts = []
++    if jsdelivr_url(url):
++        hosts.append(jsdelivr_url(url).replace('cdn.jsdelivr.net', 'fastly.jsdelivr.net'))
++        hosts.append(jsdelivr_url(url).replace('cdn.jsdelivr.net', 'gcore.jsdelivr.net'))
++    hosts.append(url)
++    last = None
++    for host_url in hosts:
++        for attempt in range(3):
++            try:
++                return fetch_once(host_url)
++            except Exception as error:
++                last = error
++                print(f'fetch retry {attempt + 1}/3 for {host_url}: {error}', flush=True)
++                time.sleep(2 * (attempt + 1))
++        print(f'route exhausted: {host_url}', flush=True)
++    raise last
+ 
+ 
+ OFFLINE = Path('.cache/sources/headers')
+@@ -65,6 +107,15 @@ def restore(entry, destination=DESTINATION, tag=TAG):
+         raise ValueError(f'Git blob hash mismatch: {entry["name"]}')
+     target.parent.mkdir(parents=True, exist_ok=True)
+     target.write_bytes(data)
++    # Persist into the offline cache so later builds (which re-clone xnu-work
++    # and wipe restored headers) never refetch this file from the network.
++    try:
++        rel = target.relative_to(Path('.cache/xnu-work'))
++        offline = OFFLINE / rel
++        offline.parent.mkdir(parents=True, exist_ok=True)
++        offline.write_bytes(data)
++    except ValueError:
++        pass
+     return {'name': name, 'source_tag': tag, 'git_blob': digest,
+             'sha256': hashlib.sha256(data).hexdigest()}
+ 

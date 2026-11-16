@@ -1,0 +1,214 @@
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -394,6 +394,14 @@
+ 	}
+ }
+ 
++/* G0345D v185: spare rows between the function and argument codes. */
++void
++g0345d_kalloc_probe(unsigned int step, unsigned int value)
++{
++	g0345d_zalloc_word(800, (uint16_t)step);
++	g0345d_zalloc_word(840, (uint16_t)value);
++}
++
+ void
+ g0345d_zalloc_probe(unsigned int index, unsigned int stage,
+     uint64_t function, uint64_t argument)
+--- a/osfmk/kern/startup.c
++++ b/osfmk/kern/startup.c
+@@ -417,6 +417,7 @@
+ 		g0245d_paint_row_white(200);
+ 		/* Calibration cells: alternating white/black, MSB first. */
+ 		g0345d_zalloc_probe(0, 0, 0, 0);
++		g0245d_paint_row_white(280); /* M42 version marker */
+ 	}
+ 
+ 	assert(startup_phase < upto);
+--- a/osfmk/kern/kalloc.c
++++ b/osfmk/kern/kalloc.c
+@@ -950,6 +950,9 @@
+ 	}
+ }
+ 
++extern void g0245d_paint_row_white(int row);
++extern void g0345d_kalloc_probe(unsigned int step, unsigned int value);
++
+ __attribute__((used)) const uint32_t kalloc_sparse_prelink_index_version = 1;
+ 
+ __startup_func
+@@ -959,11 +962,17 @@
+ 	kc_format_t kc_format;
+ 	uint64_t cur_count = 0;
+ 
++	g0345d_kalloc_probe(0x4201, (unsigned int)type);
++
+ 	if (!PE_get_primary_kc_format(&kc_format)) {
++		g0345d_kalloc_probe(0x4202, (unsigned int)type);
+ 		panic("kalloc_type_view_parse: wasn't able to determine kc format");
+ 	}
+ 
++	g0345d_kalloc_probe(0x4203, (unsigned int)kc_format);
++
+ 	if (kc_format == KCFormatStatic) {
++		g0345d_kalloc_probe(0x4210, (unsigned int)type);
+ 		/*
+ 		 * If kc is static or KCGEN, __kalloc_type sections from kexts and
+ 		 * xnu are coalesced.
+@@ -972,7 +981,9 @@
+ 		    kalloc_type_var(type, sec_start),
+ 		    kalloc_type_var(type, sec_end),
+ 		    &cur_count, false, NULL);
++		g0345d_kalloc_probe(0x4211, (unsigned int)cur_count);
+ 	} else if (kc_format == KCFormatFileset) {
++		g0345d_kalloc_probe(0x4220, (unsigned int)type);
+ 		/*
+ 		 * If kc uses filesets, traverse __kalloc_type section for each
+ 		 * macho in the BootKC.
+@@ -1005,12 +1016,14 @@
+ 			}
+ 		}
+ 	} else if (kc_format == KCFormatKCGEN) {
++		g0345d_kalloc_probe(0x4230, (unsigned int)type);
+ 		/*
+ 		 * Parse __kalloc_type section from xnu
+ 		 */
+ 		kalloc_type_view_copy(type,
+ 		    kalloc_type_var(type, sec_start),
+ 		    kalloc_type_var(type, sec_end), &cur_count, false, NULL);
++		g0345d_kalloc_probe(0x4231, (unsigned int)cur_count);
+ 
+ 		/*
+ 		 * Parse __kalloc_type section for kexts
+@@ -1030,9 +1043,11 @@
+ 		 */
+ 		kernel_section_t *prelink_sect = getsectbynamefromheader(
+ 			xnu_mh, kPrelinkTextSegment, kPrelinkTextSection);
++		g0345d_kalloc_probe(0x4232, prelink_sect != NULL);
+ 		assert(prelink_sect);
+ 		cur = prelink_sect->addr;
+ 		end = prelink_sect->addr + prelink_sect->size;
++		g0345d_kalloc_probe(0x4233, (unsigned int)(prelink_sect->size >> 12));
+ 
+ 		/* A sparse native prelink supplies its actual component headers.
+ 		 * Keep the original contiguous KCGEN format when no index exists.
+@@ -1041,6 +1056,7 @@
+ 			xnu_mh, kPrelinkTextSegment, "__macho_list");
+ 		uint64_t list_index = 0, list_count = 0;
+ 		uintptr_t previous_header = 0;
++		g0345d_kalloc_probe(0x4234, macho_list != NULL);
+ 		if (macho_list) {
+ 			kernel_segment_command_t *prelink_segment =
+ 			    getsegbynamefromheader(xnu_mh, kPrelinkTextSegment);
+@@ -1055,6 +1071,7 @@
+ 			list_count = macho_list->size / sizeof(uintptr_t);
+ 		}
+ 
++		g0345d_kalloc_probe(0x4235, (unsigned int)list_count);
+ 		while (macho_list ? list_index < list_count : cur < end) {
+ 			if (macho_list) {
+ 				uintptr_t unslid = ((const uintptr_t *)macho_list->addr)[list_index++];
+@@ -1066,6 +1083,7 @@
+ 				}
+ 				previous_header = unslid;
+ 			}
++			g0345d_kalloc_probe(0x4236, (unsigned int)list_index);
+ 			uint64_t kext_text_sz = 0;
+ 			kernel_mach_header_t *kext_mh = (kernel_mach_header_t *) cur;
+ 
+@@ -1090,6 +1108,7 @@
+ 			/*
+ 			 * Kext macho found, iterate through its segments
+ 			 */
++			g0345d_kalloc_probe(0x4237, kext_mh->ncmds);
+ 			struct load_command *lc =
+ 			    (struct load_command *)(cur + sizeof(kernel_mach_header_t));
+ 			bool isSplitKext = false;
+@@ -1125,9 +1144,11 @@
+ 					kernel_section_t *kt_sect = getsectbynamefromseg(seg_cmd,
+ 					    KALLOC_TYPE_SEGMENT, KALLOC_TYPE_SECTION(type));
+ 					if (kt_sect) {
++						g0345d_kalloc_probe(0x4239, (unsigned int)list_index);
+ 						kalloc_type_view_copy(type, kt_sect->addr + vm_kernel_slide,
+ 						    kt_sect->addr + kt_sect->size + vm_kernel_slide, &cur_count,
+ 						    true, NULL);
++						g0345d_kalloc_probe(0x423a, (unsigned int)cur_count);
+ 					}
+ 				}
+ 				/*
+@@ -1144,6 +1165,7 @@
+ 			 * only a __LINKEDIT segment) then the next macho will be after all the
+ 			 * header commands.
+ 			 */
++			g0345d_kalloc_probe(0x4238, (unsigned int)list_index);
+ 			if (!kext_text_sz) {
+ 				kext_text_sz = kext_mh->sizeofcmds;
+ 			} else if (!isSplitKext) {
+@@ -1160,9 +1182,11 @@
+ 		 * When kc_format is KCFormatDynamic or KCFormatUnknown, we don't handle
+ 		 * parsing kalloc_type_view structs during startup.
+ 		 */
++		g0345d_kalloc_probe(0x42ee, (unsigned int)kc_format);
+ 		panic("kalloc_type_view_parse: couldn't parse kalloc_type_view structs"
+ 		    " for kc_format = %d\n", kc_format);
+ 	}
++	g0345d_kalloc_probe(0x42ff, (unsigned int)cur_count);
+ 	return cur_count;
+ }
+ 
+@@ -1830,13 +1854,17 @@
+ static void
+ kalloc_type_view_init_fixed(void)
+ {
++	g0345d_kalloc_probe(0x4101, 0);
+ 	kalloc_type_hash_seed = (uint32_t) early_random();
++	g0345d_kalloc_probe(0x4102, 0);
+ 	kalloc_type_build_dlut();
++	g0345d_kalloc_probe(0x4103, 0);
+ 	/*
+ 	 * Parse __kalloc_type sections and build array of pointers to
+ 	 * all kalloc type views in kt_buffer.
+ 	 */
+ 	kt_count = kalloc_type_view_parse(KTV_FIXED);
++	g0345d_kalloc_probe(0x4104, (unsigned int)kt_count);
+ 	assert(kt_count < KALLOC_TYPE_SIZE_MASK);
+ 
+ #if DEBUG || DEVELOPMENT
+@@ -1844,12 +1872,14 @@
+ 	vm_size_t kt_buffer_size = (size_t) kt_count * sizeof(kalloc_type_view_t);
+ 	assert(kt_scratch_size >= kt_buffer_size + sig_slist_size);
+ #endif
++	g0345d_kalloc_probe(0x4105, (unsigned int)kt_count);
+ 
+ 	/*
+ 	 * Sort based on size class and signature
+ 	 */
+ 	qsort(kt_buffer, (size_t) kt_count, sizeof(kalloc_type_view_t),
+ 	    kalloc_type_cmp_fixed);
++	g0345d_kalloc_probe(0x4106, (unsigned int)kt_count);
+ 
+ 	/*
+ 	 * Build a skip list that holds starts of unique signatures and a
+@@ -1859,11 +1889,13 @@
+ 	uint16_t *kt_skip_list_start = (uint16_t *)(kt_buffer + kt_count);
+ 	uint16_t *kt_shuffle_buf = kalloc_type_create_iterators_fixed(
+ 		kt_skip_list_start, kt_count);
++	g0345d_kalloc_probe(0x4107, (unsigned int)kt_count);
+ 
+ 	/*
+ 	 * Create zones based on signatures
+ 	 */
+ 	kalloc_type_create_zones_fixed(kt_skip_list_start, kt_shuffle_buf);
++	g0345d_kalloc_probe(0x4108, (unsigned int)kt_count);
+ }
+ 
+ __startup_func
+@@ -2012,8 +2044,6 @@
+ 		    &kt_buffer[end].ktv_var, heap_id);
+ 	}
+ }
+-
+-extern void g0245d_paint_row_white(int row);
+ 
+ __startup_func
+ static void

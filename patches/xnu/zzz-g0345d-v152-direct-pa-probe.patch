@@ -1,0 +1,45 @@
+--- a/osfmk/arm64/start.s
++++ b/osfmk/arm64/start.s
+@@ -507,5 +507,42 @@
+ 	dsb	sy
+ 7:
+ 
++	// g0345d v152: boot_args->Video[0] is 0 (SimpleFbDxe reports PixelBltOnly),
++	// so v151 painted nothing. Write DIRECTLY to the splash framebuffer PA
++	// 0x83401000 (same address family as g0245d, from the g0345d stock DTS).
++	// This is 21 instrs that prove the kernel entry really executed.
++	// Full-screen red 1080x2160 24bpp: 1080*2160*3 bytes = 6998400 bytes.
++	// Then disable the watchdog at 0x903000 so an in-kernel hang shows as a
++	// frozen screen instead of a reset. MSM8996 WDT: 0x903010 = WDT disable.
++	ldr	x9, =0x83401000
++	ldr	x10, =3240			// rowbytes (1080*3)
++	ldr	x11, =2160			// height
++	mul	x12, x10, x11			// total bytes
++	lsr	x12, x12, #2
++	mov	w13, #0x00FF0000		// BGRA red
++1:	str	w13, [x9], #4
++	subs	x12, x12, #1
++	b.ne	1b
++	dsb	sy
++	// WDT off: WDT0 disable register at 0x903010 (write 0 to disable)
++	ldr	x9, =0x903010
++	mov	w10, #0
++	str	w10, [x9]
++	dsb	sy
++	// White stage band on top of the red: row 200, 32 rows, 3240 rowbytes
++	ldr	x9, =0x83401000
++	ldr	x10, =3240
++	mov	x11, #200
++	mul	x11, x11, x10
++	add	x9, x9, x11
++	mov	x12, #32
++	mul	x12, x12, x10
++	lsr	x12, x12, #2
++	mov	w13, #0xFFFFFFFF		// white
++1:	str	w13, [x9], #4
++	subs	x12, x12, #1
++	b.ne	1b
++	dsb	sy
++
+ 	// Unlock the core for debugging
+ 	msr		OSLAR_EL1, xzr

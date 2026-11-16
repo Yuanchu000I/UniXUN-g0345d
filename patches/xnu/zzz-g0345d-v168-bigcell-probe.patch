@@ -1,0 +1,63 @@
+diff --git a/osfmk/arm/arm_init.c b/osfmk/arm/arm_init.c
+index 1ec5bab..ec7b44a 100644
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -300,6 +300,29 @@ g0245d_paint_bits(int row, uint64_t val)
+ 	}
+ }
+ 
++/*
++ * g0345d v168: paint a 16-bit half-word as 16 big cells (64 px wide, 24 rows
++ * tall) through the proven TTBR0 identity map. White cell = bit 1, black cell
++ * = bit 0, MSB first, cells start at fb x = 28.
++ */
++void
++g0245d_paint_halfband(int row, uint32_t half)
++{
++	const uint64_t rowbytes = 0xCA8ULL;
++	volatile uint32_t *base = (volatile uint32_t *)(uintptr_t)
++	    (0x83401000ULL + (uint64_t)row * rowbytes + 28ULL * 4ULL);
++	int i, j, x;
++	for (i = 0; i < 24; i++) {
++		volatile uint32_t *p = base + i * (int)(rowbytes / 4);
++		for (j = 0; j < 16; j++) {
++			uint32_t color = ((half >> (15 - j)) & 1u) ? 0xFFFFFFFFu : 0x00000000u;
++			for (x = 0; x < 64; x++)
++				p[x] = color;
++			p += 64;
++		}
++	}
++}
++
+ void
+ g0245d_fill_fb_black(void)
+ {
+diff --git a/osfmk/arm64/arm_vm_init.c b/osfmk/arm64/arm_vm_init.c
+index 690f0bb..30b06c3 100644
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -2163,11 +2163,19 @@ arm_vm_init(uint64_t memory_size, boot_args * args)
+ 	 *   row 200 = gVirtBase + (0x83401000 - gPhysBase)   (classic physmap VA)
+ 	 *   row 250 = phystokv(0x83401000)                    (ptov_table VA) */
+ 	{
+-		extern void g0245d_paint_bits(int row, uint64_t val);
+-		g0245d_paint_bits(100, (uint64_t)gVirtBase);
+-		g0245d_paint_bits(150, (uint64_t)gPhysBase);
+-		g0245d_paint_bits(200, (uint64_t)gVirtBase + (0x83401000ULL - (uint64_t)gPhysBase));
+-		g0245d_paint_bits(250, (uint64_t)phystokv(0x83401000ULL));
++		extern void g0245d_paint_halfband(int row, uint32_t half);
++		uint64_t vb = (uint64_t)gVirtBase;
++		uint64_t pb = (uint64_t)gPhysBase;
++		uint64_t cv = vb + (0x83401000ULL - pb);
++		uint64_t pv = (uint64_t)phystokv(0x83401000ULL);
++		g0245d_paint_halfband(400, (uint32_t)((vb >> 16) & 0xFFFFu));
++		g0245d_paint_halfband(440, (uint32_t)(vb & 0xFFFFu));
++		g0245d_paint_halfband(500, (uint32_t)((pb >> 16) & 0xFFFFu));
++		g0245d_paint_halfband(540, (uint32_t)(pb & 0xFFFFu));
++		g0245d_paint_halfband(600, (uint32_t)((cv >> 16) & 0xFFFFu));
++		g0245d_paint_halfband(640, (uint32_t)(cv & 0xFFFFu));
++		g0245d_paint_halfband(700, (uint32_t)((pv >> 16) & 0xFFFFu));
++		g0245d_paint_halfband(740, (uint32_t)(pv & 0xFFFFu));
+ 	}
+ 	set_mmu_ttb_alternate(cpu_ttep & TTBR_BADDR_MASK);
+ 

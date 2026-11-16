@@ -1,0 +1,11 @@
+# External inputs only; NO proprietary blob is shipped in this repository.
+# Format: logical input | source/provenance | bytes | SHA256 | status
+# This inventory is deliberately not a fabricated OEM blob manifest.
+M34-v177split laboratory boot container | locally assembled historical M34 input, not an OEM download or redistributable release | 79945728 | 56a2c1dca6900c3d4fdfef504608836f5fb3661160f26db1174f69d141317315 | required only by strict historical repacker; user supplied
+# The container includes a 46208636-byte appended stock DTB bundle.
+# Its original OEM archive source/member hashes have not been independently
+# inventoried for this publication. Do not substitute G0245D firmware hashes.
+# Apple IPSW/ABI inputs follow the selected OS profile and must be obtained
+# separately under their applicable terms. M42 skipped prelink; no working
+# userland image is claimed. Companion firmware packaging remains incomplete.
+# See docs/firmware-dependency.md for firmware pins and missing local changes.

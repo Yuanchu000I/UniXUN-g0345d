@@ -1,0 +1,37 @@
+name: Porting record
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  record:
+    name: Porting record
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check snapshot and record with explicitly pinned fork catalog
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          args=()
+          if [[ -n "$BASE" && ! "$BASE" =~ ^0+$ ]] && git cat-file -e "${BASE}^{commit}" 2>/dev/null; then
+            args=(--base "$BASE")
+          fi
+          python3 scripts/check-repository.py "${args[@]}"
+          if ((${#args[@]})); then
+            git diff --check "$BASE" HEAD
+          else
+            git show --format= --check HEAD
+          fi
+      - name: Check shell entry point syntax
+        run: bash -n scripts/package.sh

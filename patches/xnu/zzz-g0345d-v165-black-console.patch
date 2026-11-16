@@ -1,0 +1,67 @@
+diff --git a/osfmk/arm/arm_init.c b/osfmk/arm/arm_init.c
+index a2b329b..c96d007 100644
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -255,6 +255,31 @@ g0245d_paint_row_black(int row)
+ 	while (n--) *p++ = 0x00000000u;
+ }
+ 
++void
++g0245d_fill_fb_black(void)
++{
++	const uint64_t rowbytes = 0xCA8ULL;
++	extern vm_offset_t gVirtBase;
++	extern vm_offset_t gPhysBase;
++	uint64_t va = (uint64_t)gVirtBase + (0x83401000ULL - (uint64_t)gPhysBase);
++	volatile uint32_t *p = (volatile uint32_t *)(uintptr_t)va;
++	uint64_t n = (2160ULL * rowbytes) / 4;
++	while (n--) *p++ = 0x00000000u;
++}
++
++void
++g0245d_paint_row_white(int row)
++{
++	const uint64_t rowbytes = 0xCA8ULL;
++	extern vm_offset_t gVirtBase;
++	extern vm_offset_t gPhysBase;
++	uint64_t va = (uint64_t)gVirtBase + (0x83401000ULL + (uint64_t)row * rowbytes
++	                                      - (uint64_t)gPhysBase);
++	volatile uint32_t *p = (volatile uint32_t *)(uintptr_t)va;
++	uint64_t n = (16ULL * rowbytes) / 4;
++	while (n--) *p++ = 0xFFFFFFFFu;
++}
++
+ #if __arm64__
+ unsigned int page_shift_user32; /* for page_size as seen by a 32-bit task */
+ 
+@@ -652,6 +677,10 @@ arm_init(
+ 
+ 	arm_vm_init(xmaxmem, args);
+ 
++	/* g0345d v165: white band 400 - arm_vm_init() returned. */
++	extern void g0245d_paint_row_white(int row);
++	g0245d_paint_row_white(400);
++
+ 	if (debug_boot_arg) {
+ 		patch_low_glo();
+ 	}
+diff --git a/osfmk/arm64/arm_vm_init.c b/osfmk/arm64/arm_vm_init.c
+index 52ca6b2..25b12f3 100644
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -2189,6 +2189,15 @@ arm_vm_init(uint64_t memory_size, boot_args * args)
+ 	/* g0345d v163: black band 1620 - after first phystokv reads. */
+ 	g0245d_paint_row_black(1620);
+ 
++	/* g0345d v165: post-switch black console. Wipe the whole framebuffer
++	 * to black through the TTBR1 physmap. Every stage after this paints
++	 * WHITE bands on the black field - unambiguous in photos.
++	 * Band rows: 300 = end of arm_vm_init() body. */
++	extern void g0245d_fill_fb_black(void);
++	g0245d_fill_fb_black();
++	extern void g0245d_paint_row_white(int row);
++	g0245d_paint_row_white(300);
++
+ 	// From here on out, we're off the bootstrap translation tables.
+ 
+ 

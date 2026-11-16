@@ -1,0 +1,125 @@
+--- a/osfmk/arm64/machine_routines.c
++++ b/osfmk/arm64/machine_routines.c
+@@ -496,9 +496,12 @@
+ #endif
+ }
+ 
++extern void g0245d_paint_row_white(int row);
++
+ void
+ machine_startup(__unused boot_args * args)
+ {
++	g0245d_paint_row_white(1440); /* g0345d v182: entered machine_startup */
+ #if defined(HAS_IPI) && (DEVELOPMENT || DEBUG)
+ 	if (!PE_parse_boot_argn("fastipi", &gFastIPI, sizeof(gFastIPI))) {
+ 		gFastIPI = 1;
+@@ -507,6 +510,7 @@
+ 
+ 
+ 	machine_conf();
++	g0245d_paint_row_white(1480);
+ 
+ 	/*
+ 	 * Kick off the kernel bootstrap.
+--- a/osfmk/kern/startup.c
++++ b/osfmk/kern/startup.c
+@@ -121,6 +121,7 @@
+ 
+ /* G0245D v149: framebuffer progress marker (see video_console.c) */
+ extern void g0245d_fb_mark(int n);
++extern void g0245d_paint_row_white(int row);
+ #include <sys/codesign.h>
+ #include <sys/kdebug.h>
+ #include <sys/random.h>
+@@ -432,12 +433,17 @@
+ 
+ 	code_signing_config_t cs_config;
+ 
++	/* g0345d v182: independent TTBR1 framebuffer milestones. */
++	g0245d_paint_row_white(1520);
+ 	printf("%s\n", version); /* log kernel version */
++	g0245d_paint_row_white(1560);
+ 
+ 	scale_setup();
++	g0245d_paint_row_white(1600);
+ 
+ 	kernel_bootstrap_log("vm_mem_bootstrap");
+ 	vm_mem_bootstrap();
++	g0245d_paint_row_white(2040);
+ 
+ 	machine_info.memory_size = (uint32_t)mem_size;
+ #if XNU_TARGET_OS_OSX
+@@ -454,6 +460,7 @@
+ 	atm_init();
+ #endif
+ 	kernel_startup_initialize_upto(STARTUP_SUB_OSLOG);
++	g0245d_paint_row_white(2080);
+ 
+ #if CONFIG_UBSAN_MINIMAL
+ 	kernel_bootstrap_log("UBSan minimal runtime init");
+@@ -482,6 +489,7 @@
+ 
+ 	kernel_bootstrap_log("console_init");
+ 	console_init();
++	g0245d_paint_row_white(2120);
+ 
+ 	kernel_bootstrap_log("stackshot_init");
+ 	stackshot_init();
+--- a/osfmk/vm/vm_init.c
++++ b/osfmk/vm/vm_init.c
+@@ -99,10 +99,14 @@
+  *	This is done only by the first cpu up.
+  */
++extern void g0245d_paint_row_white(int row);
++
+ __startup_func
+ void
+ vm_mem_bootstrap(void)
+ {
+ 	vm_offset_t start, end;
++
++	g0245d_paint_row_white(1640); /* g0345d v182: VM bootstrap entry */
+ 
+ 	/*
+ 	 *	Initializes resident memory structures.
+@@ -111,6 +115,7 @@
+ 	 */
+ 	vm_mem_bootstrap_log("vm_page_bootstrap");
+ 	vm_page_bootstrap(&start, &end);
++	g0245d_paint_row_white(1680);
+ 
+ 	/*
+ 	 *	Initialize other VM packages
+@@ -118,24 +123,32 @@
+ 
+ 	vm_mem_bootstrap_log("zone_bootstrap");
+ 	zone_bootstrap();
++	g0245d_paint_row_white(1720);
+ 
+ 	vm_mem_bootstrap_log("vm_object_bootstrap");
+ 	vm_object_bootstrap();
++	g0245d_paint_row_white(1760);
+ 
+ 	vm_retire_boot_pages();
++	g0245d_paint_row_white(1800);
+ 
+ 	vm_mem_bootstrap_log("vm_map_init");
+ 	vm_map_init();
++	g0245d_paint_row_white(1840);
+ 
+ 	vm_mem_bootstrap_log("kmem_init");
+ 	kmem_init(start, end);
++	g0245d_paint_row_white(1880);
+ 
+ 	kernel_startup_initialize_upto(STARTUP_SUB_KMEM);
++	g0245d_paint_row_white(1920);
+ 
+ 	vm_mem_bootstrap_log("vm_fault_init");
+ 	vm_fault_init();
++	g0245d_paint_row_white(1960);
+ 
+ 	kernel_startup_initialize_upto(STARTUP_SUB_ZALLOC);
++	g0245d_paint_row_white(2000);
+ 
+ 	if (iokit_iomd_setownership_enabled) {
+ 		kprintf("IOKit IOMD setownership ENABLED\n");

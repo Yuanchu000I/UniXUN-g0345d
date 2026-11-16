@@ -1,0 +1,16 @@
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -2202,5 +2202,12 @@
+ 			*l1_tte_fb = (kvtophys(l2_page) & ARM_TTE_TABLE_MASK) | ARM_TTE_TYPE_TABLE | ARM_TTE_VALID
+ 			    | ARM_TTE_TABLE_AP(ARM_TTE_TABLE_AP_USER_NA);
+ 		} else {
+-			l2_page = phystokv((*l1_tte_fb) & ARM_TTE_TABLE_MASK);
++			/* v178: this code still runs under the bootstrap TTBR0.  After
++			 * arm_vm_physmap_init(), phystokv() returns the new slid TTBR1
++			 * aperture, which is not mapped until the later TTBR switch.  Use
++			 * the original kernel VA identity instead to reach the existing L2
++			 * page while it is being edited. */
++			pmap_paddr_t l2_pa_fb = (*l1_tte_fb) & ARM_TTE_TABLE_MASK;
++			l2_page = (vm_offset_t)(l2_pa_fb - (pmap_paddr_t)gPhysBase +
++			    (vm_offset_t)gVirtBase);
+ 		}

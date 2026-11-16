@@ -1,0 +1,42 @@
+{
+  "validation": "passed",
+  "template": "g0345d-payload-M34-v177split.img",
+  "template_sha256": "56a2c1dca6900c3d4fdfef504608836f5fb3661160f26db1174f69d141317315",
+  "payload": "payload.img",
+  "payload_sha256": "410f7e14b837932a10471ee3765f9c7c7f2ac494bda1fa07259b88ccfd1174ad",
+  "native_kernel": "kernel.macho",
+  "native_kernel_bytes": 18207264,
+  "native_kernel_sha256": "aac6aceb8f601ab312ea8598e4f658abf7ec83706c0cbc8a4e75c40088dd781a",
+  "config_sha256": "dd38b2ffc535aa1a073b7094163af9afc5e69dd1ec9622c0da46858c30c99111",
+  "adt_bytes": 12984,
+  "adt_sha256": "bd019ec8bc0c0266ed3cce366e2aec5b1be23f6f14473c8b596adca93ebe112e",
+  "config_equal_m34": true,
+  "adt_equal_m34_except_random_seed": true,
+  "adt_random_seed_changed": true,
+  "kernel_container_equal_m34": true,
+  "page_bytes": 4096,
+  "kernel_size": 54773873,
+  "ramdisk_size": 25165824,
+  "ramdisk_offset": 54779904,
+  "gzip_bytes": 8565237,
+  "dtb_bytes": 46208636,
+  "image_bytes": 79945728,
+  "image_sha256": "498c23b58b71d64291bf921f7d4f95356fd0aba1fd8b872707df1e9f326ad726",
+  "boot_id_sha1": "7678d99e755bc9237fd86d5d197abf31e458652e",
+  "fat_files": {
+    "/efi/unixnu/payloads/kernel.macho": {
+      "bytes": 18207264,
+      "sha256": "aac6aceb8f601ab312ea8598e4f658abf7ec83706c0cbc8a4e75c40088dd781a"
+    },
+    "/efi/unixnu/payloads/kernel.macho.adt": {
+      "bytes": 12984,
+      "sha256": "bd019ec8bc0c0266ed3cce366e2aec5b1be23f6f14473c8b596adca93ebe112e"
+    },
+    "/efi/unixnu/unixnu.toml": {
+      "bytes": 356,
+      "sha256": "dd38b2ffc535aa1a073b7094163af9afc5e69dd1ec9622c0da46858c30c99111"
+    }
+  },
+  "output": "g0345d-payload-M42-v185.img",
+  "publication_note": "Historical M42 manifest; local paths replaced by basenames; no image or seed is distributed."
+}

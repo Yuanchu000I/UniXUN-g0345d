@@ -1,0 +1,72 @@
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -216,6 +216,34 @@
+ }
+ 
+ 
++/*
++ * g0345d v162: pre-TTBR-switch paint helpers. The identity VA 0x83401000
++ * (v161 L1 index 2 block) is only valid while the bootstrap TTBR0 is live,
++ * i.e. until arm_vm_init() runs set_mmu_ttb(invalid_ttep). These marks
++ * therefore bracket everything inside arm_vm_init() up to the switch.
++ * Geometry: 16-row bands at fb rows 1400/1432/1464 - a fresh strip that
++ * does not collide with the 700..956 arm ladder or the v150 1000..1320 marks.
++ */
++void
++g0245d_paint_row(int row)
++{
++	const uint64_t va = 0x83401000ULL;
++	const uint64_t rowbytes = 0xCA8ULL;
++	volatile uint32_t *p = (volatile uint32_t *)(uintptr_t)(va + (uint64_t)row * rowbytes);
++	uint64_t n = (16ULL * rowbytes) / 4;
++	while (n--) *p++ = 0xFFFFFFFFu;
++}
++
++void
++g0245d_fill_fb_white(void)
++{
++	const uint64_t va = 0x83401000ULL;
++	const uint64_t rowbytes = 0xCA8ULL;
++	volatile uint32_t *p = (volatile uint32_t *)(uintptr_t)va;
++	uint64_t n = (2160ULL * rowbytes) / 4;
++	while (n--) *p++ = 0xFFFFFFFFu;
++}
++
+ #if __arm64__
+ unsigned int page_shift_user32; /* for page_size as seen by a 32-bit task */
+ 
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -1822,6 +1822,9 @@
+ void
+ arm_vm_init(uint64_t memory_size, boot_args * args)
+ {
++	extern void g0245d_paint_row(int row);
++	/* g0345d v162: entered arm_vm_init (bootstrap TTBR0 still live). */
++	g0245d_paint_row(1400);
+ 	vm_map_address_t va_l1, va_l1_end;
+ 	tt_entry_t       *cpu_l1_tte;
+ 	vm_map_address_t va_l2, va_l2_end;
+@@ -2150,12 +2153,22 @@
+ 	arm_set_user_tbi();
+ 
+ 	arm_vm_physmap_init(args);
++	/* g0345d v162: physmap established, pre-switch. */
++	g0245d_paint_row(1432);
+ 	set_mmu_ttb_alternate(cpu_ttep & TTBR_BADDR_MASK);
+ 
+ #if XNU_MONITOR
+ 	ml_enable_monitor();
+ #endif
+ 
++	/* g0345d v162: last safe moment for the identity-VA paint.
++	 * Fill the whole fb white first - if the photo is solid white we died
++	 * in the switch itself; distinct bands after this point would mean the
++	 * switch survived (impossible for this paint path). */
++	extern void g0245d_fill_fb_white(void);
++	g0245d_fill_fb_white();
++	g0245d_paint_row(1464);
++
+ 	set_mmu_ttb(invalid_ttep & TTBR_BADDR_MASK);
+ 
+ 	flush_mmu_tlb();

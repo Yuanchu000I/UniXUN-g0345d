@@ -1,0 +1,8 @@
+unixnu: on Linux the kernel step uses the toolchain of scripts/linux/setup-toolchain.py; --skip-setup and seed-data-grow need macOS hdiutil
+== submodules {UNIXNU}
+== tree {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree
+== payload
+== kernel args: -v serial=3 console=ttyHSL0,115200,n8
++ /usr/bin/dtc -I dts -O dtb -o {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/device-tree/hardware.dtb -i {UNIXNU}/out/feeds/UniXNU-msm8996-common-889e63fc/dts {DEVICE}/dts/g0345d.dts
+== payload: {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/payload/payload.img (24 MiB)
+== next: run ./unixnu bootimg to pack this payload into the boot image

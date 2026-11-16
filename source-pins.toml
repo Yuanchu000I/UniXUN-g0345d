@@ -1,0 +1,43 @@
+schema_version = 1
+snapshot_date = "2026-11-16"
+
+[official]
+repository = "https://github.com/UniXNU/UniXNU.git"
+commit = "21d683dff61c66f219f03ab9d8b9249026514788"
+scope = "Current publication schema, templates and documentation; not the tested build tools"
+
+[tools]
+repository = "https://github.com/midopix/UniXNU.git"
+commit = "1e0d72a34b952eacdec1f90941c617bf45860b76"
+local_delta = "patches/unixnu/9001-local-network-retries-and-header-cache.patch"
+scope = "Historical Linux tools baseline plus exported optional local delta; clean reproduction pending"
+
+[device_baseline]
+repository = "https://github.com/midopix/UniXNU-g0245d.git"
+commit = "24508221a8ce11129257f4f6d1225d220f3ffefa"
+scope = "Ancestry only; exported G0345D inputs include uncommitted changes, hashed separately"
+
+[soc]
+repository = "https://github.com/midopix/UniXNU-msm8996-common"
+commit = "4007997af4ed9db34c8dadcd44d9ce7a8b22ab7a"
+
+[firmware_baseline]
+repository = "https://github.com/edk2-porting/edk2-msm8998.git"
+commit = "ace27110b9b9b6c591387d50cf748ec646402b4a"
+scope = "Legacy ancestor; numerous local changes are not yet exported into a companion firmware repository"
+edk2 = "e7aac7fc137e247edad22f7ee53b9a1fba227397"
+edk2_platforms = "35a84b1838baacf0d470e76fb68a6ade30413450"
+simple_init = "29e062805776db5ab7a61d07ef040d43aed71161"
+darwinboot = "5243c68ec332a227fe3680cd5da6d5a0e127035c"
+
+[validation]
+mode = "unchanged official record checker with explicitly pinned fork catalog"
+upstream_catalog_compatible = false
+clean_package_verified = false
+
+[validation.sha256]
+"ci/upstream/scripts/porting-record.py" = "e677a6c573c06f0927ab8bfe77579031e23b1c0c5d1af08710f9b69f44f95b72"
+"ci/upstream/components.toml" = "6e43f305f388338096c302d867e9f9cbba7bee8a4d19cf61c5bb9e10f3300fa9"
+"ci/fork/components.toml" = "9ee172ca033d2afd1cddd4cc1bad28387a3f07a2008acc4acc607891c8b8e9a2"
+"ci/LICENSE" = "5b1d3d911103cb0f41641ec0964c5ac1f7e229f57aa072b6ac38bae913a1307b"
+"scripts/package.sh" = "f7b8e3ea043058b9c61d5b45c32b8e7669a85737c89d55d404957c3b43ec4aab"

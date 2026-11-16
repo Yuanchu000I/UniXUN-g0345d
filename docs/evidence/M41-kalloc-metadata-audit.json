@@ -1,0 +1,271 @@
+{
+  "path": "M41/kernel.macho (not distributed)",
+  "sha256": "c8465e597181033976ca552fbc0e006dfecef51607b7e3495e31a88acd6d97bb",
+  "filetype": 2,
+  "flags": 2097153,
+  "segments": [
+    {
+      "name": "__TEXT",
+      "vmaddr": 18446744005107531776,
+      "vmsize": 1409024,
+      "fileoff": 0,
+      "filesize": 1409024
+    },
+    {
+      "name": "__DATA_CONST",
+      "vmaddr": 18446744005108940800,
+      "vmsize": 901120,
+      "fileoff": 1409024,
+      "filesize": 901120
+    },
+    {
+      "name": "__TEXT_EXEC",
+      "vmaddr": 18446744005109841920,
+      "vmsize": 8060928,
+      "fileoff": 2310144,
+      "filesize": 8060928
+    },
+    {
+      "name": "__KLD",
+      "vmaddr": 18446744005117902848,
+      "vmsize": 16384,
+      "fileoff": 10371072,
+      "filesize": 16384
+    },
+    {
+      "name": "__LASTDATA_CONST",
+      "vmaddr": 18446744005117919232,
+      "vmsize": 16384,
+      "fileoff": 10387456,
+      "filesize": 16384
+    },
+    {
+      "name": "__LAST",
+      "vmaddr": 18446744005117935616,
+      "vmsize": 0,
+      "fileoff": 0,
+      "filesize": 0
+    },
+    {
+      "name": "__KLDDATA",
+      "vmaddr": 18446744005117935616,
+      "vmsize": 16384,
+      "fileoff": 10403840,
+      "filesize": 16384
+    },
+    {
+      "name": "__DATA",
+      "vmaddr": 18446744005117952000,
+      "vmsize": 1146880,
+      "fileoff": 10420224,
+      "filesize": 278528
+    },
+    {
+      "name": "__BOOTDATA",
+      "vmaddr": 18446744005119098880,
+      "vmsize": 573440,
+      "fileoff": 10715136,
+      "filesize": 573440
+    },
+    {
+      "name": "__PRELINK_TEXT",
+      "vmaddr": 18446744005057200128,
+      "vmsize": 0,
+      "fileoff": 11288576,
+      "filesize": 0
+    },
+    {
+      "name": "__PRELINK_INFO",
+      "vmaddr": 18446744005119672320,
+      "vmsize": 0,
+      "fileoff": 11288576,
+      "filesize": 0
+    },
+    {
+      "name": "__PLK_TEXT_EXEC",
+      "vmaddr": 18446744005119672320,
+      "vmsize": 0,
+      "fileoff": 11288576,
+      "filesize": 0
+    },
+    {
+      "name": "__PRELINK_DATA",
+      "vmaddr": 18446744005119672320,
+      "vmsize": 0,
+      "fileoff": 11288576,
+      "filesize": 0
+    },
+    {
+      "name": "__PLK_DATA_CONST",
+      "vmaddr": 18446744005119672320,
+      "vmsize": 0,
+      "fileoff": 11288576,
+      "filesize": 0
+    },
+    {
+      "name": "__PLK_LLVM_COV",
+      "vmaddr": 18446744005119672320,
+      "vmsize": 0,
+      "fileoff": 11288576,
+      "filesize": 0
+    },
+    {
+      "name": "__PLK_LINKEDIT",
+      "vmaddr": 18446744005119672320,
+      "vmsize": 0,
+      "fileoff": 11288576,
+      "filesize": 0
+    },
+    {
+      "name": "__LINKINFO",
+      "vmaddr": 18446744005119672320,
+      "vmsize": 278528,
+      "fileoff": 11288576,
+      "filesize": 278528
+    },
+    {
+      "name": "__LINKEDIT",
+      "vmaddr": 18446744005119950848,
+      "vmsize": 6651904,
+      "fileoff": 11567104,
+      "filesize": 6640040
+    }
+  ],
+  "sections": [
+    {
+      "name": "__thread_starts",
+      "segment": "__TEXT",
+      "address": 18446744005108939852,
+      "size": 0,
+      "offset": 1408076
+    },
+    {
+      "name": "__kalloc_type",
+      "segment": "__DATA_CONST",
+      "address": 18446744005109634992,
+      "size": 81536,
+      "offset": 2103216
+    },
+    {
+      "name": "__kalloc_var",
+      "segment": "__DATA_CONST",
+      "address": 18446744005109716528,
+      "size": 32160,
+      "offset": 2184752
+    },
+    {
+      "name": "__text",
+      "segment": "__PRELINK_TEXT",
+      "address": 18446744005057200128,
+      "size": 0,
+      "offset": 11288576
+    }
+  ],
+  "fixed_view_count": 1274,
+  "fixed_flags_count": {
+    "0x64": 790,
+    "0xe4": 81,
+    "0x61": 171,
+    "0x6c": 135,
+    "0x62": 77,
+    "0x6a": 11,
+    "0x2062": 1,
+    "0xe2": 6,
+    "0xe1": 1,
+    "0x69": 1
+  },
+  "fixed_signature_char_counts": {
+    "2": 1039,
+    "1": 1123,
+    "3": 44,
+    "0": 8
+  },
+  "fixed_errors": [],
+  "fixed_examples": [
+    {
+      "index": 0,
+      "size": 24,
+      "flags": "0x64",
+      "name": "site.typeof(*region)",
+      "signature": "112"
+    },
+    {
+      "index": 1,
+      "size": 24,
+      "flags": "0x64",
+      "name": "site.typeof(*region)",
+      "signature": "112"
+    },
+    {
+      "index": 2,
+      "size": 72,
+      "flags": "0x64",
+      "name": "site.typeof(*data)",
+      "signature": "121212112"
+    },
+    {
+      "index": 3,
+      "size": 72,
+      "flags": "0x64",
+      "name": "site.typeof(*data)",
+      "signature": "121212112"
+    },
+    {
+      "index": 4,
+      "size": 8,
+      "flags": "0xe4",
+      "name": "site.struct kern_userspace_coredump_context",
+      "signature": "1"
+    },
+    {
+      "index": 5,
+      "size": 8,
+      "flags": "0xe4",
+      "name": "site.struct kern_userspace_coredump_context",
+      "signature": "1"
+    },
+    {
+      "index": 6,
+      "size": 8,
+      "flags": "0xe4",
+      "name": "site.struct kern_userspace_coredump_context",
+      "signature": "1"
+    },
+    {
+      "index": 7,
+      "size": 144,
+      "flags": "0x61",
+      "name": "site.struct ipc_eventlink_base",
+      "signature": "111221112221121211"
+    }
+  ],
+  "fixed_non_data_non_vm_count": 1127,
+  "fixed_size_range": [
+    4,
+    6152
+  ],
+  "var_view_count": 402,
+  "var_flags_count": {
+    "0x62": 1,
+    "0x61": 8,
+    "0x64": 132,
+    "0xe4": 237,
+    "0x6c": 24
+  },
+  "var_versions": {
+    "1": 402
+  },
+  "var_errors": [],
+  "prelink_text_summary": {
+    "address": "0xfffffff004004000",
+    "size": 0,
+    "first64": "",
+    "all_zero": true
+  },
+  "thread_starts_symbols": {},
+  "count_limit_check": {
+    "raw_fixed_count": 1274,
+    "initial_pointer_capacity": 32768,
+    "fixed_pointer_skiplist_bound": 26214
+  }
+}

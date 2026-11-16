@@ -1,0 +1,10 @@
+* text=auto eol=lf
+*.patch text eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.toml text eol=lf
+*.dts text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+# Patch context contains leading spaces and blank context records; preserve exact bytes.
+*.patch -whitespace

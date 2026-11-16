@@ -1,0 +1,67 @@
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -237,6 +237,17 @@
+ 	volatile uint32_t *p = (volatile uint32_t *)(uintptr_t)(va + (uint64_t)row * rowbytes);
+ 	uint64_t n = (16ULL * rowbytes) / 4;
+ 	while (n--) *p++ = 0xFFFFFFFFu;
++}
++
++void
++g0345d_paint_row_black_pre(int row)
++{
++	const uint64_t va = 0x83401000ULL;
++	const uint64_t rowbytes = 0xCA8ULL;
++	volatile uint8_t *p = (volatile uint8_t *)(uintptr_t)
++	    (va + (uint64_t)row * rowbytes);
++	uint64_t n = 16ULL * rowbytes;
++	while (n--) *p++ = 0x00;
+ }
+ 
+ void
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -2179,7 +2179,7 @@
+ 	/* g0345d v174: slot-install ladder. Each mark is pre-switch and uses
+ 	 * the proven TTBR0 framebuffer VA, so a surviving row identifies the
+ 	 * last completed pure table operation. */
+-	g0245d_paint_row(800);
++	g0345d_paint_row_black_pre(800);
+ 	/* g0345d v169: explicit framebuffer mapping in the TTBR1 tables.
+ 	 * v167 showed gVirtBase == gPhysBase on this board, so the classic
+ 	 * physmap VA math produced the identity address and every post-switch
+@@ -2190,7 +2190,7 @@
+ 		extern vm_offset_t g0345d_fb_va;
+ 		vm_offset_t fb_slot = (VM_MAX_KERNEL_ADDRESS - 0x10000000ULL) & ~ARM_TT_L2_OFFMASK;
+ 		tt_entry_t *l1_tte_fb = cpu_tte + ((fb_slot & ARM_TT_L1_INDEX_MASK) >> ARM_TT_L1_SHIFT);
+-		g0245d_paint_row(820);
++		g0345d_paint_row_black_pre(820);
+ 		vm_offset_t l2_page;
+ 		tt_entry_t *l2_tte_fb;
+ 		unsigned int i;
+@@ -2202,14 +2202,14 @@
+ 		} else {
+ 			l2_page = phystokv((*l1_tte_fb) & ARM_TTE_TABLE_MASK);
+ 		}
+-		g0245d_paint_row(840);
++		g0345d_paint_row_black_pre(840);
+ 		l2_tte_fb = (tt_entry_t *)l2_page + ((fb_slot & ARM_TT_L2_INDEX_MASK) >> ARM_TT_L2_SHIFT);
+ 		uint64_t block_base = 0x83401000ULL & ARM_TTE_BLOCK_L2_MASK;
+-		g0245d_paint_row(860);
++		g0345d_paint_row_black_pre(860);
+ 		*l2_tte_fb = (block_base & ARM_TTE_BLOCK_L2_MASK) | ARM_TTE_TYPE_BLOCK | ARM_TTE_VALID
+ 		    | ARM_TTE_BLOCK_AF | ARM_TTE_BLOCK_NX | ARM_TTE_BLOCK_AP(0)
+ 		    | ARM_TTE_BLOCK_SH(SH_OUTER_MEMORY) | ARM_TTE_BLOCK_ATTRINDX(CACHE_ATTRINDX_WRITEBACK);
+-		g0245d_paint_row(880);
++		g0345d_paint_row_black_pre(880);
+ 		/* keep the rest of the fresh L2 page harmless (invalid), as alloc_ptpage
+ 		 * does NOT zero the page (v170 fix: explicit bzero above). */
+ 		(void)i;
+@@ -2217,7 +2217,7 @@
+ 		 * 0x1401000 inside it. Painters add row offsets to fb_va, so fb_va must
+ 		 * include the intra-block offset or writes land 20MB before the fb. */
+ 		g0345d_fb_va = fb_slot + (0x83401000ULL - block_base);
+-		g0245d_paint_row(900);
++		g0345d_paint_row_black_pre(900);
+ 	}
+ 	/* g0345d v172: A-mark - slot installed, still on bootstrap TTBR0. */
+ 	g0245d_paint_row(1450);

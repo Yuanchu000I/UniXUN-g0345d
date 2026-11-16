@@ -1,0 +1,2082 @@
+{UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/build/xnu/ios-obj/DEVELOPMENT_ARM64_BCM2837/osfmk/DEVELOPMENT/arm_init.o:
+(__TEXT,__text) section
+_g0245d_paint_row:
+       0:	08 95 81 52	mov	w8, #0xca8
+       4:	09 00 82 52	mov	w9, #0x1000
+       8:	09 68 b0 72	movk	w9, #0x8340, lsl #16
+       c:	0a 24 28 9b	smaddl	x10, w0, w8, x9
+      10:	e8 53 86 92	mov	x8, #-0x32a0
+      14:	09 00 80 12	mov	w9, #-0x1
+      18:	49 01 00 b9	str	w9, [x10]
+      1c:	4a 11 00 91	add	x10, x10, #0x4
+      20:	08 05 00 b1	adds	x8, x8, #0x1
+      24:	a3 ff ff 54	b.lo	0x18
+      28:	c0 03 5f d6	ret
+_g0345d_paint_row_black_pre:
+      2c:	08 95 81 52	mov	w8, #0xca8
+      30:	09 00 82 52	mov	w9, #0x1000
+      34:	09 68 b0 72	movk	w9, #0x8340, lsl #16
+      38:	09 24 28 9b	smaddl	x9, w0, w8, x9
+      3c:	e8 4f 99 92	mov	x8, #-0xca80
+      40:	3f 01 00 39	strb	wzr, [x9]
+      44:	29 05 00 91	add	x9, x9, #0x1
+      48:	08 05 00 b1	adds	x8, x8, #0x1
+      4c:	a3 ff ff 54	b.lo	0x40
+      50:	c0 03 5f d6	ret
+_g0245d_fill_fb_white:
+      54:	e8 45 93 92	mov	x8, #-0x9a30
+      58:	e8 fe bf f2	movk	x8, #0xfff7, lsl #16
+      5c:	0a 18 8e 52	mov	w10, #0x70c0
+      60:	0a 71 b0 72	movk	w10, #0x8388, lsl #16
+      64:	09 00 80 12	mov	w9, #-0x1
+      68:	49 01 00 b9	str	w9, [x10]
+      6c:	4a 11 00 91	add	x10, x10, #0x4
+      70:	08 05 00 b1	adds	x8, x8, #0x1
+      74:	a3 ff ff 54	b.lo	0x68
+      78:	c0 03 5f d6	ret
+_g0245d_paint_row_black:
+      7c:	08 00 00 90	adrp	x8, _g0345d_fb_va@PAGE
+      80:	08 01 40 f9	ldr	x8, [x8, _g0345d_fb_va@PAGEOFF]
+      84:	08 01 00 b4	cbz	x8, 0xa4
+      88:	09 95 81 52	mov	w9, #0xca8
+      8c:	09 20 29 9b	smaddl	x9, w0, w9, x8
+      90:	e8 53 86 92	mov	x8, #-0x32a0
+      94:	3f 01 00 b9	str	wzr, [x9]
+      98:	29 11 00 91	add	x9, x9, #0x4
+      9c:	08 05 00 b1	adds	x8, x8, #0x1
+      a0:	a3 ff ff 54	b.lo	0x94
+      a4:	c0 03 5f d6	ret
+_g0245d_probe_paint:
+      a8:	08 00 00 90	adrp	x8, _g0345d_fb_va@PAGE
+      ac:	08 01 40 f9	ldr	x8, [x8, _g0345d_fb_va@PAGEOFF]
+      b0:	48 01 00 b4	cbz	x8, 0xd8
+      b4:	09 48 9f 52	mov	w9, #0xfa40
+      b8:	29 00 a0 72	movk	w9, #0x1, lsl #16
+      bc:	0a 20 29 9b	smaddl	x10, w0, w9, x8
+      c0:	e8 7d 89 92	mov	x8, #-0x4bf0
+      c4:	09 00 80 12	mov	w9, #-0x1
+      c8:	49 01 00 b9	str	w9, [x10]
+      cc:	4a 11 00 91	add	x10, x10, #0x4
+      d0:	08 05 00 b1	adds	x8, x8, #0x1
+      d4:	a3 ff ff 54	b.lo	0xc8
+      d8:	c0 03 5f d6	ret
+_g0245d_paint_bits:
+      dc:	08 00 80 d2	mov	x8, #0x0
+      e0:	09 95 81 52	mov	w9, #0xca8
+      e4:	0a 20 82 52	mov	w10, #0x1100
+      e8:	0a 68 b0 72	movk	w10, #0x8340, lsl #16
+      ec:	0a 28 29 9b	smaddl	x10, w0, w9, x10
+      f0:	0b 04 84 52	mov	w11, #0x2020
+      f4:	0b e4 bf 72	movk	w11, #0xff20, lsl #16
+      f8:	0c 00 80 d2	mov	x12, #0x0
+      fc:	0d 29 09 9b	madd	x13, x8, x9, x10
+     100:	2e 20 cc 9a	lsl	x14, x1, x12
+     104:	df 05 00 31	cmn	w14, #0x1
+     108:	6e c1 9f 5a	csinv	w14, w11, wzr, gt
+     10c:	ae 01 00 b9	str	w14, [x13]
+     110:	ae 05 00 b9	str	w14, [x13, #0x4]
+     114:	ae 09 00 b9	str	w14, [x13, #0x8]
+     118:	ae 0d 00 b9	str	w14, [x13, #0xc]
+     11c:	ae 11 00 b9	str	w14, [x13, #0x10]
+     120:	ae 15 00 b9	str	w14, [x13, #0x14]
+     124:	ae 19 00 b9	str	w14, [x13, #0x18]
+     128:	ae 1d 00 b9	str	w14, [x13, #0x1c]
+     12c:	8c 05 00 91	add	x12, x12, #0x1
+     130:	ad 81 00 91	add	x13, x13, #0x20
+     134:	9f 81 00 f1	cmp	x12, #0x20
+     138:	41 fe ff 54	b.ne	0x100
+     13c:	08 05 00 91	add	x8, x8, #0x1
+     140:	1f 41 00 f1	cmp	x8, #0x10
+     144:	a1 fd ff 54	b.ne	0xf8
+     148:	c0 03 5f d6	ret
+_g0245d_paint_halfband:
+     14c:	ff 83 00 d1	sub	sp, sp, #0x20
+     150:	fd 7b 01 a9	stp	x29, x30, [sp, #0x10]
+     154:	fd 43 00 91	add	x29, sp, #0x10
+     158:	08 00 80 52	mov	w8, #0x0
+     15c:	09 95 81 52	mov	w9, #0xca8
+     160:	0a 18 82 52	mov	w10, #0x10c0
+     164:	0a 68 b0 72	movk	w10, #0x8340, lsl #16
+     168:	0b 04 80 52	mov	w11, #0x20
+     16c:	0d 00 08 2b	adds	w13, w0, w8
+     170:	c6 04 00 54	b.vs	0x208
+     174:	0c 00 80 52	mov	w12, #0x0
+     178:	ad 29 29 9b	smaddl	x13, w13, w9, x10
+     17c:	2e 20 cc 1a	lsl	w14, w1, w12
+     180:	df 01 01 72	tst	w14, #0x80000000
+     184:	6e 01 9f 5a	csinv	w14, w11, wzr, eq
+     188:	ae 01 00 39	strb	w14, [x13]
+     18c:	ae 05 00 39	strb	w14, [x13, #0x1]
+     190:	ae 09 00 39	strb	w14, [x13, #0x2]
+     194:	ae 0d 00 39	strb	w14, [x13, #0x3]
+     198:	ae 11 00 39	strb	w14, [x13, #0x4]
+     19c:	ae 15 00 39	strb	w14, [x13, #0x5]
+     1a0:	ae 19 00 39	strb	w14, [x13, #0x6]
+     1a4:	ae 1d 00 39	strb	w14, [x13, #0x7]
+     1a8:	ae 21 00 39	strb	w14, [x13, #0x8]
+     1ac:	ae 25 00 39	strb	w14, [x13, #0x9]
+     1b0:	ae 29 00 39	strb	w14, [x13, #0xa]
+     1b4:	ae 2d 00 39	strb	w14, [x13, #0xb]
+     1b8:	ae 31 00 39	strb	w14, [x13, #0xc]
+     1bc:	ae 35 00 39	strb	w14, [x13, #0xd]
+     1c0:	ae 39 00 39	strb	w14, [x13, #0xe]
+     1c4:	ae 3d 00 39	strb	w14, [x13, #0xf]
+     1c8:	ae 41 00 39	strb	w14, [x13, #0x10]
+     1cc:	ae 45 00 39	strb	w14, [x13, #0x11]
+     1d0:	ae 49 00 39	strb	w14, [x13, #0x12]
+     1d4:	ae 4d 00 39	strb	w14, [x13, #0x13]
+     1d8:	ae 51 00 39	strb	w14, [x13, #0x14]
+     1dc:	ae 55 00 39	strb	w14, [x13, #0x15]
+     1e0:	ae 59 00 39	strb	w14, [x13, #0x16]
+     1e4:	ae 5d 00 39	strb	w14, [x13, #0x17]
+     1e8:	ad 61 00 91	add	x13, x13, #0x18
+     1ec:	8c 05 00 11	add	w12, w12, #0x1
+     1f0:	9f 81 00 71	cmp	w12, #0x20
+     1f4:	41 fc ff 54	b.ne	0x17c
+     1f8:	08 05 00 11	add	w8, w8, #0x1
+     1fc:	1f 41 00 71	cmp	w8, #0x10
+     200:	61 fb ff 54	b.ne	0x16c
+     204:	0d 00 00 14	b	0x238
+     208:	e8 87 00 29	stp	w8, w1, [sp, #0x4]
+     20c:	e0 03 00 b9	str	w0, [sp]
+     210:	ad c3 1f b8	stur	w13, [x29, #-0x4]
+     214:	00 00 00 94	bl	___ubsan_handle_add_overflow_minimal
+     218:	ad c3 5f b8	ldur	w13, [x29, #-0x4]
+     21c:	0b 04 80 52	mov	w11, #0x20
+     220:	0a 18 82 52	mov	w10, #0x10c0
+     224:	0a 68 b0 72	movk	w10, #0x8340, lsl #16
+     228:	09 95 81 52	mov	w9, #0xca8
+     22c:	e0 23 40 29	ldp	w0, w8, [sp]
+     230:	e1 0b 40 b9	ldr	w1, [sp, #0x8]
+     234:	d0 ff ff 17	b	0x174
+     238:	fd 7b 41 a9	ldp	x29, x30, [sp, #0x10]
+     23c:	ff 83 00 91	add	sp, sp, #0x20
+     240:	c0 03 5f d6	ret
+_g0245d_fill_fb_black:
+     244:	08 00 00 90	adrp	x8, _g0345d_fb_va@PAGE
+     248:	09 01 40 f9	ldr	x9, [x8, _g0345d_fb_va@PAGEOFF]
+     24c:	e9 00 00 b4	cbz	x9, 0x268
+     250:	e8 4b 96 92	mov	x8, #-0xb260
+     254:	a8 fc bf f2	movk	x8, #0xffe5, lsl #16
+     258:	3f 01 00 b9	str	wzr, [x9]
+     25c:	29 11 00 91	add	x9, x9, #0x4
+     260:	08 05 00 b1	adds	x8, x8, #0x1
+     264:	a3 ff ff 54	b.lo	0x258
+     268:	c0 03 5f d6	ret
+_g0245d_paint_row_white:
+     26c:	08 00 00 90	adrp	x8, _g0345d_fb_va@PAGE
+     270:	08 01 40 f9	ldr	x8, [x8, _g0345d_fb_va@PAGEOFF]
+     274:	28 01 00 b4	cbz	x8, 0x298
+     278:	09 95 81 52	mov	w9, #0xca8
+     27c:	0a 20 29 9b	smaddl	x10, w0, w9, x8
+     280:	e8 53 86 92	mov	x8, #-0x32a0
+     284:	09 00 80 12	mov	w9, #-0x1
+     288:	49 01 00 b9	str	w9, [x10]
+     28c:	4a 11 00 91	add	x10, x10, #0x4
+     290:	08 05 00 b1	adds	x8, x8, #0x1
+     294:	a3 ff ff 54	b.lo	0x288
+     298:	c0 03 5f d6	ret
+_g0345d_kalloc_probe:
+     29c:	08 00 00 90	adrp	x8, _g0345d_fb_va@PAGE
+     2a0:	09 01 40 f9	ldr	x9, [x8, _g0345d_fb_va@PAGEOFF]
+     2a4:	a9 07 00 b4	cbz	x9, 0x398
+     2a8:	09 00 80 d2	mov	x9, #0x0
+     2ac:	0a 3c 00 12	and	w10, w0, #0xffff
+     2b0:	0b 95 81 52	mov	w11, #0xca8
+     2b4:	8c b6 91 52	mov	w12, #0x8db4
+     2b8:	ec 04 a0 72	movk	w12, #0x27, lsl #16
+     2bc:	2d 00 80 52	mov	w13, #0x1
+     2c0:	0e 01 40 f9	ldr	x14, [x8, _g0345d_fb_va@PAGEOFF]
+     2c4:	2e 39 0b 9b	madd	x14, x9, x11, x14
+     2c8:	ce 01 0c 8b	add	x14, x14, x12
+     2cc:	f1 01 80 52	mov	w17, #0xf
+     2d0:	10 00 80 52	mov	w16, #0x0
+     2d4:	ef 03 11 aa	mov	x15, x17
+     2d8:	b1 21 d1 1a	lsl	w17, w13, w17
+     2dc:	51 01 11 0a	and	w17, w10, w17
+     2e0:	1f c2 00 71	cmp	w16, #0x30
+     2e4:	24 3a 40 7a	ccmp	w17, #0x0, #0x4, lo
+     2e8:	e0 03 9f 5a	csetm	w0, ne
+     2ec:	c0 01 00 39	strb	w0, [x14]
+     2f0:	c0 05 00 39	strb	w0, [x14, #0x1]
+     2f4:	c0 09 00 39	strb	w0, [x14, #0x2]
+     2f8:	10 06 00 11	add	w16, w16, #0x1
+     2fc:	ce 0d 00 91	add	x14, x14, #0x3
+     300:	1f f2 00 71	cmp	w16, #0x3c
+     304:	e1 fe ff 54	b.ne	0x2e0
+     308:	f1 05 00 51	sub	w17, w15, #0x1
+     30c:	2f fe ff 35	cbnz	w15, 0x2d0
+     310:	29 05 00 91	add	x9, x9, #0x1
+     314:	3f 81 00 f1	cmp	x9, #0x20
+     318:	41 fd ff 54	b.ne	0x2c0
+     31c:	09 01 40 f9	ldr	x9, [x8, _g0345d_fb_va@PAGEOFF]
+     320:	c9 03 00 b4	cbz	x9, 0x398
+     324:	09 00 80 d2	mov	x9, #0x0
+     328:	2a 3c 00 12	and	w10, w1, #0xffff
+     32c:	0b 95 81 52	mov	w11, #0xca8
+     330:	8c fe 90 52	mov	w12, #0x87f4
+     334:	2c 05 a0 72	movk	w12, #0x29, lsl #16
+     338:	2d 00 80 52	mov	w13, #0x1
+     33c:	0e 01 40 f9	ldr	x14, [x8, _g0345d_fb_va@PAGEOFF]
+     340:	2e 39 0b 9b	madd	x14, x9, x11, x14
+     344:	ce 01 0c 8b	add	x14, x14, x12
+     348:	f1 01 80 52	mov	w17, #0xf
+     34c:	10 00 80 52	mov	w16, #0x0
+     350:	ef 03 11 aa	mov	x15, x17
+     354:	b1 21 d1 1a	lsl	w17, w13, w17
+     358:	51 01 11 0a	and	w17, w10, w17
+     35c:	1f c2 00 71	cmp	w16, #0x30
+     360:	24 3a 40 7a	ccmp	w17, #0x0, #0x4, lo
+     364:	e0 03 9f 5a	csetm	w0, ne
+     368:	c0 01 00 39	strb	w0, [x14]
+     36c:	c0 05 00 39	strb	w0, [x14, #0x1]
+     370:	c0 09 00 39	strb	w0, [x14, #0x2]
+     374:	10 06 00 11	add	w16, w16, #0x1
+     378:	ce 0d 00 91	add	x14, x14, #0x3
+     37c:	1f f2 00 71	cmp	w16, #0x3c
+     380:	e1 fe ff 54	b.ne	0x35c
+     384:	f1 05 00 51	sub	w17, w15, #0x1
+     388:	2f fe ff 35	cbnz	w15, 0x34c
+     38c:	29 05 00 91	add	x9, x9, #0x1
+     390:	3f 81 00 f1	cmp	x9, #0x20
+     394:	41 fd ff 54	b.ne	0x33c
+     398:	c0 03 5f d6	ret
+_g0345d_zalloc_probe:
+     39c:	08 00 00 90	adrp	x8, _g0345d_fb_va@PAGE
+     3a0:	e1 13 00 34	cbz	w1, 0x61c
+     3a4:	3f 04 00 71	cmp	w1, #0x1
+     3a8:	81 11 00 54	b.ne	0x5d8
+     3ac:	09 01 40 f9	ldr	x9, [x8, _g0345d_fb_va@PAGEOFF]
+     3b0:	49 08 00 b4	cbz	x9, 0x4b8
+     3b4:	29 c5 53 91	add	x9, x9, #0x4f1, lsl #12
+     3b8:	2a 01 28 91	add	x10, x9, #0xa00
+     3bc:	e9 53 86 92	mov	x9, #-0x32a0
+     3c0:	5f 01 00 b9	str	wzr, [x10]
+     3c4:	4a 11 00 91	add	x10, x10, #0x4
+     3c8:	29 05 00 b1	adds	x9, x9, #0x1
+     3cc:	a3 ff ff 54	b.lo	0x3c0
+     3d0:	09 01 40 f9	ldr	x9, [x8, _g0345d_fb_va@PAGEOFF]
+     3d4:	29 07 00 b4	cbz	x9, 0x4b8
+     3d8:	29 85 54 91	add	x9, x9, #0x521, lsl #12
+     3dc:	2a 81 05 91	add	x10, x9, #0x160
+     3e0:	e9 53 86 92	mov	x9, #-0x32a0
+     3e4:	5f 01 00 b9	str	wzr, [x10]
+     3e8:	4a 11 00 91	add	x10, x10, #0x4
+     3ec:	29 05 00 b1	adds	x9, x9, #0x1
+     3f0:	a3 ff ff 54	b.lo	0x3e4
+     3f4:	09 01 40 f9	ldr	x9, [x8, _g0345d_fb_va@PAGEOFF]
+     3f8:	09 06 00 b4	cbz	x9, 0x4b8
+     3fc:	29 41 55 91	add	x9, x9, #0x550, lsl #12
+     400:	2a 01 23 91	add	x10, x9, #0x8c0
+     404:	e9 53 86 92	mov	x9, #-0x32a0
+     408:	5f 01 00 b9	str	wzr, [x10]
+     40c:	4a 11 00 91	add	x10, x10, #0x4
+     410:	29 05 00 b1	adds	x9, x9, #0x1
+     414:	a3 ff ff 54	b.lo	0x408
+     418:	09 01 40 f9	ldr	x9, [x8, _g0345d_fb_va@PAGEOFF]
+     41c:	e9 04 00 b4	cbz	x9, 0x4b8
+     420:	29 01 56 91	add	x9, x9, #0x580, lsl #12
+     424:	2a 81 00 91	add	x10, x9, #0x20
+     428:	e9 53 86 92	mov	x9, #-0x32a0
+     42c:	5f 01 00 b9	str	wzr, [x10]
+     430:	4a 11 00 91	add	x10, x10, #0x4
+     434:	29 05 00 b1	adds	x9, x9, #0x1
+     438:	a3 ff ff 54	b.lo	0x42c
+     43c:	09 01 40 f9	ldr	x9, [x8, _g0345d_fb_va@PAGEOFF]
+     440:	c9 03 00 b4	cbz	x9, 0x4b8
+     444:	09 00 80 d2	mov	x9, #0x0
+     448:	0a 3c 00 12	and	w10, w0, #0xffff
+     44c:	0b 95 81 52	mov	w11, #0xca8
+     450:	8c 56 9a 52	mov	w12, #0xd2b4
+     454:	ec 01 a0 72	movk	w12, #0xf, lsl #16
+     458:	2d 00 80 52	mov	w13, #0x1
+     45c:	0e 01 40 f9	ldr	x14, [x8, _g0345d_fb_va@PAGEOFF]
+     460:	2e 39 0b 9b	madd	x14, x9, x11, x14
+     464:	ce 01 0c 8b	add	x14, x14, x12
+     468:	f1 01 80 52	mov	w17, #0xf
+     46c:	10 00 80 52	mov	w16, #0x0
+     470:	ef 03 11 aa	mov	x15, x17
+     474:	b1 21 d1 1a	lsl	w17, w13, w17
+     478:	51 01 11 0a	and	w17, w10, w17
+     47c:	1f c2 00 71	cmp	w16, #0x30
+     480:	24 3a 40 7a	ccmp	w17, #0x0, #0x4, lo
+     484:	e0 03 9f 5a	csetm	w0, ne
+     488:	c0 01 00 39	strb	w0, [x14]
+     48c:	c0 05 00 39	strb	w0, [x14, #0x1]
+     490:	c0 09 00 39	strb	w0, [x14, #0x2]
+     494:	10 06 00 11	add	w16, w16, #0x1
+     498:	ce 0d 00 91	add	x14, x14, #0x3
+     49c:	1f f2 00 71	cmp	w16, #0x3c
+     4a0:	e1 fe ff 54	b.ne	0x47c
+     4a4:	f1 05 00 51	sub	w17, w15, #0x1
+     4a8:	2f fe ff 35	cbnz	w15, 0x46c
+     4ac:	29 05 00 91	add	x9, x9, #0x1
+     4b0:	3f 81 00 f1	cmp	x9, #0x20
+     4b4:	41 fd ff 54	b.ne	0x45c
+     4b8:	09 00 80 d2	mov	x9, #0x0
+     4bc:	0a 06 80 52	mov	w10, #0x30
+     4c0:	0b 95 81 52	mov	w11, #0xca8
+     4c4:	2c 00 80 52	mov	w12, #0x1
+     4c8:	04 00 00 14	b	0x4d8
+     4cc:	29 05 00 91	add	x9, x9, #0x1
+     4d0:	3f 11 00 f1	cmp	x9, #0x4
+     4d4:	20 08 00 54	b.eq	0x5d8
+     4d8:	0d 01 40 f9	ldr	x13, [x8, _g0345d_fb_va@PAGEOFF]
+     4dc:	8d ff ff b4	cbz	x13, 0x4cc
+     4e0:	0f 00 80 d2	mov	x15, #0x0
+     4e4:	2d 09 09 8b	add	x13, x9, x9, lsl #2
+     4e8:	ad ed 7c d3	lsl	x13, x13, #4
+     4ec:	b0 81 07 91	add	x16, x13, #0x1e0
+     4f0:	4e 11 09 cb	sub	x14, x10, x9, lsl #4
+     4f4:	51 24 ce 9a	lsr	x17, x2, x14
+     4f8:	31 3e 00 12	and	w17, w17, #0xffff
+     4fc:	00 02 0f 8b	add	x0, x16, x15
+     500:	04 01 40 f9	ldr	x4, [x8, _g0345d_fb_va@PAGEOFF]
+     504:	00 10 0b 9b	madd	x0, x0, x11, x4
+     508:	00 d0 02 91	add	x0, x0, #0xb4
+     50c:	e6 01 80 52	mov	w6, #0xf
+     510:	05 00 80 52	mov	w5, #0x0
+     514:	e4 03 06 aa	mov	x4, x6
+     518:	86 21 c6 1a	lsl	w6, w12, w6
+     51c:	26 02 06 0a	and	w6, w17, w6
+     520:	bf c0 00 71	cmp	w5, #0x30
+     524:	c4 38 40 7a	ccmp	w6, #0x0, #0x4, lo
+     528:	e7 03 9f 5a	csetm	w7, ne
+     52c:	07 00 00 39	strb	w7, [x0]
+     530:	07 04 00 39	strb	w7, [x0, #0x1]
+     534:	07 08 00 39	strb	w7, [x0, #0x2]
+     538:	a5 04 00 11	add	w5, w5, #0x1
+     53c:	00 0c 00 91	add	x0, x0, #0x3
+     540:	bf f0 00 71	cmp	w5, #0x3c
+     544:	e1 fe ff 54	b.ne	0x520
+     548:	86 04 00 51	sub	w6, w4, #0x1
+     54c:	24 fe ff 35	cbnz	w4, 0x510
+     550:	ef 05 00 91	add	x15, x15, #0x1
+     554:	ff 81 00 f1	cmp	x15, #0x20
+     558:	21 fd ff 54	b.ne	0x4fc
+     55c:	0f 01 40 f9	ldr	x15, [x8, _g0345d_fb_va@PAGEOFF]
+     560:	6f fb ff b4	cbz	x15, 0x4cc
+     564:	0f 00 80 d2	mov	x15, #0x0
+     568:	ad c1 0d 91	add	x13, x13, #0x370
+     56c:	6e 24 ce 9a	lsr	x14, x3, x14
+     570:	ce 3d 00 12	and	w14, w14, #0xffff
+     574:	b0 01 0f 8b	add	x16, x13, x15
+     578:	11 01 40 f9	ldr	x17, [x8, _g0345d_fb_va@PAGEOFF]
+     57c:	10 46 0b 9b	madd	x16, x16, x11, x17
+     580:	10 d2 02 91	add	x16, x16, #0xb4
+     584:	e4 01 80 52	mov	w4, #0xf
+     588:	00 00 80 52	mov	w0, #0x0
+     58c:	f1 03 04 aa	mov	x17, x4
+     590:	84 21 c4 1a	lsl	w4, w12, w4
+     594:	c4 01 04 0a	and	w4, w14, w4
+     598:	1f c0 00 71	cmp	w0, #0x30
+     59c:	84 38 40 7a	ccmp	w4, #0x0, #0x4, lo
+     5a0:	e5 03 9f 5a	csetm	w5, ne
+     5a4:	05 02 00 39	strb	w5, [x16]
+     5a8:	05 06 00 39	strb	w5, [x16, #0x1]
+     5ac:	05 0a 00 39	strb	w5, [x16, #0x2]
+     5b0:	00 04 00 11	add	w0, w0, #0x1
+     5b4:	10 0e 00 91	add	x16, x16, #0x3
+     5b8:	1f f0 00 71	cmp	w0, #0x3c
+     5bc:	e1 fe ff 54	b.ne	0x598
+     5c0:	24 06 00 51	sub	w4, w17, #0x1
+     5c4:	31 fe ff 35	cbnz	w17, 0x588
+     5c8:	ef 05 00 91	add	x15, x15, #0x1
+     5cc:	ff 81 00 f1	cmp	x15, #0x20
+     5d0:	21 fd ff 54	b.ne	0x574
+     5d4:	be ff ff 17	b	0x4cc
+     5d8:	3f 10 00 71	cmp	w1, #0x4
+     5dc:	e8 05 00 54	b.hi	0x698
+     5e0:	08 01 40 f9	ldr	x8, [x8, _g0345d_fb_va@PAGEOFF]
+     5e4:	a8 05 00 b4	cbz	x8, 0x698
+     5e8:	09 ec 9e 52	mov	w9, #0xf760
+     5ec:	49 00 a0 72	movk	w9, #0x2, lsl #16
+     5f0:	0a 54 84 52	mov	w10, #0x22a0
+     5f4:	8a 09 a0 72	movk	w10, #0x4c, lsl #16
+     5f8:	29 28 09 1b	madd	w9, w1, w9, w10
+     5fc:	0a 01 09 8b	add	x10, x8, x9
+     600:	e8 53 86 92	mov	x8, #-0x32a0
+     604:	09 00 80 12	mov	w9, #-0x1
+     608:	49 01 00 b9	str	w9, [x10]
+     60c:	4a 11 00 91	add	x10, x10, #0x4
+     610:	08 05 00 b1	adds	x8, x8, #0x1
+     614:	a3 ff ff 54	b.lo	0x608
+     618:	20 00 00 14	b	0x698
+     61c:	09 01 40 f9	ldr	x9, [x8, _g0345d_fb_va@PAGEOFF]
+     620:	c9 03 00 b4	cbz	x9, 0x698
+     624:	09 00 80 d2	mov	x9, #0x0
+     628:	0a 95 81 52	mov	w10, #0xca8
+     62c:	8b c6 9b 52	mov	w11, #0xde34
+     630:	6b 01 a0 72	movk	w11, #0xb, lsl #16
+     634:	2c 00 80 52	mov	w12, #0x1
+     638:	4d 55 95 52	mov	w13, #0xaaaa
+     63c:	0e 01 40 f9	ldr	x14, [x8, _g0345d_fb_va@PAGEOFF]
+     640:	2e 39 0a 9b	madd	x14, x9, x10, x14
+     644:	ce 01 0b 8b	add	x14, x14, x11
+     648:	f1 01 80 52	mov	w17, #0xf
+     64c:	10 00 80 52	mov	w16, #0x0
+     650:	ef 03 11 aa	mov	x15, x17
+     654:	91 21 d1 1a	lsl	w17, w12, w17
+     658:	31 02 0d 0a	and	w17, w17, w13
+     65c:	1f c2 00 71	cmp	w16, #0x30
+     660:	24 3a 40 7a	ccmp	w17, #0x0, #0x4, lo
+     664:	e0 03 9f 5a	csetm	w0, ne
+     668:	c0 01 00 39	strb	w0, [x14]
+     66c:	c0 05 00 39	strb	w0, [x14, #0x1]
+     670:	c0 09 00 39	strb	w0, [x14, #0x2]
+     674:	10 06 00 11	add	w16, w16, #0x1
+     678:	ce 0d 00 91	add	x14, x14, #0x3
+     67c:	1f f2 00 71	cmp	w16, #0x3c
+     680:	e1 fe ff 54	b.ne	0x65c
+     684:	f1 05 00 51	sub	w17, w15, #0x1
+     688:	2f fe ff 35	cbnz	w15, 0x64c
+     68c:	29 05 00 91	add	x9, x9, #0x1
+     690:	3f 81 00 f1	cmp	x9, #0x20
+     694:	41 fd ff 54	b.ne	0x63c
+     698:	c0 03 5f d6	ret
+_arm_auxkc_init:
+     69c:	ff 83 02 d1	sub	sp, sp, #0xa0
+     6a0:	fc 6f 04 a9	stp	x28, x27, [sp, #0x40]
+     6a4:	fa 67 05 a9	stp	x26, x25, [sp, #0x50]
+     6a8:	f8 5f 06 a9	stp	x24, x23, [sp, #0x60]
+     6ac:	f6 57 07 a9	stp	x22, x21, [sp, #0x70]
+     6b0:	f4 4f 08 a9	stp	x20, x19, [sp, #0x80]
+     6b4:	fd 7b 09 a9	stp	x29, x30, [sp, #0x90]
+     6b8:	fd 43 02 91	add	x29, sp, #0x90
+     6bc:	08 00 00 90	adrp	x8, ___stack_chk_guard@GOTPAGE
+     6c0:	08 01 40 f9	ldr	x8, [x8, ___stack_chk_guard@GOTPAGEOFF]
+     6c4:	08 01 40 f9	ldr	x8, [x8]
+     6c8:	e8 1f 00 f9	str	x8, [sp, #0x38]
+     6cc:	08 0c 40 b9	ldr	w8, [x0, #0xc]
+     6d0:	1f 31 00 71	cmp	w8, #0xc
+     6d4:	01 25 00 54	b.ne	0xb74
+     6d8:	f3 03 01 aa	mov	x19, x1
+     6dc:	f4 03 00 aa	mov	x20, x0
+     6e0:	60 00 80 52	mov	w0, #0x3
+     6e4:	e1 03 14 aa	mov	x1, x20
+     6e8:	e2 03 13 aa	mov	x2, x19
+     6ec:	e3 03 13 aa	mov	x3, x19
+     6f0:	00 00 00 94	bl	_PE_set_kc_header_and_base
+     6f4:	00 00 00 94	bl	_PE_get_kc_base_pointers
+     6f8:	00 04 40 ad	ldp	q0, q1, [x0]
+     6fc:	e0 87 00 ad	stp	q0, q1, [sp, #0x10]
+     700:	88 02 40 b9	ldr	w8, [x20]
+     704:	e9 59 9f 52	mov	w9, #0xfacf
+     708:	a9 dd bf 72	movk	w9, #0xfeed, lsl #16
+     70c:	1f 01 09 6b	cmp	w8, w9
+     710:	20 01 00 54	b.eq	0x734
+     714:	c9 59 9f 52	mov	w9, #0xface
+     718:	a9 dd bf 72	movk	w9, #0xfeed, lsl #16
+     71c:	1f 01 09 6b	cmp	w8, w9
+     720:	a1 1e 00 54	b.ne	0xaf4
+     724:	8d 03 80 52	mov	w13, #0x1c
+     728:	8a 12 40 b9	ldr	w10, [x20, #0x10]
+     72c:	aa 00 00 35	cbnz	w10, 0x740
+     730:	f1 00 00 14	b	0xaf4
+     734:	0d 04 80 52	mov	w13, #0x20
+     738:	8a 12 40 b9	ldr	w10, [x20, #0x10]
+     73c:	ca 1d 00 34	cbz	w10, 0xaf4
+     740:	09 00 80 d2	mov	x9, #0x0
+     744:	08 00 80 d2	mov	x8, #0x0
+     748:	0c 00 80 d2	mov	x12, #0x0
+     74c:	0b 00 80 d2	mov	x11, #0x0
+     750:	ad 01 14 8b	add	x13, x13, x20
+     754:	8e 16 40 b9	ldr	w14, [x20, #0x14]
+     758:	ae 01 0e 8b	add	x14, x13, x14
+     75c:	04 00 00 90	adrp	x4, l_.str.22@PAGE
+     760:	84 00 00 91	add	x4, x4, l_.str.22@PAGEOFF
+     764:	10 00 00 90	adrp	x16, 2 ; 0x0
+     768:	10 02 00 91	add	x16, x16, #0x0
+     76c:	11 00 00 90	adrp	x17, 1 ; 0x0
+     770:	31 02 00 91	add	x17, x17, #0x0
+     774:	00 00 00 90	adrp	x0, 1 ; 0x0
+     778:	00 00 00 91	add	x0, x0, #0x0
+     77c:	01 00 00 90	adrp	x1, 1 ; 0x0
+     780:	21 00 00 91	add	x1, x1, #0x0
+     784:	02 00 00 90	adrp	x2, 1 ; 0x0
+     788:	42 00 00 91	add	x2, x2, #0x0
+     78c:	05 00 00 90	adrp	x5, 1 ; 0x0
+     790:	a5 00 00 91	add	x5, x5, #0x0
+     794:	06 00 00 90	adrp	x6, 1 ; 0x0
+     798:	c6 00 00 91	add	x6, x6, #0x0
+     79c:	07 00 00 90	adrp	x7, 1 ; 0x0
+     7a0:	e7 00 00 91	add	x7, x7, #0x0
+     7a4:	15 00 00 90	adrp	x21, 1 ; 0x0
+     7a8:	b5 02 00 91	add	x21, x21, #0x0
+     7ac:	16 00 00 90	adrp	x22, 2 ; 0x0
+     7b0:	d6 02 00 91	add	x22, x22, #0x0
+     7b4:	17 00 00 90	adrp	x23, 2 ; 0x0
+     7b8:	f7 02 00 91	add	x23, x23, #0x0
+     7bc:	18 00 00 90	adrp	x24, 2 ; 0x0
+     7c0:	18 03 00 91	add	x24, x24, #0x0
+     7c4:	99 06 80 52	mov	w25, #0x34
+     7c8:	19 00 b0 72	movk	w25, #0x8000, lsl #16
+     7cc:	1a 00 00 90	adrp	x26, 2 ; 0x0
+     7d0:	5a 03 00 91	add	x26, x26, #0x0
+     7d4:	fe 03 0d aa	mov	x30, x13
+     7d8:	1b 00 00 90	adrp	x27, 2 ; 0x0
+     7dc:	7b 03 00 91	add	x27, x27, #0x0
+     7e0:	05 00 00 14	b	0x7f4
+     7e4:	ec 03 1e aa	mov	x12, x30
+     7e8:	fe 03 1c aa	mov	x30, x28
+     7ec:	4a 05 00 71	subs	w10, w10, #0x1
+     7f0:	e0 0e 00 54	b.eq	0x9cc
+     7f4:	cf 07 40 b9	ldr	w15, [x30, #0x4]
+     7f8:	dc 03 0f 8b	add	x28, x30, x15
+     7fc:	ff 21 00 71	cmp	w15, #0x8
+     800:	82 23 4e fa	ccmp	x28, x14, #0x2, hs
+     804:	80 93 4d fa	ccmp	x28, x13, #0x0, ls
+     808:	63 17 00 54	b.lo	0xaf4
+     80c:	cf 03 40 b9	ldr	w15, [x30]
+     810:	ff 01 19 6b	cmp	w15, w25
+     814:	80 fe ff 54	b.eq	0x7e4
+     818:	ff 65 00 71	cmp	w15, #0x19
+     81c:	61 fe ff 54	b.ne	0x7e8
+     820:	c3 23 40 39	ldrb	w3, [x30, #0x8]
+     824:	43 03 00 34	cbz	w3, 0x88c
+     828:	7f 7c 01 71	cmp	w3, #0x5f
+     82c:	e1 fd ff 54	b.ne	0x7e8
+     830:	c3 27 40 39	ldrb	w3, [x30, #0x9]
+     834:	a3 03 00 34	cbz	w3, 0x8a8
+     838:	7f 7c 01 71	cmp	w3, #0x5f
+     83c:	21 05 00 54	b.ne	0x8e0
+     840:	c3 2b 40 39	ldrb	w3, [x30, #0xa]
+     844:	63 03 00 34	cbz	w3, 0x8b0
+     848:	7f 50 01 71	cmp	w3, #0x54
+     84c:	a1 04 00 54	b.ne	0x8e0
+     850:	c3 2f 40 39	ldrb	w3, [x30, #0xb]
+     854:	23 03 00 34	cbz	w3, 0x8b8
+     858:	7f 14 01 71	cmp	w3, #0x45
+     85c:	21 04 00 54	b.ne	0x8e0
+     860:	c3 33 40 39	ldrb	w3, [x30, #0xc]
+     864:	e3 02 00 34	cbz	w3, 0x8c0
+     868:	7f 60 01 71	cmp	w3, #0x58
+     86c:	a1 03 00 54	b.ne	0x8e0
+     870:	c3 37 40 39	ldrb	w3, [x30, #0xd]
+     874:	a3 02 00 34	cbz	w3, 0x8c8
+     878:	7f 50 01 71	cmp	w3, #0x54
+     87c:	21 03 00 54	b.ne	0x8e0
+     880:	c3 3b 40 39	ldrb	w3, [x30, #0xe]
+     884:	ef 03 1b aa	mov	x15, x27
+     888:	11 00 00 14	b	0x8cc
+     88c:	ef 03 04 aa	mov	x15, x4
+     890:	ef 01 40 39	ldrb	w15, [x15]
+     894:	7f 00 0f 6b	cmp	w3, w15
+     898:	81 fa ff 54	b.ne	0x7e8
+     89c:	c8 0f 40 f9	ldr	x8, [x30, #0x18]
+     8a0:	c9 17 40 f9	ldr	x9, [x30, #0x28]
+     8a4:	d1 ff ff 17	b	0x7e8
+     8a8:	ef 03 10 aa	mov	x15, x16
+     8ac:	08 00 00 14	b	0x8cc
+     8b0:	ef 03 16 aa	mov	x15, x22
+     8b4:	06 00 00 14	b	0x8cc
+     8b8:	ef 03 17 aa	mov	x15, x23
+     8bc:	04 00 00 14	b	0x8cc
+     8c0:	ef 03 18 aa	mov	x15, x24
+     8c4:	02 00 00 14	b	0x8cc
+     8c8:	ef 03 1a aa	mov	x15, x26
+     8cc:	ef 01 40 39	ldrb	w15, [x15]
+     8d0:	7f 00 0f 6b	cmp	w3, w15
+     8d4:	61 00 00 54	b.ne	0x8e0
+     8d8:	cb 0f 40 f9	ldr	x11, [x30, #0x18]
+     8dc:	c3 ff ff 17	b	0x7e8
+     8e0:	c3 27 40 39	ldrb	w3, [x30, #0x9]
+     8e4:	c3 04 00 34	cbz	w3, 0x97c
+     8e8:	7f 7c 01 71	cmp	w3, #0x5f
+     8ec:	e1 f7 ff 54	b.ne	0x7e8
+     8f0:	c3 2b 40 39	ldrb	w3, [x30, #0xa]
+     8f4:	83 04 00 34	cbz	w3, 0x984
+     8f8:	7f 30 01 71	cmp	w3, #0x4c
+     8fc:	61 f7 ff 54	b.ne	0x7e8
+     900:	c3 2f 40 39	ldrb	w3, [x30, #0xb]
+     904:	43 04 00 34	cbz	w3, 0x98c
+     908:	7f 24 01 71	cmp	w3, #0x49
+     90c:	e1 f6 ff 54	b.ne	0x7e8
+     910:	c3 33 40 39	ldrb	w3, [x30, #0xc]
+     914:	03 04 00 34	cbz	w3, 0x994
+     918:	7f 38 01 71	cmp	w3, #0x4e
+     91c:	61 f6 ff 54	b.ne	0x7e8
+     920:	c3 37 40 39	ldrb	w3, [x30, #0xd]
+     924:	c3 03 00 34	cbz	w3, 0x99c
+     928:	7f 2c 01 71	cmp	w3, #0x4b
+     92c:	e1 f5 ff 54	b.ne	0x7e8
+     930:	c3 3b 40 39	ldrb	w3, [x30, #0xe]
+     934:	a3 03 00 34	cbz	w3, 0x9a8
+     938:	7f 14 01 71	cmp	w3, #0x45
+     93c:	61 f5 ff 54	b.ne	0x7e8
+     940:	c3 3f 40 39	ldrb	w3, [x30, #0xf]
+     944:	83 03 00 34	cbz	w3, 0x9b4
+     948:	7f 10 01 71	cmp	w3, #0x44
+     94c:	e1 f4 ff 54	b.ne	0x7e8
+     950:	c3 43 40 39	ldrb	w3, [x30, #0x10]
+     954:	43 03 00 34	cbz	w3, 0x9bc
+     958:	7f 24 01 71	cmp	w3, #0x49
+     95c:	61 f4 ff 54	b.ne	0x7e8
+     960:	c3 47 40 39	ldrb	w3, [x30, #0x11]
+     964:	03 03 00 34	cbz	w3, 0x9c4
+     968:	7f 50 01 71	cmp	w3, #0x54
+     96c:	e1 f3 ff 54	b.ne	0x7e8
+     970:	c3 4b 40 39	ldrb	w3, [x30, #0x12]
+     974:	ef 03 15 aa	mov	x15, x21
+     978:	c6 ff ff 17	b	0x890
+     97c:	ef 03 11 aa	mov	x15, x17
+     980:	c4 ff ff 17	b	0x890
+     984:	ef 03 00 aa	mov	x15, x0
+     988:	c2 ff ff 17	b	0x890
+     98c:	ef 03 01 aa	mov	x15, x1
+     990:	c0 ff ff 17	b	0x890
+     994:	ef 03 02 aa	mov	x15, x2
+     998:	be ff ff 17	b	0x890
+     99c:	0f 00 00 90	adrp	x15, 1 ; 0x0
+     9a0:	ef 01 00 91	add	x15, x15, #0x0
+     9a4:	bb ff ff 17	b	0x890
+     9a8:	0f 00 00 90	adrp	x15, 1 ; 0x0
+     9ac:	ef 01 00 91	add	x15, x15, #0x0
+     9b0:	b8 ff ff 17	b	0x890
+     9b4:	ef 03 05 aa	mov	x15, x5
+     9b8:	b6 ff ff 17	b	0x890
+     9bc:	ef 03 06 aa	mov	x15, x6
+     9c0:	b4 ff ff 17	b	0x890
+     9c4:	ef 03 07 aa	mov	x15, x7
+     9c8:	b2 ff ff 17	b	0x890
+     9cc:	4c 09 00 b4	cbz	x12, 0xaf4
+     9d0:	8a 02 0b cb	sub	x10, x20, x11
+     9d4:	8b 09 40 b9	ldr	w11, [x12, #0x8]
+     9d8:	48 01 08 8b	add	x8, x10, x8
+     9dc:	08 01 09 cb	sub	x8, x8, x9
+     9e0:	08 01 0b 8b	add	x8, x8, x11
+     9e4:	09 05 40 b9	ldr	w9, [x8, #0x4]
+     9e8:	08 01 09 8b	add	x8, x8, x9
+     9ec:	0e 01 40 b9	ldr	w14, [x8]
+     9f0:	2e 08 00 34	cbz	w14, 0xaf4
+     9f4:	09 00 80 d2	mov	x9, #0x0
+     9f8:	0a 11 00 91	add	x10, x8, #0x4
+     9fc:	eb ff 9f 52	mov	w11, #0xffff
+     a00:	ec 43 00 91	add	x12, sp, #0x10
+     a04:	4d 79 69 b8	ldr	w13, [x10, x9, lsl #2]
+     a08:	cd 06 00 34	cbz	w13, 0xae0
+     a0c:	0d 01 0d 8b	add	x13, x8, x13
+     a10:	b1 29 40 79	ldrh	w17, [x13, #0x14]
+     a14:	71 06 00 34	cbz	w17, 0xae0
+     a18:	0e 00 80 d2	mov	x14, #0x0
+     a1c:	af 59 00 91	add	x15, x13, #0x16
+     a20:	f0 79 6e 78	ldrh	w16, [x15, x14, lsl #1]
+     a24:	1f 02 0b eb	cmp	x16, x11
+     a28:	40 04 00 54	b.eq	0xab0
+     a2c:	50 06 78 37	tbnz	w16, #0xf, 0xaf4
+     a30:	b1 05 40 f9	ldr	x17, [x13, #0x8]
+     a34:	a0 09 40 79	ldrh	w0, [x13, #0x4]
+     a38:	10 02 14 8b	add	x16, x16, x20
+     a3c:	10 02 11 8b	add	x16, x16, x17
+     a40:	d1 41 00 9b	madd	x17, x14, x0, x16
+     a44:	b0 0d 40 79	ldrh	w16, [x13, #0x6]
+     a48:	04 00 00 14	b	0xa58
+     a4c:	00 fc 73 d3	lsr	x0, x0, #51
+     a50:	80 03 00 b4	cbz	x0, 0xac0
+     a54:	11 00 11 8b	add	x17, x0, x17
+     a58:	10 3e 00 12	and	w16, w16, #0xffff
+     a5c:	1f 2e 00 71	cmp	w16, #0xb
+     a60:	04 1a 48 7a	ccmp	w16, #0x8, #0x4, ne
+     a64:	a1 02 00 54	b.ne	0xab8
+     a68:	10 00 80 52	mov	w16, #0x0
+     a6c:	20 02 40 f9	ldr	x0, [x17]
+     a70:	01 7c 1e 53	lsr	w1, w0, #30
+     a74:	81 79 61 f8	ldr	x1, [x12, x1, lsl #3]
+     a78:	61 02 00 b4	cbz	x1, 0xac4
+     a7c:	40 02 f8 b7	tbnz	x0, #0x3f, 0xac4
+     a80:	10 74 40 92	and	x16, x0, #0x3fffffff
+     a84:	10 02 01 8b	add	x16, x16, x1
+     a88:	30 02 00 f9	str	x16, [x17]
+     a8c:	b0 0d 40 79	ldrh	w16, [x13, #0x6]
+     a90:	1f 2e 00 71	cmp	w16, #0xb
+     a94:	c0 fd ff 54	b.eq	0xa4c
+     a98:	1f 22 00 71	cmp	w16, #0x8
+     a9c:	e1 00 00 54	b.ne	0xab8
+     aa0:	00 fc 73 d3	lsr	x0, x0, #51
+     aa4:	e0 00 00 b4	cbz	x0, 0xac0
+     aa8:	00 f4 7e d3	lsl	x0, x0, #2
+     aac:	ea ff ff 17	b	0xa54
+     ab0:	30 00 80 52	mov	w16, #0x1
+     ab4:	05 00 00 14	b	0xac8
+     ab8:	10 00 80 52	mov	w16, #0x0
+     abc:	02 00 00 14	b	0xac4
+     ac0:	30 00 80 52	mov	w16, #0x1
+     ac4:	b1 29 40 79	ldrh	w17, [x13, #0x14]
+     ac8:	ce 05 00 91	add	x14, x14, #0x1
+     acc:	df 21 31 eb	cmp	x14, w17, uxth
+     ad0:	42 00 00 54	b.hs	0xad8
+     ad4:	70 fa 07 37	tbnz	w16, #0x0, 0xa20
+     ad8:	0e 01 40 b9	ldr	w14, [x8]
+     adc:	02 00 00 14	b	0xae4
+     ae0:	30 00 80 52	mov	w16, #0x1
+     ae4:	29 05 00 91	add	x9, x9, #0x1
+     ae8:	3f 01 0e eb	cmp	x9, x14
+     aec:	42 00 00 54	b.hs	0xaf4
+     af0:	b0 f8 07 37	tbnz	w16, #0x0, 0xa04
+     af4:	08 00 00 90	adrp	x8, _segHIGHESTNLEAuxKC@GOTPAGE
+     af8:	08 01 40 f9	ldr	x8, [x8, _segHIGHESTNLEAuxKC@GOTPAGEOFF]
+     afc:	e8 03 00 f9	str	x8, [sp]
+     b00:	02 00 00 90	adrp	x2, _segLOWESTAuxKC@GOTPAGE
+     b04:	42 00 40 f9	ldr	x2, [x2, _segLOWESTAuxKC@GOTPAGEOFF]
+     b08:	03 00 00 90	adrp	x3, _segHIGHESTAuxKC@GOTPAGE
+     b0c:	63 00 40 f9	ldr	x3, [x3, _segHIGHESTAuxKC@GOTPAGEOFF]
+     b10:	04 00 00 90	adrp	x4, _segLOWESTROAuxKC@GOTPAGE
+     b14:	84 00 40 f9	ldr	x4, [x4, _segLOWESTROAuxKC@GOTPAGEOFF]
+     b18:	05 00 00 90	adrp	x5, _segHIGHESTROAuxKC@GOTPAGE
+     b1c:	a5 00 40 f9	ldr	x5, [x5, _segHIGHESTROAuxKC@GOTPAGEOFF]
+     b20:	06 00 00 90	adrp	x6, _segLOWESTRXAuxKC@GOTPAGE
+     b24:	c6 00 40 f9	ldr	x6, [x6, _segLOWESTRXAuxKC@GOTPAGEOFF]
+     b28:	07 00 00 90	adrp	x7, _segHIGHESTRXAuxKC@GOTPAGE
+     b2c:	e7 00 40 f9	ldr	x7, [x7, _segHIGHESTRXAuxKC@GOTPAGEOFF]
+     b30:	e0 03 14 aa	mov	x0, x20
+     b34:	e1 03 13 aa	mov	x1, x19
+     b38:	00 00 00 94	bl	_kernel_collection_adjust_mh_addrs
+     b3c:	e8 1f 40 f9	ldr	x8, [sp, #0x38]
+     b40:	09 00 00 90	adrp	x9, ___stack_chk_guard@GOTPAGE
+     b44:	29 01 40 f9	ldr	x9, [x9, ___stack_chk_guard@GOTPAGEOFF]
+     b48:	29 01 40 f9	ldr	x9, [x9]
+     b4c:	3f 01 08 eb	cmp	x9, x8
+     b50:	e1 01 00 54	b.ne	0xb8c
+     b54:	fd 7b 49 a9	ldp	x29, x30, [sp, #0x90]
+     b58:	f4 4f 48 a9	ldp	x20, x19, [sp, #0x80]
+     b5c:	f6 57 47 a9	ldp	x22, x21, [sp, #0x70]
+     b60:	f8 5f 46 a9	ldp	x24, x23, [sp, #0x60]
+     b64:	fa 67 45 a9	ldp	x26, x25, [sp, #0x50]
+     b68:	fc 6f 44 a9	ldp	x28, x27, [sp, #0x40]
+     b6c:	ff 83 02 91	add	sp, sp, #0xa0
+     b70:	c0 03 5f d6	ret
+     b74:	00 00 00 90	adrp	x0, l_.str@PAGE
+     b78:	00 00 00 91	add	x0, x0, l_.str@PAGEOFF
+     b7c:	02 00 00 90	adrp	x2, l_.str.1@PAGE
+     b80:	42 00 00 91	add	x2, x2, l_.str.1@PAGEOFF
+     b84:	a1 44 80 52	mov	w1, #0x225
+     b88:	00 00 00 94	bl	_Assert
+     b8c:	00 00 00 94	bl	___stack_chk_fail
+_kernel_collection_adjust_mh_addrs:
+     b90:	fc 6f ba a9	stp	x28, x27, [sp, #-0x60]!
+     b94:	fa 67 01 a9	stp	x26, x25, [sp, #0x10]
+     b98:	f8 5f 02 a9	stp	x24, x23, [sp, #0x20]
+     b9c:	f6 57 03 a9	stp	x22, x21, [sp, #0x30]
+     ba0:	f4 4f 04 a9	stp	x20, x19, [sp, #0x40]
+     ba4:	fd 7b 05 a9	stp	x29, x30, [sp, #0x50]
+     ba8:	fd 43 01 91	add	x29, sp, #0x50
+     bac:	08 0c 40 b9	ldr	w8, [x0, #0xc]
+     bb0:	1f 31 00 71	cmp	w8, #0xc
+     bb4:	41 29 00 54	b.ne	0x10dc
+     bb8:	08 10 40 b9	ldr	w8, [x0, #0x10]
+     bbc:	68 25 00 34	cbz	w8, 0x1068
+     bc0:	0d 00 80 52	mov	w13, #0x0
+     bc4:	09 00 80 d2	mov	x9, #0x0
+     bc8:	0a 00 80 d2	mov	x10, #0x0
+     bcc:	08 00 80 d2	mov	x8, #0x0
+     bd0:	0b 00 80 d2	mov	x11, #0x0
+     bd4:	0f 80 00 91	add	x15, x0, #0x20
+     bd8:	11 00 00 90	adrp	x17, l_.str.22@PAGE
+     bdc:	31 02 00 91	add	x17, x17, l_.str.22@PAGEOFF
+     be0:	13 00 00 90	adrp	x19, 1 ; 0x0
+     be4:	73 02 00 91	add	x19, x19, #0x0
+     be8:	14 00 00 90	adrp	x20, 1 ; 0x0
+     bec:	94 02 00 91	add	x20, x20, #0x0
+     bf0:	0c 00 80 92	mov	x12, #-0x1
+     bf4:	bc 06 80 52	mov	w28, #0x35
+     bf8:	1c 00 b0 72	movk	w28, #0x8000, lsl #16
+     bfc:	0e 00 80 92	mov	x14, #-0x1
+     c00:	10 00 80 92	mov	x16, #-0x1
+     c04:	0a 00 00 14	b	0xc2c
+     c08:	f5 05 40 f9	ldr	x21, [x15, #0x8]
+     c0c:	b5 02 01 8b	add	x21, x21, x1
+     c10:	f5 05 00 f9	str	x21, [x15, #0x8]
+     c14:	ad 05 00 11	add	w13, w13, #0x1
+     c18:	f5 05 40 b9	ldr	w21, [x15, #0x4]
+     c1c:	ef 01 15 8b	add	x15, x15, x21
+     c20:	15 10 40 b9	ldr	w21, [x0, #0x10]
+     c24:	bf 01 15 6b	cmp	w13, w21
+     c28:	e2 22 00 54	b.hs	0x1084
+     c2c:	f6 01 40 b9	ldr	w22, [x15]
+     c30:	df 66 00 71	cmp	w22, #0x19
+     c34:	60 0e 00 54	b.eq	0xe00
+     c38:	df 02 1c 6b	cmp	w22, w28
+     c3c:	c1 fe ff 54	b.ne	0xc14
+     c40:	f6 05 40 f9	ldr	x22, [x15, #0x8]
+     c44:	da 02 01 8b	add	x26, x22, x1
+     c48:	56 13 40 b9	ldr	w22, [x26, #0x10]
+     c4c:	f6 fd ff 34	cbz	w22, 0xc08
+     c50:	19 00 80 52	mov	w25, #0x0
+     c54:	1e 00 80 d2	mov	x30, #0x0
+     c58:	16 00 80 d2	mov	x22, #0x0
+     c5c:	5b 83 00 91	add	x27, x26, #0x20
+     c60:	08 00 00 14	b	0xc80
+     c64:	fe 03 1b aa	mov	x30, x27
+     c68:	39 07 00 11	add	w25, w25, #0x1
+     c6c:	75 07 40 b9	ldr	w21, [x27, #0x4]
+     c70:	7b 03 15 8b	add	x27, x27, x21
+     c74:	55 13 40 b9	ldr	w21, [x26, #0x10]
+     c78:	3f 03 15 6b	cmp	w25, w21
+     c7c:	02 14 00 54	b.hs	0xefc
+     c80:	77 03 40 b9	ldr	w23, [x27]
+     c84:	ff 0a 00 71	cmp	w23, #0x2
+     c88:	e0 fe ff 54	b.eq	0xc64
+     c8c:	ff 66 00 71	cmp	w23, #0x19
+     c90:	c1 fe ff 54	b.ne	0xc68
+     c94:	77 23 40 39	ldrb	w23, [x27, #0x8]
+     c98:	77 05 00 34	cbz	w23, 0xd44
+     c9c:	ff 7e 01 71	cmp	w23, #0x5f
+     ca0:	e1 08 00 54	b.ne	0xdbc
+     ca4:	77 27 40 39	ldrb	w23, [x27, #0x9]
+     ca8:	37 05 00 34	cbz	w23, 0xd4c
+     cac:	ff 7e 01 71	cmp	w23, #0x5f
+     cb0:	61 08 00 54	b.ne	0xdbc
+     cb4:	77 2b 40 39	ldrb	w23, [x27, #0xa]
+     cb8:	f7 04 00 34	cbz	w23, 0xd54
+     cbc:	ff 32 01 71	cmp	w23, #0x4c
+     cc0:	e1 07 00 54	b.ne	0xdbc
+     cc4:	77 2f 40 39	ldrb	w23, [x27, #0xb]
+     cc8:	b7 04 00 34	cbz	w23, 0xd5c
+     ccc:	ff 26 01 71	cmp	w23, #0x49
+     cd0:	61 07 00 54	b.ne	0xdbc
+     cd4:	77 33 40 39	ldrb	w23, [x27, #0xc]
+     cd8:	97 04 00 34	cbz	w23, 0xd68
+     cdc:	ff 3a 01 71	cmp	w23, #0x4e
+     ce0:	e1 06 00 54	b.ne	0xdbc
+     ce4:	77 37 40 39	ldrb	w23, [x27, #0xd]
+     ce8:	77 04 00 34	cbz	w23, 0xd74
+     cec:	ff 2e 01 71	cmp	w23, #0x4b
+     cf0:	61 06 00 54	b.ne	0xdbc
+     cf4:	77 3b 40 39	ldrb	w23, [x27, #0xe]
+     cf8:	57 04 00 34	cbz	w23, 0xd80
+     cfc:	ff 16 01 71	cmp	w23, #0x45
+     d00:	e1 05 00 54	b.ne	0xdbc
+     d04:	77 3f 40 39	ldrb	w23, [x27, #0xf]
+     d08:	37 04 00 34	cbz	w23, 0xd8c
+     d0c:	ff 12 01 71	cmp	w23, #0x44
+     d10:	61 05 00 54	b.ne	0xdbc
+     d14:	77 43 40 39	ldrb	w23, [x27, #0x10]
+     d18:	17 04 00 34	cbz	w23, 0xd98
+     d1c:	ff 26 01 71	cmp	w23, #0x49
+     d20:	e1 04 00 54	b.ne	0xdbc
+     d24:	77 47 40 39	ldrb	w23, [x27, #0x11]
+     d28:	f7 03 00 34	cbz	w23, 0xda4
+     d2c:	ff 52 01 71	cmp	w23, #0x54
+     d30:	61 04 00 54	b.ne	0xdbc
+     d34:	77 4b 40 39	ldrb	w23, [x27, #0x12]
+     d38:	18 00 00 90	adrp	x24, 1 ; 0x0
+     d3c:	18 03 00 91	add	x24, x24, #0x0
+     d40:	1b 00 00 14	b	0xdac
+     d44:	f8 03 11 aa	mov	x24, x17
+     d48:	19 00 00 14	b	0xdac
+     d4c:	f8 03 13 aa	mov	x24, x19
+     d50:	17 00 00 14	b	0xdac
+     d54:	f8 03 14 aa	mov	x24, x20
+     d58:	15 00 00 14	b	0xdac
+     d5c:	18 00 00 90	adrp	x24, 1 ; 0x0
+     d60:	18 03 00 91	add	x24, x24, #0x0
+     d64:	12 00 00 14	b	0xdac
+     d68:	18 00 00 90	adrp	x24, 1 ; 0x0
+     d6c:	18 03 00 91	add	x24, x24, #0x0
+     d70:	0f 00 00 14	b	0xdac
+     d74:	18 00 00 90	adrp	x24, 1 ; 0x0
+     d78:	18 03 00 91	add	x24, x24, #0x0
+     d7c:	0c 00 00 14	b	0xdac
+     d80:	18 00 00 90	adrp	x24, 1 ; 0x0
+     d84:	18 03 00 91	add	x24, x24, #0x0
+     d88:	09 00 00 14	b	0xdac
+     d8c:	18 00 00 90	adrp	x24, 1 ; 0x0
+     d90:	18 03 00 91	add	x24, x24, #0x0
+     d94:	06 00 00 14	b	0xdac
+     d98:	18 00 00 90	adrp	x24, 1 ; 0x0
+     d9c:	18 03 00 91	add	x24, x24, #0x0
+     da0:	03 00 00 14	b	0xdac
+     da4:	18 00 00 90	adrp	x24, 1 ; 0x0
+     da8:	18 03 00 91	add	x24, x24, #0x0
+     dac:	15 03 40 39	ldrb	w21, [x24]
+     db0:	f8 03 1b aa	mov	x24, x27
+     db4:	ff 02 15 6b	cmp	w23, w21
+     db8:	40 00 00 54	b.eq	0xdc0
+     dbc:	f8 03 16 aa	mov	x24, x22
+     dc0:	75 0f 40 f9	ldr	x21, [x27, #0x18]
+     dc4:	b5 02 01 8b	add	x21, x21, x1
+     dc8:	75 0f 00 f9	str	x21, [x27, #0x18]
+     dcc:	75 43 40 b9	ldr	w21, [x27, #0x40]
+     dd0:	55 01 00 34	cbz	w21, 0xdf8
+     dd4:	16 00 80 52	mov	w22, #0x0
+     dd8:	77 a3 01 91	add	x23, x27, #0x68
+     ddc:	f5 02 40 f9	ldr	x21, [x23]
+     de0:	b5 02 01 8b	add	x21, x21, x1
+     de4:	f5 06 05 f8	str	x21, [x23], #0x50
+     de8:	d6 06 00 11	add	w22, w22, #0x1
+     dec:	75 43 40 b9	ldr	w21, [x27, #0x40]
+     df0:	df 02 15 6b	cmp	w22, w21
+     df4:	43 ff ff 54	b.lo	0xddc
+     df8:	f6 03 18 aa	mov	x22, x24
+     dfc:	9b ff ff 17	b	0xc68
+     e00:	f5 0d 40 f9	ldr	x21, [x15, #0x18]
+     e04:	b5 02 01 8b	add	x21, x21, x1
+     e08:	f5 0d 00 f9	str	x21, [x15, #0x18]
+     e0c:	f5 41 40 b9	ldr	w21, [x15, #0x40]
+     e10:	55 01 00 34	cbz	w21, 0xe38
+     e14:	16 00 80 52	mov	w22, #0x0
+     e18:	f7 a1 01 91	add	x23, x15, #0x68
+     e1c:	f5 02 40 f9	ldr	x21, [x23]
+     e20:	b5 02 01 8b	add	x21, x21, x1
+     e24:	f5 06 05 f8	str	x21, [x23], #0x50
+     e28:	d6 06 00 11	add	w22, w22, #0x1
+     e2c:	f5 41 40 b9	ldr	w21, [x15, #0x40]
+     e30:	df 02 15 6b	cmp	w22, w21
+     e34:	43 ff ff 54	b.lo	0xe1c
+     e38:	f9 11 40 f9	ldr	x25, [x15, #0x20]
+     e3c:	d9 ee ff b4	cbz	x25, 0xc14
+     e40:	f8 0d 40 f9	ldr	x24, [x15, #0x18]
+     e44:	1f 03 10 eb	cmp	x24, x16
+     e48:	10 33 90 9a	csel	x16, x24, x16, lo
+     e4c:	f7 21 40 39	ldrb	w23, [x15, #0x8]
+     e50:	f7 08 00 34	cbz	w23, 0xf6c
+     e54:	ff 7e 01 71	cmp	w23, #0x5f
+     e58:	21 08 00 54	b.ne	0xf5c
+     e5c:	f7 25 40 39	ldrb	w23, [x15, #0x9]
+     e60:	b7 08 00 34	cbz	w23, 0xf74
+     e64:	ff 7e 01 71	cmp	w23, #0x5f
+     e68:	a1 07 00 54	b.ne	0xf5c
+     e6c:	f7 29 40 39	ldrb	w23, [x15, #0xa]
+     e70:	77 08 00 34	cbz	w23, 0xf7c
+     e74:	ff 32 01 71	cmp	w23, #0x4c
+     e78:	21 07 00 54	b.ne	0xf5c
+     e7c:	f7 2d 40 39	ldrb	w23, [x15, #0xb]
+     e80:	37 08 00 34	cbz	w23, 0xf84
+     e84:	ff 26 01 71	cmp	w23, #0x49
+     e88:	a1 06 00 54	b.ne	0xf5c
+     e8c:	f7 31 40 39	ldrb	w23, [x15, #0xc]
+     e90:	17 08 00 34	cbz	w23, 0xf90
+     e94:	ff 3a 01 71	cmp	w23, #0x4e
+     e98:	21 06 00 54	b.ne	0xf5c
+     e9c:	f7 35 40 39	ldrb	w23, [x15, #0xd]
+     ea0:	f7 07 00 34	cbz	w23, 0xf9c
+     ea4:	ff 2e 01 71	cmp	w23, #0x4b
+     ea8:	a1 05 00 54	b.ne	0xf5c
+     eac:	f7 39 40 39	ldrb	w23, [x15, #0xe]
+     eb0:	d7 07 00 34	cbz	w23, 0xfa8
+     eb4:	ff 16 01 71	cmp	w23, #0x45
+     eb8:	21 05 00 54	b.ne	0xf5c
+     ebc:	f7 3d 40 39	ldrb	w23, [x15, #0xf]
+     ec0:	b7 07 00 34	cbz	w23, 0xfb4
+     ec4:	ff 12 01 71	cmp	w23, #0x44
+     ec8:	a1 04 00 54	b.ne	0xf5c
+     ecc:	f7 41 40 39	ldrb	w23, [x15, #0x10]
+     ed0:	97 07 00 34	cbz	w23, 0xfc0
+     ed4:	ff 26 01 71	cmp	w23, #0x49
+     ed8:	21 04 00 54	b.ne	0xf5c
+     edc:	f7 45 40 39	ldrb	w23, [x15, #0x11]
+     ee0:	77 07 00 34	cbz	w23, 0xfcc
+     ee4:	ff 52 01 71	cmp	w23, #0x54
+     ee8:	a1 03 00 54	b.ne	0xf5c
+     eec:	f7 49 40 39	ldrb	w23, [x15, #0x12]
+     ef0:	16 00 00 90	adrp	x22, 1 ; 0x0
+     ef4:	d6 02 00 91	add	x22, x22, #0x0
+     ef8:	37 00 00 14	b	0xfd4
+     efc:	7e e8 ff b4	cbz	x30, 0xc08
+     f00:	56 e8 ff b4	cbz	x22, 0xc08
+     f04:	d7 0f 40 b9	ldr	w23, [x30, #0xc]
+     f08:	17 e8 ff 34	cbz	w23, 0xc08
+     f0c:	19 00 80 d2	mov	x25, #0x0
+     f10:	d5 0e 40 f9	ldr	x21, [x22, #0x18]
+     f14:	d8 0b 40 b9	ldr	w24, [x30, #0x8]
+     f18:	b5 02 18 8b	add	x21, x21, x24
+     f1c:	d6 16 40 f9	ldr	x22, [x22, #0x28]
+     f20:	b5 02 16 cb	sub	x21, x21, x22
+     f24:	b6 22 00 91	add	x22, x21, #0x8
+     f28:	05 00 00 14	b	0xf3c
+     f2c:	39 07 00 91	add	x25, x25, #0x1
+     f30:	d6 42 00 91	add	x22, x22, #0x10
+     f34:	3f 03 17 eb	cmp	x25, x23
+     f38:	82 e6 ff 54	b.hs	0xc08
+     f3c:	d5 c2 5f 38	ldurb	w21, [x22, #-0x4]
+     f40:	bf 7e 00 71	cmp	w21, #0x1f
+     f44:	48 ff ff 54	b.hi	0xf2c
+     f48:	d5 02 40 f9	ldr	x21, [x22]
+     f4c:	b5 02 01 8b	add	x21, x21, x1
+     f50:	d5 02 00 f9	str	x21, [x22]
+     f54:	d7 0f 40 b9	ldr	w23, [x30, #0xc]
+     f58:	f5 ff ff 17	b	0xf2c
+     f5c:	17 00 80 52	mov	w23, #0x0
+     f60:	19 03 19 8b	add	x25, x24, x25
+     f64:	f6 03 19 aa	mov	x22, x25
+     f68:	20 00 00 14	b	0xfe8
+     f6c:	f6 03 11 aa	mov	x22, x17
+     f70:	19 00 00 14	b	0xfd4
+     f74:	f6 03 13 aa	mov	x22, x19
+     f78:	17 00 00 14	b	0xfd4
+     f7c:	f6 03 14 aa	mov	x22, x20
+     f80:	15 00 00 14	b	0xfd4
+     f84:	16 00 00 90	adrp	x22, 1 ; 0x0
+     f88:	d6 02 00 91	add	x22, x22, #0x0
+     f8c:	12 00 00 14	b	0xfd4
+     f90:	16 00 00 90	adrp	x22, 1 ; 0x0
+     f94:	d6 02 00 91	add	x22, x22, #0x0
+     f98:	0f 00 00 14	b	0xfd4
+     f9c:	16 00 00 90	adrp	x22, 1 ; 0x0
+     fa0:	d6 02 00 91	add	x22, x22, #0x0
+     fa4:	0c 00 00 14	b	0xfd4
+     fa8:	16 00 00 90	adrp	x22, 1 ; 0x0
+     fac:	d6 02 00 91	add	x22, x22, #0x0
+     fb0:	09 00 00 14	b	0xfd4
+     fb4:	16 00 00 90	adrp	x22, 1 ; 0x0
+     fb8:	d6 02 00 91	add	x22, x22, #0x0
+     fbc:	06 00 00 14	b	0xfd4
+     fc0:	16 00 00 90	adrp	x22, 1 ; 0x0
+     fc4:	d6 02 00 91	add	x22, x22, #0x0
+     fc8:	03 00 00 14	b	0xfd4
+     fcc:	16 00 00 90	adrp	x22, 1 ; 0x0
+     fd0:	d6 02 00 91	add	x22, x22, #0x0
+     fd4:	d5 02 40 39	ldrb	w21, [x22]
+     fd8:	ff 02 15 6b	cmp	w23, w21
+     fdc:	f7 17 9f 1a	cset	w23, eq
+     fe0:	19 03 19 8b	add	x25, x24, x25
+     fe4:	16 01 99 9a	csel	x22, x8, x25, eq
+     fe8:	3f 03 0b eb	cmp	x25, x11
+     fec:	2b 83 8b 9a	csel	x11, x25, x11, hi
+     ff0:	c8 82 88 9a	csel	x8, x22, x8, hi
+     ff4:	f5 39 40 b9	ldr	w21, [x15, #0x38]
+     ff8:	b6 02 1f 12	and	w22, w21, #0x2
+     ffc:	1f 03 0e eb	cmp	x24, x14
+    1000:	1a 33 8e 9a	csel	x26, x24, x14, lo
+    1004:	3f 03 0a eb	cmp	x25, x10
+    1008:	3b 83 8a 9a	csel	x27, x25, x10, hi
+    100c:	9f 01 19 eb	cmp	x12, x25
+    1010:	84 89 41 ba	ccmn	x12, #0x1, #0x4, hi
+    1014:	02 03 4c fa	ccmp	x24, x12, #0x2, eq
+    1018:	1e 33 8c 9a	csel	x30, x24, x12, lo
+    101c:	3f 01 18 eb	cmp	x9, x24
+    1020:	24 39 40 fa	ccmp	x9, #0x0, #0x4, lo
+    1024:	38 03 89 9a	csel	x24, x25, x9, eq
+    1028:	3f 03 09 eb	cmp	x25, x9
+    102c:	38 91 98 9a	csel	x24, x9, x24, ls
+    1030:	bf 02 1e 72	tst	w21, #0x4
+    1034:	95 01 9e 9a	csel	x21, x12, x30, eq
+    1038:	38 01 98 9a	csel	x24, x9, x24, eq
+    103c:	df 02 00 71	cmp	w22, #0x0
+    1040:	d6 11 9a 9a	csel	x22, x14, x26, ne
+    1044:	59 11 9b 9a	csel	x25, x10, x27, ne
+    1048:	95 11 95 9a	csel	x21, x12, x21, ne
+    104c:	38 11 98 9a	csel	x24, x9, x24, ne
+    1050:	ff 02 00 72	tst	w23, #0x1
+    1054:	ce 11 96 9a	csel	x14, x14, x22, ne
+    1058:	4a 11 99 9a	csel	x10, x10, x25, ne
+    105c:	8c 11 95 9a	csel	x12, x12, x21, ne
+    1060:	29 11 98 9a	csel	x9, x9, x24, ne
+    1064:	ec fe ff 17	b	0xc14
+    1068:	0b 00 80 d2	mov	x11, #0x0
+    106c:	08 00 80 d2	mov	x8, #0x0
+    1070:	0a 00 80 d2	mov	x10, #0x0
+    1074:	09 00 80 d2	mov	x9, #0x0
+    1078:	10 00 80 92	mov	x16, #-0x1
+    107c:	0e 00 80 92	mov	x14, #-0x1
+    1080:	0c 00 80 92	mov	x12, #-0x1
+    1084:	42 00 00 b4	cbz	x2, 0x108c
+    1088:	50 00 00 f9	str	x16, [x2]
+    108c:	43 00 00 b4	cbz	x3, 0x1094
+    1090:	6b 00 00 f9	str	x11, [x3]
+    1094:	44 00 00 b4	cbz	x4, 0x109c
+    1098:	8e 00 00 f9	str	x14, [x4]
+    109c:	45 00 00 b4	cbz	x5, 0x10a4
+    10a0:	aa 00 00 f9	str	x10, [x5]
+    10a4:	aa 0b 40 f9	ldr	x10, [x29, #0x10]
+    10a8:	46 00 00 b4	cbz	x6, 0x10b0
+    10ac:	cc 00 00 f9	str	x12, [x6]
+    10b0:	47 00 00 b4	cbz	x7, 0x10b8
+    10b4:	e9 00 00 f9	str	x9, [x7]
+    10b8:	4a 00 00 b4	cbz	x10, 0x10c0
+    10bc:	48 01 00 f9	str	x8, [x10]
+    10c0:	fd 7b 45 a9	ldp	x29, x30, [sp, #0x50]
+    10c4:	f4 4f 44 a9	ldp	x20, x19, [sp, #0x40]
+    10c8:	f6 57 43 a9	ldp	x22, x21, [sp, #0x30]
+    10cc:	f8 5f 42 a9	ldp	x24, x23, [sp, #0x20]
+    10d0:	fa 67 41 a9	ldp	x26, x25, [sp, #0x10]
+    10d4:	fc 6f c6 a8	ldp	x28, x27, [sp], #0x60
+    10d8:	c0 03 5f d6	ret
+    10dc:	00 00 00 90	adrp	x0, l_.str.24@PAGE
+    10e0:	00 00 00 91	add	x0, x0, l_.str.24@PAGEOFF
+    10e4:	02 00 00 90	adrp	x2, l_.str.25@PAGE
+    10e8:	42 00 00 91	add	x2, x2, l_.str.25@PAGEOFF
+    10ec:	01 32 80 52	mov	w1, #0x190
+    10f0:	00 00 00 94	bl	_Assert
+_arm_init:
+    10f4:	ff 43 03 d1	sub	sp, sp, #0xd0
+    10f8:	fc 6f 07 a9	stp	x28, x27, [sp, #0x70]
+    10fc:	fa 67 08 a9	stp	x26, x25, [sp, #0x80]
+    1100:	f8 5f 09 a9	stp	x24, x23, [sp, #0x90]
+    1104:	f6 57 0a a9	stp	x22, x21, [sp, #0xa0]
+    1108:	f4 4f 0b a9	stp	x20, x19, [sp, #0xb0]
+    110c:	fd 7b 0c a9	stp	x29, x30, [sp, #0xc0]
+    1110:	fd 03 03 91	add	x29, sp, #0xc0
+    1114:	f3 03 00 aa	mov	x19, x0
+    1118:	08 00 00 90	adrp	x8, ___stack_chk_guard@GOTPAGE
+    111c:	08 01 40 f9	ldr	x8, [x8, ___stack_chk_guard@GOTPAGEOFF]
+    1120:	08 01 40 f9	ldr	x8, [x8]
+    1124:	a8 83 1a f8	stur	x8, [x29, #-0x58]
+    1128:	ff 47 00 b9	str	wzr, [sp, #0x44]
+    112c:	ff 1f 00 f9	str	xzr, [sp, #0x38]
+    1130:	ff 37 00 b9	str	wzr, [sp, #0x34]
+    1134:	e0 00 80 52	mov	w0, #0x7
+    1138:	00 00 00 94	bl	_g0245d_paint_stage
+    113c:	00 00 00 94	bl	_arm_set_kernel_tbi
+    1140:	08 00 00 90	adrp	x8, __mh_execute_header@GOTPAGE
+    1144:	08 01 40 f9	ldr	x8, [x8, __mh_execute_header@GOTPAGEOFF]
+    1148:	09 19 40 b9	ldr	w9, [x8, #0x18]
+    114c:	89 05 f8 37	tbnz	w9, #0x1f, 0x11fc
+    1150:	09 00 00 90	adrp	x9, section$start$__TEXT$__thread_starts@GOTPAGE
+    1154:	29 01 40 f9	ldr	x9, [x9, section$start$__TEXT$__thread_starts@GOTPAGEOFF]
+    1158:	0a 00 00 90	adrp	x10, section$end$__TEXT$__thread_starts@GOTPAGE
+    115c:	4a 01 40 f9	ldr	x10, [x10, section$end$__TEXT$__thread_starts@GOTPAGEOFF]
+    1160:	5f 01 09 eb	cmp	x10, x9
+    1164:	eb 07 9f 1a	cset	w11, ne
+    1168:	0c 00 00 90	adrp	x12, _static_kernelcache@PAGE
+    116c:	8b 01 00 39	strb	w11, [x12, _static_kernelcache@PAGEOFF]
+    1170:	2c 11 00 91	add	x12, x9, #0x4
+    1174:	9f 01 0a eb	cmp	x12, x10
+    1178:	ec 03 8b 1a	csel	w12, wzr, w11, eq
+    117c:	eb 57 72 b2	mov	x11, #0xfffffc000
+    1180:	eb 1f bf f2	movk	x11, #0xf8ff, lsl #16
+    1184:	8c 03 00 34	cbz	w12, 0x11f4
+    1188:	2c 45 40 38	ldrb	w12, [x9], #0x4
+    118c:	9f 01 00 72	tst	w12, #0x1
+    1190:	4c 00 80 52	mov	w12, #0x2
+    1194:	8c 05 8c 9a	cinc	x12, x12, ne
+    1198:	2d 01 40 b9	ldr	w13, [x9]
+    119c:	bf 05 00 31	cmn	w13, #0x1
+    11a0:	a0 02 00 54	b.eq	0x11f4
+    11a4:	ad 01 08 8b	add	x13, x13, x8
+    11a8:	ae 01 40 f9	ldr	x14, [x13]
+    11ac:	6e 01 f0 b7	tbnz	x14, #0x3e, 0x11d8
+    11b0:	cf fd 6b d3	lsr	x15, x14, #43
+    11b4:	d0 a9 40 93	sbfx	x16, x14, #0, #43
+    11b8:	10 de 40 92	and	x16, x16, #0xffffffffffffff
+    11bc:	0f e1 0f 8b	add	x15, x8, x15, lsl #56
+    11c0:	10 02 0b 8b	add	x16, x16, x11
+    11c4:	ef 01 10 8b	add	x15, x15, x16
+    11c8:	10 41 2e 8b	add	x16, x8, w14, uxtw
+    11cc:	df 01 41 f2	tst	x14, #0x8000000000000000
+    11d0:	ef 01 90 9a	csel	x15, x15, x16, eq
+    11d4:	af 01 00 f9	str	x15, [x13]
+    11d8:	ce f5 73 d3	ubfx	x14, x14, #51, #11
+    11dc:	cf 21 cc 9a	lsl	x15, x14, x12
+    11e0:	ed 01 0d 8b	add	x13, x15, x13
+    11e4:	2e fe ff b5	cbnz	x14, 0x11a8
+    11e8:	29 11 00 91	add	x9, x9, #0x4
+    11ec:	3f 01 0a eb	cmp	x9, x10
+    11f0:	41 fd ff 54	b.ne	0x1198
+    11f4:	14 01 0b 8b	add	x20, x8, x11
+    11f8:	1e 01 00 14	b	0x1670
+    11fc:	09 21 40 b9	ldr	w9, [x8, #0x20]
+    1200:	3f 65 00 71	cmp	w9, #0x19
+    1204:	a1 5e 00 54	b.ne	0x1dd8
+    1208:	0d 1d 40 f9	ldr	x13, [x8, #0x38]
+    120c:	14 01 0d cb	sub	x20, x8, x13
+    1210:	e9 57 72 b2	mov	x9, #0xfffffc000
+    1214:	e9 1f bf f2	movk	x9, #0xf8ff, lsl #16
+    1218:	95 02 09 cb	sub	x21, x20, x9
+    121c:	a9 0e 40 b9	ldr	w9, [x21, #0xc]
+    1220:	3f 31 00 71	cmp	w9, #0xc
+    1224:	61 5e 00 54	b.ne	0x1df0
+    1228:	ff ff 05 a9	stp	xzr, xzr, [sp, #0x58]
+    122c:	f5 ff 04 a9	stp	x21, xzr, [sp, #0x48]
+    1230:	a9 02 40 b9	ldr	w9, [x21]
+    1234:	ea 59 9f 52	mov	w10, #0xfacf
+    1238:	aa dd bf 72	movk	w10, #0xfeed, lsl #16
+    123c:	3f 01 0a 6b	cmp	w9, w10
+    1240:	e0 00 00 54	b.eq	0x125c
+    1244:	ca 59 9f 52	mov	w10, #0xface
+    1248:	aa dd bf 72	movk	w10, #0xfeed, lsl #16
+    124c:	3f 01 0a 6b	cmp	w9, w10
+    1250:	c1 1e 00 54	b.ne	0x1628
+    1254:	69 fc 97 92	mov	x9, #-0xbfe4
+    1258:	02 00 00 14	b	0x1260
+    125c:	e9 fb 97 92	mov	x9, #-0xbfe0
+    1260:	09 e0 a0 f2	movk	x9, #0x700, lsl #16
+    1264:	09 fe df f2	movk	x9, #0xfff0, lsl #32
+    1268:	0e 01 09 8b	add	x14, x8, x9
+    126c:	aa 12 40 b9	ldr	w10, [x21, #0x10]
+    1270:	ca 1d 00 34	cbz	w10, 0x1628
+    1274:	09 00 80 d2	mov	x9, #0x0
+    1278:	08 00 80 d2	mov	x8, #0x0
+    127c:	0c 00 80 d2	mov	x12, #0x0
+    1280:	0b 00 80 d2	mov	x11, #0x0
+    1284:	cd 01 0d cb	sub	x13, x14, x13
+    1288:	ae 16 40 b9	ldr	w14, [x21, #0x14]
+    128c:	ae 01 0e 8b	add	x14, x13, x14
+    1290:	02 00 00 90	adrp	x2, l_.str.22@PAGE
+    1294:	42 00 00 91	add	x2, x2, l_.str.22@PAGEOFF
+    1298:	10 00 00 90	adrp	x16, 2 ; 0x1000
+    129c:	10 02 00 91	add	x16, x16, #0x0
+    12a0:	11 00 00 90	adrp	x17, 1 ; 0x1000
+    12a4:	31 02 00 91	add	x17, x17, #0x0
+    12a8:	00 00 00 90	adrp	x0, 1 ; 0x1000
+    12ac:	00 00 00 91	add	x0, x0, #0x0
+    12b0:	01 00 00 90	adrp	x1, 1 ; 0x1000
+    12b4:	21 00 00 91	add	x1, x1, #0x0
+    12b8:	06 00 00 90	adrp	x6, 1 ; 0x1000
+    12bc:	c6 00 00 91	add	x6, x6, #0x0
+    12c0:	07 00 00 90	adrp	x7, 1 ; 0x1000
+    12c4:	e7 00 00 91	add	x7, x7, #0x0
+    12c8:	16 00 00 90	adrp	x22, 1 ; 0x1000
+    12cc:	d6 02 00 91	add	x22, x22, #0x0
+    12d0:	17 00 00 90	adrp	x23, 2 ; 0x1000
+    12d4:	f7 02 00 91	add	x23, x23, #0x0
+    12d8:	18 00 00 90	adrp	x24, 2 ; 0x1000
+    12dc:	18 03 00 91	add	x24, x24, #0x0
+    12e0:	19 00 00 90	adrp	x25, 2 ; 0x1000
+    12e4:	39 03 00 91	add	x25, x25, #0x0
+    12e8:	9a 06 80 52	mov	w26, #0x34
+    12ec:	1a 00 b0 72	movk	w26, #0x8000, lsl #16
+    12f0:	1b 00 00 90	adrp	x27, 2 ; 0x1000
+    12f4:	7b 03 00 91	add	x27, x27, #0x0
+    12f8:	fe 03 0d aa	mov	x30, x13
+    12fc:	1c 00 00 90	adrp	x28, 2 ; 0x1000
+    1300:	9c 03 00 91	add	x28, x28, #0x0
+    1304:	cf 07 40 b9	ldr	w15, [x30, #0x4]
+    1308:	c3 03 0f 8b	add	x3, x30, x15
+    130c:	ff 21 00 71	cmp	w15, #0x8
+    1310:	62 20 4e fa	ccmp	x3, x14, #0x2, hs
+    1314:	60 90 4d fa	ccmp	x3, x13, #0x0, ls
+    1318:	83 18 00 54	b.lo	0x1628
+    131c:	cf 03 40 b9	ldr	w15, [x30]
+    1320:	ff 01 1a 6b	cmp	w15, w26
+    1324:	c0 03 00 54	b.eq	0x139c
+    1328:	ff 65 00 71	cmp	w15, #0x19
+    132c:	a1 03 00 54	b.ne	0x13a0
+    1330:	c4 23 40 39	ldrb	w4, [x30, #0x8]
+    1334:	e4 03 00 34	cbz	w4, 0x13b0
+    1338:	9f 7c 01 71	cmp	w4, #0x5f
+    133c:	21 03 00 54	b.ne	0x13a0
+    1340:	c4 27 40 39	ldrb	w4, [x30, #0x9]
+    1344:	44 04 00 34	cbz	w4, 0x13cc
+    1348:	9f 7c 01 71	cmp	w4, #0x5f
+    134c:	a1 02 00 54	b.ne	0x13a0
+    1350:	c5 2b 40 39	ldrb	w5, [x30, #0xa]
+    1354:	25 04 00 34	cbz	w5, 0x13d8
+    1358:	bf 50 01 71	cmp	w5, #0x54
+    135c:	e1 05 00 54	b.ne	0x1418
+    1360:	c5 2f 40 39	ldrb	w5, [x30, #0xb]
+    1364:	e5 03 00 34	cbz	w5, 0x13e0
+    1368:	bf 14 01 71	cmp	w5, #0x45
+    136c:	a1 01 00 54	b.ne	0x13a0
+    1370:	c5 33 40 39	ldrb	w5, [x30, #0xc]
+    1374:	a5 03 00 34	cbz	w5, 0x13e8
+    1378:	bf 60 01 71	cmp	w5, #0x58
+    137c:	21 01 00 54	b.ne	0x13a0
+    1380:	c5 37 40 39	ldrb	w5, [x30, #0xd]
+    1384:	65 03 00 34	cbz	w5, 0x13f0
+    1388:	bf 50 01 71	cmp	w5, #0x54
+    138c:	a1 00 00 54	b.ne	0x13a0
+    1390:	c5 3b 40 39	ldrb	w5, [x30, #0xe]
+    1394:	ef 03 1c aa	mov	x15, x28
+    1398:	17 00 00 14	b	0x13f4
+    139c:	ec 03 1e aa	mov	x12, x30
+    13a0:	fe 03 03 aa	mov	x30, x3
+    13a4:	4a 05 00 71	subs	w10, w10, #0x1
+    13a8:	e1 fa ff 54	b.ne	0x1304
+    13ac:	54 00 00 14	b	0x14fc
+    13b0:	ef 03 02 aa	mov	x15, x2
+    13b4:	ef 01 40 39	ldrb	w15, [x15]
+    13b8:	9f 00 0f 6b	cmp	w4, w15
+    13bc:	21 ff ff 54	b.ne	0x13a0
+    13c0:	c8 0f 40 f9	ldr	x8, [x30, #0x18]
+    13c4:	c9 17 40 f9	ldr	x9, [x30, #0x28]
+    13c8:	f6 ff ff 17	b	0x13a0
+    13cc:	ef 03 10 aa	mov	x15, x16
+    13d0:	e5 03 04 aa	mov	x5, x4
+    13d4:	08 00 00 14	b	0x13f4
+    13d8:	ef 03 17 aa	mov	x15, x23
+    13dc:	06 00 00 14	b	0x13f4
+    13e0:	ef 03 18 aa	mov	x15, x24
+    13e4:	04 00 00 14	b	0x13f4
+    13e8:	ef 03 19 aa	mov	x15, x25
+    13ec:	02 00 00 14	b	0x13f4
+    13f0:	ef 03 1b aa	mov	x15, x27
+    13f4:	ef 01 40 39	ldrb	w15, [x15]
+    13f8:	bf 00 0f 6b	cmp	w5, w15
+    13fc:	61 00 00 54	b.ne	0x1408
+    1400:	cb 0f 40 f9	ldr	x11, [x30, #0x18]
+    1404:	e7 ff ff 17	b	0x13a0
+    1408:	c4 04 00 34	cbz	w4, 0x14a0
+    140c:	9f 7c 01 71	cmp	w4, #0x5f
+    1410:	81 fc ff 54	b.ne	0x13a0
+    1414:	c5 2b 40 39	ldrb	w5, [x30, #0xa]
+    1418:	85 04 00 34	cbz	w5, 0x14a8
+    141c:	bf 30 01 71	cmp	w5, #0x4c
+    1420:	01 fc ff 54	b.ne	0x13a0
+    1424:	c4 2f 40 39	ldrb	w4, [x30, #0xb]
+    1428:	64 04 00 34	cbz	w4, 0x14b4
+    142c:	9f 24 01 71	cmp	w4, #0x49
+    1430:	81 fb ff 54	b.ne	0x13a0
+    1434:	c4 33 40 39	ldrb	w4, [x30, #0xc]
+    1438:	24 04 00 34	cbz	w4, 0x14bc
+    143c:	9f 38 01 71	cmp	w4, #0x4e
+    1440:	01 fb ff 54	b.ne	0x13a0
+    1444:	c4 37 40 39	ldrb	w4, [x30, #0xd]
+    1448:	04 04 00 34	cbz	w4, 0x14c8
+    144c:	9f 2c 01 71	cmp	w4, #0x4b
+    1450:	81 fa ff 54	b.ne	0x13a0
+    1454:	c4 3b 40 39	ldrb	w4, [x30, #0xe]
+    1458:	e4 03 00 34	cbz	w4, 0x14d4
+    145c:	9f 14 01 71	cmp	w4, #0x45
+    1460:	01 fa ff 54	b.ne	0x13a0
+    1464:	c4 3f 40 39	ldrb	w4, [x30, #0xf]
+    1468:	c4 03 00 34	cbz	w4, 0x14e0
+    146c:	9f 10 01 71	cmp	w4, #0x44
+    1470:	81 f9 ff 54	b.ne	0x13a0
+    1474:	c4 43 40 39	ldrb	w4, [x30, #0x10]
+    1478:	a4 03 00 34	cbz	w4, 0x14ec
+    147c:	9f 24 01 71	cmp	w4, #0x49
+    1480:	01 f9 ff 54	b.ne	0x13a0
+    1484:	c4 47 40 39	ldrb	w4, [x30, #0x11]
+    1488:	64 03 00 34	cbz	w4, 0x14f4
+    148c:	9f 50 01 71	cmp	w4, #0x54
+    1490:	81 f8 ff 54	b.ne	0x13a0
+    1494:	c4 4b 40 39	ldrb	w4, [x30, #0x12]
+    1498:	ef 03 16 aa	mov	x15, x22
+    149c:	c6 ff ff 17	b	0x13b4
+    14a0:	ef 03 11 aa	mov	x15, x17
+    14a4:	c4 ff ff 17	b	0x13b4
+    14a8:	ef 03 00 aa	mov	x15, x0
+    14ac:	e4 03 05 aa	mov	x4, x5
+    14b0:	c1 ff ff 17	b	0x13b4
+    14b4:	ef 03 01 aa	mov	x15, x1
+    14b8:	bf ff ff 17	b	0x13b4
+    14bc:	0f 00 00 90	adrp	x15, 1 ; 0x1000
+    14c0:	ef 01 00 91	add	x15, x15, #0x0
+    14c4:	bc ff ff 17	b	0x13b4
+    14c8:	0f 00 00 90	adrp	x15, 1 ; 0x1000
+    14cc:	ef 01 00 91	add	x15, x15, #0x0
+    14d0:	b9 ff ff 17	b	0x13b4
+    14d4:	0f 00 00 90	adrp	x15, 1 ; 0x1000
+    14d8:	ef 01 00 91	add	x15, x15, #0x0
+    14dc:	b6 ff ff 17	b	0x13b4
+    14e0:	0f 00 00 90	adrp	x15, 1 ; 0x1000
+    14e4:	ef 01 00 91	add	x15, x15, #0x0
+    14e8:	b3 ff ff 17	b	0x13b4
+    14ec:	ef 03 06 aa	mov	x15, x6
+    14f0:	b1 ff ff 17	b	0x13b4
+    14f4:	ef 03 07 aa	mov	x15, x7
+    14f8:	af ff ff 17	b	0x13b4
+    14fc:	6c 09 00 b4	cbz	x12, 0x1628
+    1500:	aa 02 0b cb	sub	x10, x21, x11
+    1504:	8b 09 40 b9	ldr	w11, [x12, #0x8]
+    1508:	48 01 08 8b	add	x8, x10, x8
+    150c:	08 01 09 cb	sub	x8, x8, x9
+    1510:	08 01 0b 8b	add	x8, x8, x11
+    1514:	09 05 40 b9	ldr	w9, [x8, #0x4]
+    1518:	08 01 09 8b	add	x8, x8, x9
+    151c:	0e 01 40 b9	ldr	w14, [x8]
+    1520:	4e 08 00 34	cbz	w14, 0x1628
+    1524:	09 00 80 d2	mov	x9, #0x0
+    1528:	0a 11 00 91	add	x10, x8, #0x4
+    152c:	eb ff 9f 52	mov	w11, #0xffff
+    1530:	ec 23 01 91	add	x12, sp, #0x48
+    1534:	4d 79 69 b8	ldr	w13, [x10, x9, lsl #2]
+    1538:	ed 06 00 34	cbz	w13, 0x1614
+    153c:	0d 01 0d 8b	add	x13, x8, x13
+    1540:	b1 29 40 79	ldrh	w17, [x13, #0x14]
+    1544:	91 06 00 34	cbz	w17, 0x1614
+    1548:	0e 00 80 d2	mov	x14, #0x0
+    154c:	af 59 00 91	add	x15, x13, #0x16
+    1550:	f0 79 6e 78	ldrh	w16, [x15, x14, lsl #1]
+    1554:	1f 02 0b eb	cmp	x16, x11
+    1558:	40 04 00 54	b.eq	0x15e0
+    155c:	70 06 78 37	tbnz	w16, #0xf, 0x1628
+    1560:	b1 05 40 f9	ldr	x17, [x13, #0x8]
+    1564:	a0 09 40 79	ldrh	w0, [x13, #0x4]
+    1568:	b0 02 10 8b	add	x16, x21, x16
+    156c:	10 02 11 8b	add	x16, x16, x17
+    1570:	d1 41 00 9b	madd	x17, x14, x0, x16
+    1574:	b0 0d 40 79	ldrh	w16, [x13, #0x6]
+    1578:	10 3e 00 12	and	w16, w16, #0xffff
+    157c:	1f 2e 00 71	cmp	w16, #0xb
+    1580:	04 1a 48 7a	ccmp	w16, #0x8, #0x4, ne
+    1584:	21 03 00 54	b.ne	0x15e8
+    1588:	10 00 80 52	mov	w16, #0x0
+    158c:	20 02 40 f9	ldr	x0, [x17]
+    1590:	01 7c 1e 53	lsr	w1, w0, #30
+    1594:	81 79 61 f8	ldr	x1, [x12, x1, lsl #3]
+    1598:	e1 02 00 b4	cbz	x1, 0x15f4
+    159c:	c0 02 f8 b7	tbnz	x0, #0x3f, 0x15f4
+    15a0:	10 74 40 92	and	x16, x0, #0x3fffffff
+    15a4:	10 02 01 8b	add	x16, x16, x1
+    15a8:	30 02 00 f9	str	x16, [x17]
+    15ac:	b0 0d 40 79	ldrh	w16, [x13, #0x6]
+    15b0:	1f 2e 00 71	cmp	w16, #0xb
+    15b4:	e0 00 00 54	b.eq	0x15d0
+    15b8:	1f 22 00 71	cmp	w16, #0x8
+    15bc:	61 01 00 54	b.ne	0x15e8
+    15c0:	00 fc 73 d3	lsr	x0, x0, #51
+    15c4:	60 01 00 b4	cbz	x0, 0x15f0
+    15c8:	00 f4 7e d3	lsl	x0, x0, #2
+    15cc:	03 00 00 14	b	0x15d8
+    15d0:	00 fc 73 d3	lsr	x0, x0, #51
+    15d4:	e0 00 00 b4	cbz	x0, 0x15f0
+    15d8:	11 00 11 8b	add	x17, x0, x17
+    15dc:	e7 ff ff 17	b	0x1578
+    15e0:	30 00 80 52	mov	w16, #0x1
+    15e4:	05 00 00 14	b	0x15f8
+    15e8:	10 00 80 52	mov	w16, #0x0
+    15ec:	02 00 00 14	b	0x15f4
+    15f0:	30 00 80 52	mov	w16, #0x1
+    15f4:	b1 29 40 79	ldrh	w17, [x13, #0x14]
+    15f8:	b0 00 00 34	cbz	w16, 0x160c
+    15fc:	ce 05 00 91	add	x14, x14, #0x1
+    1600:	20 3e 40 92	and	x0, x17, #0xffff
+    1604:	df 01 00 eb	cmp	x14, x0
+    1608:	43 fa ff 54	b.lo	0x1550
+    160c:	0e 01 40 b9	ldr	w14, [x8]
+    1610:	02 00 00 14	b	0x1618
+    1614:	30 00 80 52	mov	w16, #0x1
+    1618:	90 00 00 34	cbz	w16, 0x1628
+    161c:	29 05 00 91	add	x9, x9, #0x1
+    1620:	3f 01 0e eb	cmp	x9, x14
+    1624:	83 f8 ff 54	b.lo	0x1534
+    1628:	20 00 80 52	mov	w0, #0x1
+    162c:	e1 03 15 aa	mov	x1, x21
+    1630:	e2 03 14 aa	mov	x2, x20
+    1634:	00 00 00 94	bl	_PE_set_kc_header
+    1638:	ff 03 00 f9	str	xzr, [sp]
+    163c:	02 00 00 90	adrp	x2, _segLOWESTKC@GOTPAGE
+    1640:	42 00 40 f9	ldr	x2, [x2, _segLOWESTKC@GOTPAGEOFF]
+    1644:	03 00 00 90	adrp	x3, _segHIGHESTKC@GOTPAGE
+    1648:	63 00 40 f9	ldr	x3, [x3, _segHIGHESTKC@GOTPAGEOFF]
+    164c:	04 00 00 90	adrp	x4, _segLOWESTROKC@GOTPAGE
+    1650:	84 00 40 f9	ldr	x4, [x4, _segLOWESTROKC@GOTPAGEOFF]
+    1654:	05 00 00 90	adrp	x5, _segHIGHESTROKC@GOTPAGE
+    1658:	a5 00 40 f9	ldr	x5, [x5, _segHIGHESTROKC@GOTPAGEOFF]
+    165c:	e0 03 15 aa	mov	x0, x21
+    1660:	e1 03 14 aa	mov	x1, x20
+    1664:	06 00 80 d2	mov	x6, #0x0
+    1668:	07 00 80 d2	mov	x7, #0x0
+    166c:	00 00 00 94	bl	_kernel_collection_adjust_mh_addrs
+    1670:	08 00 00 90	adrp	x8, _vm_kernel_slide@GOTPAGE
+    1674:	08 01 40 f9	ldr	x8, [x8, _vm_kernel_slide@GOTPAGEOFF]
+    1678:	14 01 00 f9	str	x20, [x8]
+    167c:	14 00 00 90	adrp	x20, _const_boot_args@PAGE
+    1680:	94 02 00 91	add	x20, x20, _const_boot_args@PAGEOFF
+    1684:	e0 03 14 aa	mov	x0, x20
+    1688:	e1 03 13 aa	mov	x1, x19
+    168c:	02 90 80 52	mov	w2, #0x480
+    1690:	00 00 00 94	bl	_memcpy
+    1694:	08 00 00 90	adrp	x8, _BootArgs@PAGE
+    1698:	14 01 00 f9	str	x20, [x8, _BootArgs@PAGEOFF]
+    169c:	13 00 00 90	adrp	x19, _percpu_slot_cpu_data@GOTPAGE
+    16a0:	73 02 40 f9	ldr	x19, [x19, _percpu_slot_cpu_data@GOTPAGEOFF]
+    16a4:	e0 03 13 aa	mov	x0, x19
+    16a8:	00 00 00 94	bl	_cpu_data_init
+    16ac:	00 00 80 52	mov	w0, #0x0
+    16b0:	e1 03 14 aa	mov	x1, x20
+    16b4:	00 00 00 94	bl	_PE_init_platform
+    16b8:	ff 27 00 f9	str	xzr, [sp, #0x48]
+    16bc:	01 00 00 90	adrp	x1, l_.str.2@PAGE
+    16c0:	21 00 00 91	add	x1, x1, l_.str.2@PAGEOFF
+    16c4:	e2 e3 00 91	add	x2, sp, #0x38
+    16c8:	00 00 80 d2	mov	x0, #0x0
+    16cc:	00 00 00 94	bl	_SecureDTLookupEntry
+    16d0:	1f 04 00 71	cmp	w0, #0x1
+    16d4:	a1 39 00 54	b.ne	0x1e08
+    16d8:	e0 1f 40 f9	ldr	x0, [sp, #0x38]
+    16dc:	01 00 00 90	adrp	x1, l_.str.4@PAGE
+    16e0:	21 00 00 91	add	x1, x1, l_.str.4@PAGEOFF
+    16e4:	e2 23 01 91	add	x2, sp, #0x48
+    16e8:	e3 d3 00 91	add	x3, sp, #0x34
+    16ec:	00 00 00 94	bl	_SecureDTGetProperty
+    16f0:	1f 04 00 71	cmp	w0, #0x1
+    16f4:	c1 00 00 54	b.ne	0x170c
+    16f8:	e8 27 40 f9	ldr	x8, [sp, #0x48]
+    16fc:	08 01 40 f9	ldr	x8, [x8]
+    1700:	09 00 00 90	adrp	x9, _xnu_platform_stall_value@GOTPAGE
+    1704:	29 01 40 f9	ldr	x9, [x9, _xnu_platform_stall_value@GOTPAGEOFF]
+    1708:	28 01 00 f9	str	x8, [x9]
+    170c:	20 00 80 52	mov	w0, #0x1
+    1710:	00 00 00 94	bl	_platform_stall_panic_or_spin
+    1714:	ff 1f 00 f9	str	xzr, [sp, #0x38]
+    1718:	ff 37 00 b9	str	wzr, [sp, #0x34]
+    171c:	08 00 00 90	adrp	x8, _PAGE_SHIFT_CONST@GOTPAGE
+    1720:	08 01 40 f9	ldr	x8, [x8, _PAGE_SHIFT_CONST@GOTPAGEOFF]
+    1724:	89 01 80 52	mov	w9, #0xc
+    1728:	09 01 00 b9	str	w9, [x8]
+    172c:	08 00 00 90	adrp	x8, _page_shift_user32@PAGE
+    1730:	09 01 00 b9	str	w9, [x8, _page_shift_user32@PAGEOFF]
+    1734:	00 00 00 94	bl	_ml_parse_cpu_topology
+    1738:	00 00 00 94	bl	_ml_get_boot_cpu_number
+    173c:	16 00 00 90	adrp	x22, _master_cpu@GOTPAGE
+    1740:	d6 02 40 f9	ldr	x22, [x22, _master_cpu@GOTPAGEOFF]
+    1744:	c0 02 00 b9	str	w0, [x22]
+    1748:	c0 33 f8 37	tbnz	w0, #0x1f, 0x1dc0
+    174c:	f5 03 00 aa	mov	x21, x0
+    1750:	00 00 00 94	bl	_ml_get_max_cpu_number
+    1754:	bf 02 00 6b	cmp	w21, w0
+    1758:	4c 33 00 54	b.gt	0x1dc0
+    175c:	c8 02 80 b9	ldrsw	x8, [x22]
+    1760:	68 02 00 79	strh	w8, [x19]
+    1764:	09 00 00 90	adrp	x9, _intstack_top@GOTPAGE
+    1768:	29 01 40 f9	ldr	x9, [x9, _intstack_top@GOTPAGEOFF]
+    176c:	69 26 01 a9	stp	x9, x9, [x19, #0x10]
+    1770:	09 00 00 90	adrp	x9, _excepstack_top@GOTPAGE
+    1774:	29 01 40 f9	ldr	x9, [x9, _excepstack_top@GOTPAGEOFF]
+    1778:	69 12 00 f9	str	x9, [x19, #0x20]
+    177c:	09 00 00 90	adrp	x9, _CpuDataEntries@GOTPAGE
+    1780:	29 01 40 f9	ldr	x9, [x9, _CpuDataEntries@GOTPAGEOFF]
+    1784:	28 11 08 8b	add	x8, x9, x8, lsl #4
+    1788:	8a a6 40 a9	ldp	x10, x9, [x20, #0x8]
+    178c:	29 01 13 8b	add	x9, x9, x19
+    1790:	29 01 0a cb	sub	x9, x9, x10
+    1794:	09 4d 00 a9	stp	x9, x19, [x8]
+    1798:	00 00 00 94	bl	_thread_bootstrap
+    179c:	f5 03 00 aa	mov	x21, x0
+    17a0:	a0 01 80 52	mov	w0, #0xd
+    17a4:	00 00 00 94	bl	_g0245d_paint_stage
+    17a8:	bf ce 1c a9	stp	xzr, x19, [x21, #0x1c8]
+    17ac:	e0 03 15 aa	mov	x0, x21
+    17b0:	00 00 00 94	bl	_machine_set_current_thread
+    17b4:	bf da 01 b9	str	wzr, [x21, #0x1d8]
+    17b8:	00 00 00 94	bl	_cpu_bootstrap
+    17bc:	c0 01 80 52	mov	w0, #0xe
+    17c0:	00 00 00 94	bl	_g0245d_paint_stage
+    17c4:	00 00 00 94	bl	_rtclock_early_init
+    17c8:	e0 01 80 52	mov	w0, #0xf
+    17cc:	00 00 00 94	bl	_g0245d_paint_stage
+    17d0:	00 00 00 90	adrp	x0, l_.str.6@PAGE
+    17d4:	00 00 00 91	add	x0, x0, l_.str.6@PAGEOFF
+    17d8:	00 00 00 94	bl	_kernel_debug_string_early
+    17dc:	00 02 80 52	mov	w0, #0x10
+    17e0:	00 00 00 94	bl	_g0245d_paint_stage
+    17e4:	00 00 00 94	bl	_kernel_startup_bootstrap
+    17e8:	20 02 80 52	mov	w0, #0x11
+    17ec:	00 00 00 94	bl	_g0245d_paint_stage
+    17f0:	00 00 00 94	bl	_timer_call_init
+    17f4:	00 00 00 94	bl	_cpu_init
+    17f8:	00 00 00 94	bl	_processor_bootstrap
+    17fc:	40 02 80 52	mov	w0, #0x12
+    1800:	00 00 00 94	bl	_g0245d_paint_stage
+    1804:	00 00 00 90	adrp	x0, l_.str.7@PAGE
+    1808:	00 00 00 91	add	x0, x0, l_.str.7@PAGEOFF
+    180c:	e1 13 01 91	add	x1, sp, #0x44
+    1810:	82 00 80 52	mov	w2, #0x4
+    1814:	00 00 00 94	bl	_PE_parse_boot_argn
+    1818:	e8 47 40 b9	ldr	w8, [sp, #0x44]
+    181c:	08 ad 6c d3	lsl	x8, x8, #20
+    1820:	1f 00 00 71	cmp	w0, #0x0
+    1824:	f3 03 88 9a	csel	x19, xzr, x8, eq
+    1828:	60 02 80 52	mov	w0, #0x13
+    182c:	00 00 00 94	bl	_g0245d_paint_stage
+    1830:	01 00 00 90	adrp	x1, _xcall_ack_timeout_abstime@PAGE
+    1834:	21 00 00 91	add	x1, x1, _xcall_ack_timeout_abstime@PAGEOFF
+    1838:	00 80 97 d2	mov	x0, #0xbc00
+    183c:	00 b4 ac f2	movk	x0, #0x65a0, lsl #16
+    1840:	20 00 c0 f2	movk	x0, #0x1, lsl #32
+    1844:	00 00 00 94	bl	_nanoseconds_to_absolutetime
+    1848:	80 02 80 52	mov	w0, #0x14
+    184c:	00 00 00 94	bl	_g0245d_paint_stage
+    1850:	00 00 00 90	adrp	x0, l_.str.8@PAGE
+    1854:	00 00 00 91	add	x0, x0, l_.str.8@PAGEOFF
+    1858:	01 00 00 90	adrp	x1, _force_immediate_debug_halt@GOTPAGE
+    185c:	21 00 40 f9	ldr	x1, [x1, _force_immediate_debug_halt@GOTPAGEOFF]
+    1860:	82 00 80 52	mov	w2, #0x4
+    1864:	00 00 00 94	bl	_PE_parse_boot_argn
+    1868:	a0 02 80 52	mov	w0, #0x15
+    186c:	00 00 00 94	bl	_g0245d_paint_stage
+    1870:	e0 03 13 aa	mov	x0, x19
+    1874:	e1 03 14 aa	mov	x1, x20
+    1878:	00 00 00 94	bl	_arm_vm_init
+    187c:	15 00 00 90	adrp	x21, _g0345d_fb_va@PAGE
+    1880:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1884:	28 01 00 b4	cbz	x8, 0x18a8
+    1888:	08 f1 44 91	add	x8, x8, #0x13c, lsl #12
+    188c:	0a 01 1a 91	add	x10, x8, #0x680
+    1890:	e8 53 86 92	mov	x8, #-0x32a0
+    1894:	09 00 80 12	mov	w9, #-0x1
+    1898:	49 01 00 b9	str	w9, [x10]
+    189c:	4a 11 00 91	add	x10, x10, #0x4
+    18a0:	08 05 00 b1	adds	x8, x8, #0x1
+    18a4:	a3 ff ff 54	b.lo	0x1898
+    18a8:	08 00 00 90	adrp	x8, _debug_boot_arg@GOTPAGE
+    18ac:	08 01 40 f9	ldr	x8, [x8, _debug_boot_arg@GOTPAGEOFF]
+    18b0:	08 01 40 b9	ldr	w8, [x8]
+    18b4:	48 00 00 34	cbz	w8, 0x18bc
+    18b8:	00 00 00 94	bl	_patch_low_glo
+    18bc:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    18c0:	28 01 00 b4	cbz	x8, 0x18e4
+    18c4:	08 ed 45 91	add	x8, x8, #0x17b, lsl #12
+    18c8:	0a 01 2c 91	add	x10, x8, #0xb00
+    18cc:	e8 53 86 92	mov	x8, #-0x32a0
+    18d0:	09 00 80 12	mov	w9, #-0x1
+    18d4:	49 01 00 b9	str	w9, [x10]
+    18d8:	4a 11 00 91	add	x10, x10, #0x4
+    18dc:	08 05 00 b1	adds	x8, x8, #0x1
+    18e0:	a3 ff ff 54	b.lo	0x18d4
+    18e4:	00 00 00 94	bl	_PE_consistent_debug_inherit
+    18e8:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    18ec:	28 01 00 b4	cbz	x8, 0x1910
+    18f0:	08 6d 46 91	add	x8, x8, #0x19b, lsl #12
+    18f4:	0a 01 15 91	add	x10, x8, #0x540
+    18f8:	e8 53 86 92	mov	x8, #-0x32a0
+    18fc:	09 00 80 12	mov	w9, #-0x1
+    1900:	49 01 00 b9	str	w9, [x10]
+    1904:	4a 11 00 91	add	x10, x10, #0x4
+    1908:	08 05 00 b1	adds	x8, x8, #0x1
+    190c:	a3 ff ff 54	b.lo	0x1900
+    1910:	00 00 00 94	bl	_serial_init
+    1914:	f3 03 00 aa	mov	x19, x0
+    1918:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    191c:	28 01 00 b4	cbz	x8, 0x1940
+    1920:	08 e9 46 91	add	x8, x8, #0x1ba, lsl #12
+    1924:	0a 01 3e 91	add	x10, x8, #0xf80
+    1928:	e8 53 86 92	mov	x8, #-0x32a0
+    192c:	09 00 80 12	mov	w9, #-0x1
+    1930:	49 01 00 b9	str	w9, [x10]
+    1934:	4a 11 00 91	add	x10, x10, #0x4
+    1938:	08 05 00 b1	adds	x8, x8, #0x1
+    193c:	a3 ff ff 54	b.lo	0x1930
+    1940:	80 00 80 52	mov	w0, #0x4
+    1944:	00 00 00 94	bl	_kernel_startup_initialize_upto
+    1948:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    194c:	28 01 00 b4	cbz	x8, 0x1970
+    1950:	08 69 47 91	add	x8, x8, #0x1da, lsl #12
+    1954:	0a 01 27 91	add	x10, x8, #0x9c0
+    1958:	e8 53 86 92	mov	x8, #-0x32a0
+    195c:	09 00 80 12	mov	w9, #-0x1
+    1960:	49 01 00 b9	str	w9, [x10]
+    1964:	4a 11 00 91	add	x10, x10, #0x4
+    1968:	08 05 00 b1	adds	x8, x8, #0x1
+    196c:	a3 ff ff 54	b.lo	0x1960
+    1970:	00 00 00 90	adrp	x0, l_.str.9@PAGE
+    1974:	00 00 00 91	add	x0, x0, l_.str.9@PAGEOFF
+    1978:	00 00 00 94	bl	_kprintf
+    197c:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1980:	28 01 00 b4	cbz	x8, 0x19a4
+    1984:	08 e9 47 91	add	x8, x8, #0x1fa, lsl #12
+    1988:	0a 01 10 91	add	x10, x8, #0x400
+    198c:	e8 53 86 92	mov	x8, #-0x32a0
+    1990:	09 00 80 12	mov	w9, #-0x1
+    1994:	49 01 00 b9	str	w9, [x10]
+    1998:	4a 11 00 91	add	x10, x10, #0x4
+    199c:	08 05 00 b1	adds	x8, x8, #0x1
+    19a0:	a3 ff ff 54	b.lo	0x1994
+    19a4:	14 00 00 90	adrp	x20, _serialmode@GOTPAGE
+    19a8:	94 02 40 f9	ldr	x20, [x20, _serialmode@GOTPAGEOFF]
+    19ac:	9f 02 00 b9	str	wzr, [x20]
+    19b0:	00 00 00 90	adrp	x0, l_.str.10@PAGE
+    19b4:	00 00 00 91	add	x0, x0, l_.str.10@PAGEOFF
+    19b8:	e1 03 14 aa	mov	x1, x20
+    19bc:	82 00 80 52	mov	w2, #0x4
+    19c0:	00 00 00 94	bl	_PE_parse_boot_argn
+    19c4:	a0 05 00 34	cbz	w0, 0x1a78
+    19c8:	88 02 40 b9	ldr	w8, [x20]
+    19cc:	e8 03 00 f9	str	x8, [sp]
+    19d0:	00 00 00 90	adrp	x0, l_.str.11@PAGE
+    19d4:	00 00 00 91	add	x0, x0, l_.str.11@PAGEOFF
+    19d8:	00 00 00 94	bl	_kprintf
+    19dc:	88 02 40 b9	ldr	w8, [x20]
+    19e0:	09 11 04 53	ubfx	w9, w8, #4, #1
+    19e4:	0a 00 00 90	adrp	x10, _disable_iolog_serial_output@GOTPAGE
+    19e8:	4a 01 40 f9	ldr	x10, [x10, _disable_iolog_serial_output@GOTPAGEOFF]
+    19ec:	49 01 00 39	strb	w9, [x10]
+    19f0:	09 15 05 53	ubfx	w9, w8, #5, #1
+    19f4:	0a 00 00 90	adrp	x10, _enable_dklog_serial_output@GOTPAGE
+    19f8:	4a 01 40 f9	ldr	x10, [x10, _enable_dklog_serial_output@GOTPAGEOFF]
+    19fc:	49 01 00 39	strb	w9, [x10]
+    1a00:	09 01 1e 12	and	w9, w8, #0x4
+    1a04:	e9 2b 00 b9	str	w9, [sp, #0x28]
+    1a08:	48 01 10 37	tbnz	w8, #0x2, 0x1a30
+    1a0c:	00 00 00 90	adrp	x0, l_.str.12@PAGE
+    1a10:	00 00 00 91	add	x0, x0, l_.str.12@PAGEOFF
+    1a14:	e1 a3 00 91	add	x1, sp, #0x28
+    1a18:	82 00 80 52	mov	w2, #0x4
+    1a1c:	00 00 00 94	bl	_PE_parse_boot_argn
+    1a20:	20 01 00 34	cbz	w0, 0x1a44
+    1a24:	e8 2b 40 b9	ldr	w8, [sp, #0x28]
+    1a28:	e8 00 00 34	cbz	w8, 0x1a44
+    1a2c:	88 02 40 b9	ldr	w8, [x20]
+    1a30:	08 01 1e 32	orr	w8, w8, #0x4
+    1a34:	88 02 00 b9	str	w8, [x20]
+    1a38:	00 00 00 90	adrp	x0, l_.str.13@PAGE
+    1a3c:	00 00 00 91	add	x0, x0, l_.str.13@PAGEOFF
+    1a40:	00 00 00 94	bl	_kprintf
+    1a44:	88 02 40 b9	ldr	w8, [x20]
+    1a48:	08 01 30 36	tbz	w8, #0x6, 0x1a68
+    1a4c:	28 01 08 37	tbnz	w8, #0x1, 0x1a70
+    1a50:	48 00 80 52	mov	w8, #0x2
+    1a54:	09 08 80 52	mov	w9, #0x40
+    1a58:	e9 23 00 a9	stp	x9, x8, [sp]
+    1a5c:	00 00 00 90	adrp	x0, l_.str.14@PAGE
+    1a60:	00 00 00 91	add	x0, x0, l_.str.14@PAGEOFF
+    1a64:	00 00 00 94	bl	_kprintf
+    1a68:	00 00 80 52	mov	w0, #0x0
+    1a6c:	02 00 00 14	b	0x1a74
+    1a70:	20 00 80 52	mov	w0, #0x1
+    1a74:	00 00 00 94	bl	_serial_set_on_demand
+    1a78:	40 00 80 52	mov	w0, #0x2
+    1a7c:	00 00 00 94	bl	_kern_feature_override
+    1a80:	08 00 00 90	adrp	x8, _serialmode@GOTPAGE
+    1a84:	08 01 40 f9	ldr	x8, [x8, _serialmode@GOTPAGEOFF]
+    1a88:	40 01 00 35	cbnz	w0, 0x1ab0
+    1a8c:	08 01 40 b9	ldr	w8, [x8]
+    1a90:	28 01 00 36	tbz	w8, #0x0, 0x1ab4
+    1a94:	13 01 00 34	cbz	w19, 0x1ab4
+    1a98:	08 00 00 90	adrp	x8, _serial_console_enabled@PAGE
+    1a9c:	29 00 80 52	mov	w9, #0x1
+    1aa0:	09 01 00 39	strb	w9, [x8, _serial_console_enabled@PAGEOFF]
+    1aa4:	00 00 00 94	bl	_switch_to_serial_console
+    1aa8:	08 00 00 90	adrp	x8, _disableConsoleOutput@GOTPAGE
+    1aac:	08 01 40 f9	ldr	x8, [x8, _disableConsoleOutput@GOTPAGEOFF]
+    1ab0:	1f 01 00 b9	str	wzr, [x8]
+    1ab4:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1ab8:	28 01 00 b4	cbz	x8, 0x1adc
+    1abc:	08 65 48 91	add	x8, x8, #0x219, lsl #12
+    1ac0:	0a 01 39 91	add	x10, x8, #0xe40
+    1ac4:	e8 53 86 92	mov	x8, #-0x32a0
+    1ac8:	09 00 80 12	mov	w9, #-0x1
+    1acc:	49 01 00 b9	str	w9, [x10]
+    1ad0:	4a 11 00 91	add	x10, x10, #0x4
+    1ad4:	08 05 00 b1	adds	x8, x8, #0x1
+    1ad8:	a3 ff ff 54	b.lo	0x1acc
+    1adc:	00 00 00 94	bl	_PE_create_console
+    1ae0:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1ae4:	28 01 00 b4	cbz	x8, 0x1b08
+    1ae8:	08 e5 48 91	add	x8, x8, #0x239, lsl #12
+    1aec:	0a 01 22 91	add	x10, x8, #0x880
+    1af0:	e8 53 86 92	mov	x8, #-0x32a0
+    1af4:	09 00 80 12	mov	w9, #-0x1
+    1af8:	49 01 00 b9	str	w9, [x10]
+    1afc:	4a 11 00 91	add	x10, x10, #0x4
+    1b00:	08 05 00 b1	adds	x8, x8, #0x1
+    1b04:	a3 ff ff 54	b.lo	0x1af8
+    1b08:	00 00 00 94	bl	_switch_to_video_console
+    1b0c:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1b10:	28 01 00 b4	cbz	x8, 0x1b34
+    1b14:	08 65 49 91	add	x8, x8, #0x259, lsl #12
+    1b18:	0a 01 0b 91	add	x10, x8, #0x2c0
+    1b1c:	e8 53 86 92	mov	x8, #-0x32a0
+    1b20:	09 00 80 12	mov	w9, #-0x1
+    1b24:	49 01 00 b9	str	w9, [x10]
+    1b28:	4a 11 00 91	add	x10, x10, #0x4
+    1b2c:	08 05 00 b1	adds	x8, x8, #0x1
+    1b30:	a3 ff ff 54	b.lo	0x1b24
+    1b34:	00 00 80 52	mov	w0, #0x0
+    1b38:	00 00 00 94	bl	_PE_init_printf
+    1b3c:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1b40:	28 01 00 b4	cbz	x8, 0x1b64
+    1b44:	08 e1 49 91	add	x8, x8, #0x278, lsl #12
+    1b48:	0a 01 34 91	add	x10, x8, #0xd00
+    1b4c:	e8 53 86 92	mov	x8, #-0x32a0
+    1b50:	09 00 80 12	mov	w9, #-0x1
+    1b54:	49 01 00 b9	str	w9, [x10]
+    1b58:	4a 11 00 91	add	x10, x10, #0x4
+    1b5c:	08 05 00 b1	adds	x8, x8, #0x1
+    1b60:	a3 ff ff 54	b.lo	0x1b54
+    1b64:	20 00 80 52	mov	w0, #0x1
+    1b68:	00 00 00 94	bl	_cpu_machine_idle_init
+    1b6c:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1b70:	28 01 00 b4	cbz	x8, 0x1b94
+    1b74:	08 61 4a 91	add	x8, x8, #0x298, lsl #12
+    1b78:	0a 01 1d 91	add	x10, x8, #0x740
+    1b7c:	e8 53 86 92	mov	x8, #-0x32a0
+    1b80:	09 00 80 12	mov	w9, #-0x1
+    1b84:	49 01 00 b9	str	w9, [x10]
+    1b88:	4a 11 00 91	add	x10, x10, #0x4
+    1b8c:	08 05 00 b1	adds	x8, x8, #0x1
+    1b90:	a3 ff ff 54	b.lo	0x1b84
+    1b94:	01 00 00 90	adrp	x1, _percpu_slot_cpu_data@GOTPAGE
+    1b98:	21 00 40 f9	ldr	x1, [x1, _percpu_slot_cpu_data@GOTPAGEOFF]
+    1b9c:	20 00 80 52	mov	w0, #0x1
+    1ba0:	00 00 00 94	bl	_PE_init_platform
+    1ba4:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1ba8:	28 01 00 b4	cbz	x8, 0x1bcc
+    1bac:	08 e1 4a 91	add	x8, x8, #0x2b8, lsl #12
+    1bb0:	0a 01 06 91	add	x10, x8, #0x180
+    1bb4:	e8 53 86 92	mov	x8, #-0x32a0
+    1bb8:	09 00 80 12	mov	w9, #-0x1
+    1bbc:	49 01 00 b9	str	w9, [x10]
+    1bc0:	4a 11 00 91	add	x10, x10, #0x4
+    1bc4:	08 05 00 b1	adds	x8, x8, #0x1
+    1bc8:	a3 ff ff 54	b.lo	0x1bbc
+    1bcc:	08 00 00 90	adrp	x8, _cpu_config_correct@GOTPAGE
+    1bd0:	08 01 40 f9	ldr	x8, [x8, _cpu_config_correct@GOTPAGEOFF]
+    1bd4:	08 01 40 39	ldrb	w8, [x8]
+    1bd8:	c8 11 00 36	tbz	w8, #0x0, 0x1e10
+    1bdc:	00 00 00 94	bl	_ml_map_cpu_pio
+    1be0:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1be4:	28 01 00 b4	cbz	x8, 0x1c08
+    1be8:	08 5d 4b 91	add	x8, x8, #0x2d7, lsl #12
+    1bec:	0a 01 2f 91	add	x10, x8, #0xbc0
+    1bf0:	e8 53 86 92	mov	x8, #-0x32a0
+    1bf4:	09 00 80 12	mov	w9, #-0x1
+    1bf8:	49 01 00 b9	str	w9, [x10]
+    1bfc:	4a 11 00 91	add	x10, x10, #0x4
+    1c00:	08 05 00 b1	adds	x8, x8, #0x1
+    1c04:	a3 ff ff 54	b.lo	0x1bf8
+    1c08:	20 00 80 52	mov	w0, #0x1
+    1c0c:	00 00 00 94	bl	_cpu_timebase_init
+    1c10:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1c14:	28 01 00 b4	cbz	x8, 0x1c38
+    1c18:	08 dd 4b 91	add	x8, x8, #0x2f7, lsl #12
+    1c1c:	0a 01 18 91	add	x10, x8, #0x600
+    1c20:	e8 53 86 92	mov	x8, #-0x32a0
+    1c24:	09 00 80 12	mov	w9, #-0x1
+    1c28:	49 01 00 b9	str	w9, [x10]
+    1c2c:	4a 11 00 91	add	x10, x10, #0x4
+    1c30:	08 05 00 b1	adds	x8, x8, #0x1
+    1c34:	a3 ff ff 54	b.lo	0x1c28
+    1c38:	00 00 00 94	bl	_kptimer_curcpu_up
+    1c3c:	00 00 00 94	bl	_PE_init_cpu
+    1c40:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1c44:	28 01 00 b4	cbz	x8, 0x1c68
+    1c48:	08 5d 4c 91	add	x8, x8, #0x317, lsl #12
+    1c4c:	0a 01 01 91	add	x10, x8, #0x40
+    1c50:	e8 53 86 92	mov	x8, #-0x32a0
+    1c54:	09 00 80 12	mov	w9, #-0x1
+    1c58:	49 01 00 b9	str	w9, [x10]
+    1c5c:	4a 11 00 91	add	x10, x10, #0x4
+    1c60:	08 05 00 b1	adds	x8, x8, #0x1
+    1c64:	a3 ff ff 54	b.lo	0x1c58
+    1c68:	20 00 80 52	mov	w0, #0x1
+    1c6c:	00 00 00 94	bl	_fiq_context_init
+    1c70:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1c74:	28 01 00 b4	cbz	x8, 0x1c98
+    1c78:	08 d9 4c 91	add	x8, x8, #0x336, lsl #12
+    1c7c:	0a 01 2a 91	add	x10, x8, #0xa80
+    1c80:	e8 53 86 92	mov	x8, #-0x32a0
+    1c84:	09 00 80 12	mov	w9, #-0x1
+    1c88:	49 01 00 b9	str	w9, [x10]
+    1c8c:	4a 11 00 91	add	x10, x10, #0x4
+    1c90:	08 05 00 b1	adds	x8, x8, #0x1
+    1c94:	a3 ff ff 54	b.lo	0x1c88
+    1c98:	ff 7f 02 a9	stp	xzr, xzr, [sp, #0x20]
+    1c9c:	01 00 00 90	adrp	x1, l_.str.2@PAGE
+    1ca0:	21 00 00 91	add	x1, x1, l_.str.2@PAGEOFF
+    1ca4:	e2 e3 00 91	add	x2, sp, #0x38
+    1ca8:	00 00 80 d2	mov	x0, #0x0
+    1cac:	00 00 00 94	bl	_SecureDTLookupEntry
+    1cb0:	1f 04 00 71	cmp	w0, #0x1
+    1cb4:	c1 0b 00 54	b.ne	0x1e2c
+    1cb8:	e0 1f 40 f9	ldr	x0, [sp, #0x38]
+    1cbc:	01 00 00 90	adrp	x1, l_.str.16@PAGE
+    1cc0:	21 00 00 91	add	x1, x1, l_.str.16@PAGEOFF
+    1cc4:	e2 a3 00 91	add	x2, sp, #0x28
+    1cc8:	e3 d3 00 91	add	x3, sp, #0x34
+    1ccc:	00 00 00 94	bl	_SecureDTGetProperty
+    1cd0:	1f 04 00 71	cmp	w0, #0x1
+    1cd4:	01 0c 00 54	b.ne	0x1e54
+    1cd8:	e0 1f 40 f9	ldr	x0, [sp, #0x38]
+    1cdc:	01 00 00 90	adrp	x1, l_.str.18@PAGE
+    1ce0:	21 00 00 91	add	x1, x1, l_.str.18@PAGEOFF
+    1ce4:	e2 83 00 91	add	x2, sp, #0x20
+    1ce8:	e3 d3 00 91	add	x3, sp, #0x34
+    1cec:	00 00 00 94	bl	_SecureDTGetProperty
+    1cf0:	1f 04 00 71	cmp	w0, #0x1
+    1cf4:	41 0c 00 54	b.ne	0x1e7c
+    1cf8:	e8 17 40 f9	ldr	x8, [sp, #0x28]
+    1cfc:	08 01 40 f9	ldr	x8, [x8]
+    1d00:	09 00 00 90	adrp	x9, _gDramBase@PAGE
+    1d04:	28 01 00 f9	str	x8, [x9, _gDramBase@PAGEOFF]
+    1d08:	e8 13 40 f9	ldr	x8, [sp, #0x20]
+    1d0c:	08 01 40 f9	ldr	x8, [x8]
+    1d10:	09 00 00 90	adrp	x9, _gDramSize@PAGE
+    1d14:	28 01 00 f9	str	x8, [x9, _gDramSize@PAGEOFF]
+    1d18:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1d1c:	28 01 00 b4	cbz	x8, 0x1d40
+    1d20:	08 59 4d 91	add	x8, x8, #0x356, lsl #12
+    1d24:	0a 01 13 91	add	x10, x8, #0x4c0
+    1d28:	e8 53 86 92	mov	x8, #-0x32a0
+    1d2c:	09 00 80 12	mov	w9, #-0x1
+    1d30:	49 01 00 b9	str	w9, [x10]
+    1d34:	4a 11 00 91	add	x10, x10, #0x4
+    1d38:	08 05 00 b1	adds	x8, x8, #0x1
+    1d3c:	a3 ff ff 54	b.lo	0x1d30
+    1d40:	00 00 00 94	bl	_early_random
+    1d44:	08 dc 70 92	and	x8, x0, #0xffffffffffff00ff
+    1d48:	09 00 00 90	adrp	x9, ___stack_chk_guard@GOTPAGE
+    1d4c:	29 01 40 f9	ldr	x9, [x9, ___stack_chk_guard@GOTPAGEOFF]
+    1d50:	28 01 00 f9	str	x8, [x9]
+    1d54:	a8 02 40 f9	ldr	x8, [x21, _g0345d_fb_va@PAGEOFF]
+    1d58:	28 01 00 b4	cbz	x8, 0x1d7c
+    1d5c:	08 d5 4d 91	add	x8, x8, #0x375, lsl #12
+    1d60:	0a 01 3c 91	add	x10, x8, #0xf00
+    1d64:	e8 53 86 92	mov	x8, #-0x32a0
+    1d68:	09 00 80 12	mov	w9, #-0x1
+    1d6c:	49 01 00 b9	str	w9, [x10]
+    1d70:	4a 11 00 91	add	x10, x10, #0x4
+    1d74:	08 05 00 b1	adds	x8, x8, #0x1
+    1d78:	a3 ff ff 54	b.lo	0x1d6c
+    1d7c:	00 00 00 90	adrp	x0, _const_boot_args@PAGE
+    1d80:	00 00 00 91	add	x0, x0, _const_boot_args@PAGEOFF
+    1d84:	00 00 00 94	bl	_machine_startup
+    1d88:	a8 83 5a f8	ldur	x8, [x29, #-0x58]
+    1d8c:	09 00 00 90	adrp	x9, ___stack_chk_guard@GOTPAGE
+    1d90:	29 01 40 f9	ldr	x9, [x9, ___stack_chk_guard@GOTPAGEOFF]
+    1d94:	29 01 40 f9	ldr	x9, [x9]
+    1d98:	3f 01 08 eb	cmp	x9, x8
+    1d9c:	41 08 00 54	b.ne	0x1ea4
+    1da0:	fd 7b 4c a9	ldp	x29, x30, [sp, #0xc0]
+    1da4:	f4 4f 4b a9	ldp	x20, x19, [sp, #0xb0]
+    1da8:	f6 57 4a a9	ldp	x22, x21, [sp, #0xa0]
+    1dac:	f8 5f 49 a9	ldp	x24, x23, [sp, #0x90]
+    1db0:	fa 67 48 a9	ldp	x26, x25, [sp, #0x80]
+    1db4:	fc 6f 47 a9	ldp	x28, x27, [sp, #0x70]
+    1db8:	ff 43 03 91	add	sp, sp, #0xd0
+    1dbc:	c0 03 5f d6	ret
+    1dc0:	00 00 00 90	adrp	x0, l_.str@PAGE
+    1dc4:	00 00 00 91	add	x0, x0, l_.str@PAGEOFF
+    1dc8:	02 00 00 90	adrp	x2, l_.str.5@PAGE
+    1dcc:	42 00 00 91	add	x2, x2, l_.str.5@PAGEOFF
+    1dd0:	61 58 80 52	mov	w1, #0x2c3
+    1dd4:	00 00 00 94	bl	_Assert
+    1dd8:	00 00 00 90	adrp	x0, l_.str@PAGE
+    1ddc:	00 00 00 91	add	x0, x0, l_.str@PAGEOFF
+    1de0:	02 00 00 90	adrp	x2, l_.str.26@PAGE
+    1de4:	42 00 00 91	add	x2, x2, l_.str.26@PAGEOFF
+    1de8:	61 3b 80 52	mov	w1, #0x1db
+    1dec:	00 00 00 94	bl	_Assert
+    1df0:	00 00 00 90	adrp	x0, l_.str@PAGE
+    1df4:	00 00 00 91	add	x0, x0, l_.str@PAGEOFF
+    1df8:	02 00 00 90	adrp	x2, l_.str.25@PAGE
+    1dfc:	42 00 00 91	add	x2, x2, l_.str.25@PAGEOFF
+    1e00:	81 3c 80 52	mov	w1, #0x1e4
+    1e04:	00 00 00 94	bl	_Assert
+    1e08:	c8 50 80 52	mov	w8, #0x286
+    1e0c:	09 00 00 14	b	0x1e30
+    1e10:	08 00 00 90	adrp	x8, l_.str@PAGE
+    1e14:	08 01 00 91	add	x8, x8, l_.str@PAGEOFF
+    1e18:	09 73 80 52	mov	w9, #0x398
+    1e1c:	e8 27 00 a9	stp	x8, x9, [sp]
+    1e20:	00 00 00 90	adrp	x0, l_.str.15@PAGE
+    1e24:	00 00 00 91	add	x0, x0, l_.str.15@PAGEOFF
+    1e28:	00 00 00 94	bl	_panic
+    1e2c:	e8 77 80 52	mov	w8, #0x3bf
+    1e30:	09 00 00 90	adrp	x9, l_.str@PAGE
+    1e34:	29 01 00 91	add	x9, x9, l_.str@PAGEOFF
+    1e38:	0a 00 00 90	adrp	x10, l___FUNCTION__.arm_init@PAGE
+    1e3c:	4a 01 00 91	add	x10, x10, l___FUNCTION__.arm_init@PAGEOFF
+    1e40:	e9 a3 00 a9	stp	x9, x8, [sp, #0x8]
+    1e44:	ea 03 00 f9	str	x10, [sp]
+    1e48:	00 00 00 90	adrp	x0, l_.str.3@PAGE
+    1e4c:	00 00 00 91	add	x0, x0, l_.str.3@PAGEOFF
+    1e50:	00 00 00 94	bl	_panic
+    1e54:	68 78 80 52	mov	w8, #0x3c3
+    1e58:	09 00 00 90	adrp	x9, l_.str@PAGE
+    1e5c:	29 01 00 91	add	x9, x9, l_.str@PAGEOFF
+    1e60:	0a 00 00 90	adrp	x10, l___FUNCTION__.arm_init@PAGE
+    1e64:	4a 01 00 91	add	x10, x10, l___FUNCTION__.arm_init@PAGEOFF
+    1e68:	e9 a3 00 a9	stp	x9, x8, [sp, #0x8]
+    1e6c:	ea 03 00 f9	str	x10, [sp]
+    1e70:	00 00 00 90	adrp	x0, l_.str.17@PAGE
+    1e74:	00 00 00 91	add	x0, x0, l_.str.17@PAGEOFF
+    1e78:	00 00 00 94	bl	_panic
+    1e7c:	e8 78 80 52	mov	w8, #0x3c7
+    1e80:	09 00 00 90	adrp	x9, l_.str@PAGE
+    1e84:	29 01 00 91	add	x9, x9, l_.str@PAGEOFF
+    1e88:	0a 00 00 90	adrp	x10, l___FUNCTION__.arm_init@PAGE
+    1e8c:	4a 01 00 91	add	x10, x10, l___FUNCTION__.arm_init@PAGEOFF
+    1e90:	e9 a3 00 a9	stp	x9, x8, [sp, #0x8]
+    1e94:	ea 03 00 f9	str	x10, [sp]
+    1e98:	00 00 00 90	adrp	x0, l_.str.19@PAGE
+    1e9c:	00 00 00 91	add	x0, x0, l_.str.19@PAGEOFF
+    1ea0:	00 00 00 94	bl	_panic
+    1ea4:	00 00 00 94	bl	___stack_chk_fail
+_arm_init_cpu:
+    1ea8:	ff 03 01 d1	sub	sp, sp, #0x40
+    1eac:	f6 57 01 a9	stp	x22, x21, [sp, #0x10]
+    1eb0:	f4 4f 02 a9	stp	x20, x19, [sp, #0x20]
+    1eb4:	fd 7b 03 a9	stp	x29, x30, [sp, #0x30]
+    1eb8:	fd c3 00 91	add	x29, sp, #0x30
+    1ebc:	f3 03 00 aa	mov	x19, x0
+    1ec0:	00 00 00 94	bl	_configure_timer_apple_regs
+    1ec4:	00 00 80 52	mov	w0, #0x0
+    1ec8:	00 00 00 94	bl	_configure_misc_apple_regs
+    1ecc:	68 06 40 79	ldrh	w8, [x19, #0x2]
+    1ed0:	08 79 14 12	and	w8, w8, #0xfffff7ff
+    1ed4:	68 06 00 79	strh	w8, [x19, #0x2]
+    1ed8:	60 16 40 f9	ldr	x0, [x19, #0x28]
+    1edc:	00 00 00 94	bl	_machine_set_current_thread
+    1ee0:	00 00 00 94	bl	_wfe_timeout_init
+    1ee4:	00 00 00 94	bl	_pmap_clear_user_ttb
+    1ee8:	1f 83 08 d5	tlbi	vmalle1is
+    1eec:	9f 3b 03 d5	dsb	ish
+    1ef0:	df 3f 03 d5	isb
+    1ef4:	00 00 80 52	mov	w0, #0x0
+    1ef8:	00 00 00 94	bl	_cpu_machine_idle_init
+    1efc:	00 00 00 94	bl	_cpu_init
+    1f00:	00 00 80 52	mov	w0, #0x0
+    1f04:	00 00 00 94	bl	_cpu_timebase_init
+    1f08:	00 00 00 94	bl	_kptimer_curcpu_up
+    1f0c:	15 00 00 90	adrp	x21, _percpu_slot_cpu_data@GOTPAGE
+    1f10:	b5 02 40 f9	ldr	x21, [x21, _percpu_slot_cpu_data@GOTPAGEOFF]
+    1f14:	7f 02 15 eb	cmp	x19, x21
+    1f18:	c1 00 00 54	b.ne	0x1f30
+    1f1c:	00 00 00 94	bl	_serial_init
+    1f20:	20 00 80 52	mov	w0, #0x1
+    1f24:	01 00 80 d2	mov	x1, #0x0
+    1f28:	00 00 00 94	bl	_PE_init_platform
+    1f2c:	00 00 00 94	bl	_commpage_update_timebase
+    1f30:	00 00 00 94	bl	_PE_init_cpu
+    1f34:	20 00 80 52	mov	w0, #0x1
+    1f38:	00 00 00 94	bl	_fiq_context_init
+    1f3c:	08 00 80 92	mov	x8, #-0x1
+    1f40:	68 82 00 f9	str	x8, [x19, #0x100]
+    1f44:	00 00 00 94	bl	_timer_resync_deadlines
+    1f48:	08 00 00 90	adrp	x8, _percpu_slot_processor@GOTPAGE
+    1f4c:	08 01 40 f9	ldr	x8, [x8, _percpu_slot_processor@GOTPAGEOFF]
+    1f50:	08 01 15 cb	sub	x8, x8, x21
+    1f54:	60 02 08 8b	add	x0, x19, x8
+    1f58:	21 00 80 52	mov	w1, #0x1
+    1f5c:	00 00 00 94	bl	_processor_should_kprintf
+    1f60:	f4 03 00 aa	mov	x20, x0
+    1f64:	00 00 00 94	bl	_PE_arm_debug_enable_trace
+    1f68:	d4 00 00 34	cbz	w20, 0x1f80
+    1f6c:	68 02 80 79	ldrsh	x8, [x19]
+    1f70:	e8 03 00 f9	str	x8, [sp]
+    1f74:	00 00 00 90	adrp	x0, l_.str.20@PAGE
+    1f78:	00 00 00 91	add	x0, x0, l_.str.20@PAGEOFF
+    1f7c:	00 00 00 94	bl	_kprintf
+    1f80:	7f 02 15 eb	cmp	x19, x21
+    1f84:	41 01 00 54	b.ne	0x1fac
+    1f88:	13 00 00 90	adrp	x19, _kdebug_enable@GOTPAGE
+    1f8c:	73 02 40 f9	ldr	x19, [x19, _kdebug_enable@GOTPAGEOFF]
+    1f90:	68 02 40 b9	ldr	w8, [x19]
+    1f94:	a8 00 00 35	cbnz	w8, 0x1fa8
+    1f98:	00 00 00 94	bl	_kdebug_wake
+    1f9c:	68 02 40 b9	ldr	w8, [x19]
+    1fa0:	1f 79 1c 72	tst	w8, #0xfffffff7
+    1fa4:	01 01 00 54	b.ne	0x1fc4
+    1fa8:	00 00 00 94	bl	_bootprofile_wake_from_sleep
+    1fac:	00 00 80 d2	mov	x0, #0x0
+    1fb0:	fd 7b 43 a9	ldp	x29, x30, [sp, #0x30]
+    1fb4:	f4 4f 42 a9	ldp	x20, x19, [sp, #0x20]
+    1fb8:	f6 57 41 a9	ldp	x22, x21, [sp, #0x10]
+    1fbc:	ff 03 01 91	add	sp, sp, #0x40
+    1fc0:	00 00 00 14	b	_slave_main
+    1fc4:	f3 03 00 aa	mov	x19, x0
+    1fc8:	00 00 00 94	bl	_mach_absolute_time
+    1fcc:	01 00 13 cb	sub	x1, x0, x19
+    1fd0:	80 07 80 52	mov	w0, #0x3c
+    1fd4:	60 a6 a0 72	movk	w0, #0x533, lsl #16
+    1fd8:	02 00 80 d2	mov	x2, #0x0
+    1fdc:	03 00 80 d2	mov	x3, #0x0
+    1fe0:	04 00 80 d2	mov	x4, #0x0
+    1fe4:	05 00 80 d2	mov	x5, #0x0
+    1fe8:	00 00 00 94	bl	_kernel_debug
+    1fec:	ef ff ff 17	b	0x1fa8
+_arm_init_idle_cpu:
+    1ff0:	f4 4f be a9	stp	x20, x19, [sp, #-0x20]!
+    1ff4:	fd 7b 01 a9	stp	x29, x30, [sp, #0x10]
+    1ff8:	fd 43 00 91	add	x29, sp, #0x10
+    1ffc:	f3 03 00 aa	mov	x19, x0
+    2000:	00 14 40 f9	ldr	x0, [x0, #0x28]
+    2004:	00 00 00 94	bl	_machine_set_current_thread
+    2008:	00 00 00 94	bl	_wfe_timeout_init
+    200c:	00 00 00 94	bl	_pmap_clear_user_ttb
+    2010:	1f 83 08 d5	tlbi	vmalle1is
+    2014:	9f 3b 03 d5	dsb	ish
+    2018:	df 3f 03 d5	isb
+    201c:	ff 44 03 d5	msr	DAIFClr, #0x4
+    2020:	68 ae 40 f9	ldr	x8, [x19, #0x158]
+    2024:	68 00 00 b4	cbz	x8, 0x2030
+    2028:	00 00 80 d2	mov	x0, #0x0
+    202c:	00 00 00 94	bl	_arm_debug_set
+    2030:	00 00 80 52	mov	w0, #0x0
+    2034:	00 00 00 94	bl	_fiq_context_init
+    2038:	20 00 80 52	mov	w0, #0x1
+    203c:	00 00 00 94	bl	_cpu_idle_exit

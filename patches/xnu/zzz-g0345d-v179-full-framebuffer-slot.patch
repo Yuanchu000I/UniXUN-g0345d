@@ -1,0 +1,75 @@
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -2185,8 +2185,8 @@
+ 	/* g0345d v169: explicit framebuffer mapping in the TTBR1 tables.
+ 	 * v167 showed gVirtBase == gPhysBase on this board, so the classic
+ 	 * physmap VA math produced the identity address and every post-switch
+-	 * write faulted. Install a dedicated 2MB block slot 256MB below
+-	 * VM_MAX_KERNEL_ADDRESS covering fb PA 0x83401000, and route all
++	 * write faulted. Install a dedicated slot 256MB below
++	 * VM_MAX_KERNEL_ADDRESS covering the full framebuffer, and route all
+ 	 * post-switch painters through g0345d_fb_va. */
+ 	{
+ 		extern vm_offset_t g0345d_fb_va;
+@@ -2195,13 +2195,14 @@
+ 		g0345d_paint_row_black_pre(820);
+ 		vm_offset_t l2_page;
+ 		tt_entry_t *l2_tte_fb;
+-		unsigned int i;
+ 		if (*l1_tte_fb == ARM_TTE_EMPTY) {
+ 			l2_page = alloc_ptpage(TRUE);
+ 			bzero((void *)l2_page, ARM_PGBYTES);
+ 			*l1_tte_fb = (kvtophys(l2_page) & ARM_TTE_TABLE_MASK) | ARM_TTE_TYPE_TABLE | ARM_TTE_VALID
+ 			    | ARM_TTE_TABLE_AP(ARM_TTE_TABLE_AP_USER_NA);
+ 		} else {
++			assert((*l1_tte_fb & (ARM_TTE_VALID | ARM_TTE_TYPE_MASK)) ==
++			    (ARM_TTE_VALID | ARM_TTE_TYPE_TABLE));
+ 			/* v178: this code still runs under the bootstrap TTBR0.  After
+ 			 * arm_vm_physmap_init(), phystokv() returns the new slid TTBR1
+ 			 * aperture, which is not mapped until the later TTBR switch.  Use
+@@ -2213,21 +2214,33 @@
+ 		}
+ 		g0345d_paint_row_black_pre(840);
+ 		l2_tte_fb = (tt_entry_t *)l2_page + ((fb_slot & ARM_TT_L2_INDEX_MASK) >> ARM_TT_L2_SHIFT);
+-		uint64_t block_base = 0x83401000ULL & ARM_TTE_BLOCK_L2_MASK;
++		const uint64_t fb_pa = 0x83401000ULL;
++		const uint64_t fb_bytes = 3240ULL * 2160ULL;
++		const uint64_t block_base = fb_pa & ARM_TTE_BLOCK_L2_MASK;
++		const uint64_t fb_offset = fb_pa - block_base;
++		const unsigned int fb_blocks = (unsigned int)
++		    ((fb_offset + fb_bytes + ARM_TT_L2_SIZE - 1) / ARM_TT_L2_SIZE);
++		const unsigned int l2_index = (unsigned int)
++		    ((fb_slot & ARM_TT_L2_INDEX_MASK) >> ARM_TT_L2_SHIFT);
+ 		g0345d_paint_row_black_pre(860);
+-		/* v177: pre/post split around the L2 block store. */
++		/* v179: 4K translation pages use 2MiB L2 blocks here.  The RGB888
++		 * framebuffer spans four blocks; row 1500 is already in the third.
++		 * Check the complete range before installing any descriptor. */
+ 		g0345d_paint_row_black_pre(880);
+-		*l2_tte_fb = (block_base & ARM_TTE_BLOCK_L2_MASK) | ARM_TTE_TYPE_BLOCK | ARM_TTE_VALID
+-		    | ARM_TTE_BLOCK_AF | ARM_TTE_BLOCK_NX | ARM_TTE_BLOCK_AP(0)
+-		    | ARM_TTE_BLOCK_SH(SH_OUTER_MEMORY) | ARM_TTE_BLOCK_ATTRINDX(CACHE_ATTRINDX_WRITEBACK);
++		assert(fb_blocks <= ARM_PGBYTES / sizeof(tt_entry_t) - l2_index);
++		for (unsigned int i = 0; i < fb_blocks; i++) {
++			assert(l2_tte_fb[i] == ARM_TTE_EMPTY);
++		}
++		for (unsigned int i = 0; i < fb_blocks; i++) {
++			const uint64_t block_pa = block_base + (uint64_t)i * ARM_TT_L2_SIZE;
++			/* Match the proven bootstrap framebuffer memory attributes. */
++			l2_tte_fb[i] = (block_pa & ARM_TTE_BLOCK_L2_MASK) | ARM_TTE_TYPE_BLOCK | ARM_TTE_VALID
++			    | ARM_TTE_BLOCK_AF | ARM_TTE_BLOCK_NX | ARM_TTE_BLOCK_AP(0)
++			    | ARM_TTE_BLOCK_SH(SH_OUTER_MEMORY) | ARM_TTE_BLOCK_ATTRINDX(CACHE_ATTRINDX_DISABLE);
++		}
+ 		g0345d_paint_row_black_pre(900);
+-		/* keep the rest of the fresh L2 page harmless (invalid), as alloc_ptpage
+-		 * does NOT zero the page (v170 fix: explicit bzero above). */
+-		(void)i;
+-		/* v171 fix: the 32MB L2 block base is 0x82000000, fb sits at offset
+-		 * 0x1401000 inside it. Painters add row offsets to fb_va, so fb_va must
+-		 * include the intra-block offset or writes land 20MB before the fb. */
+-		g0345d_fb_va = fb_slot + (0x83401000ULL - block_base);
++		/* Preserve the framebuffer's byte offset inside the first L2 block. */
++		g0345d_fb_va = fb_slot + fb_offset;
+ 		g0345d_paint_row_black_pre(920);
+ 	}
+ 	/* g0345d v172: A-mark - slot installed, still on bootstrap TTBR0. */

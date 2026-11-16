@@ -1,0 +1,7 @@
+# Optional development override. Copy to ignored local.toml before editing.
+# Paths resolve relative to this file. Never commit machine-specific paths.
+# Omit this override for the pinned remote SoC source.
+# [[source]]
+# name = "msm8996"
+# kind = "soc"
+# local = "../UniXNU-msm8996-common"

@@ -1,0 +1,16 @@
+This experimental snapshot derives from UniXNU and the midopix G0245D/MSM8996
+port, adapted locally for GREE G0345D. Existing source notices and the device
+repository BSD-2-Clause-Patent license are retained.
+
+Device baseline: midopix/UniXNU-g0245d,
+24508221a8ce11129257f4f6d1225d220f3ffefa.
+Tools baseline: midopix/UniXNU,
+1e0d72a34b952eacdec1f90941c617bf45860b76.
+Official record/template source: UniXNU/UniXNU,
+21d683dff61c66f219f03ab9d8b9249026514788.
+
+Patches do not relicense their targets. Apple XNU, EDK2, component libraries and
+third-party tools retain their respective upstream licenses. This repository
+does not contain Apple OS images, OEM firmware, device-specific seeds or full
+binary outputs. Provenance and limitations are documented in
+source-pins.toml and docs/provenance/README.md.

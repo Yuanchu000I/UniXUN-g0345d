@@ -1,0 +1,88 @@
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -313,19 +313,24 @@
+  * = bit 0, MSB first, cells start at fb x = 28.
+  */
+ void
+-g0245d_paint_halfband(int row, uint32_t half)
+-{
+-	const uint64_t rowbytes = 0xCA8ULL;
+-	volatile uint32_t *base = (volatile uint32_t *)(uintptr_t)
+-	    (0x83401000ULL + (uint64_t)row * rowbytes + 28ULL * 4ULL);
+-	int i, j, x;
+-	for (i = 0; i < 24; i++) {
+-		volatile uint32_t *p = base + i * (int)(rowbytes / 4);
+-		for (j = 0; j < 16; j++) {
+-			uint32_t color = ((half >> (15 - j)) & 1u) ? 0xFFFFFFFFu : 0x00000000u;
+-			for (x = 0; x < 64; x++)
+-				p[x] = color;
+-			p += 64;
++g0245d_paint_halfband(int row, uint32_t value)
++{
++	/* v173: encode a full 32-bit half in the real RGB888 framebuffer.
++	 * The old v168 painter wrote 32-bit words and crossed the 3240-byte
++	 * stride; this version writes exactly three bytes per pixel. */
++	const uint64_t rowbytes = 3240ULL;
++	const int x0 = 64;
++	const int cellw = 8;
++	const int h = 16;
++	int i, j, y, x;
++	for (y = 0; y < h; y++) {
++		volatile uint8_t *p = (volatile uint8_t *)(uintptr_t)
++		    (0x83401000ULL + (uint64_t)(row + y) * rowbytes + (uint64_t)x0 * 3ULL);
++		for (j = 0; j < 32; j++) {
++			uint8_t c = ((value >> (31 - j)) & 1u) ? 0xFF : 0x20;
++			for (x = 0; x < cellw; x++) {
++				p[0] = c; p[1] = c; p[2] = c; p += 3;
++			}
+ 		}
+ 	}
+ }
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -2155,28 +2155,27 @@
+ 	arm_vm_physmap_init(args);
+ 	/* g0345d v162: physmap established, pre-switch. */
+ 	g0245d_paint_row(1432);
+-	/* g0345d v167: dump the four unknown values as bit-code bands through the
+-	 * PROVEN TTBR0 identity map while it is still live (pre-switch window).
+-	 * Bands are 16 rows tall, MSB first, white=1 / dark=0, 8 px cells from x=64:
+-	 *   row 100 = gVirtBase
+-	 *   row 150 = gPhysBase
+-	 *   row 200 = gVirtBase + (0x83401000 - gPhysBase)   (classic physmap VA)
+-	 *   row 250 = phystokv(0x83401000)                    (ptov_table VA) */
++	/* g0345d v173: safe pre-switch address probe.  The v168 probe called
++	 * phystokv(fb) before the TTBR1 switch; that helper can panic when the
++	 * reserved framebuffer is outside the managed DRAM span.  Keep this probe
++	 * to values already available without translation and show all 64 bits as
++	 * high/low 32-bit bands.  Rows 700/740 are fixed sentinels proving the
++	 * probe block completed. */
+ 	{
+-		extern void g0245d_paint_halfband(int row, uint32_t half);
++		extern void g0245d_paint_halfband(int row, uint32_t value);
+ 		uint64_t vb = (uint64_t)gVirtBase;
+ 		uint64_t pb = (uint64_t)gPhysBase;
+ 		uint64_t cv = vb + (0x83401000ULL - pb);
+-		uint64_t pv = (uint64_t)phystokv(0x83401000ULL);
+-		g0245d_paint_halfband(400, (uint32_t)((vb >> 16) & 0xFFFFu));
+-		g0245d_paint_halfband(440, (uint32_t)(vb & 0xFFFFu));
+-		g0245d_paint_halfband(500, (uint32_t)((pb >> 16) & 0xFFFFu));
+-		g0245d_paint_halfband(540, (uint32_t)(pb & 0xFFFFu));
+-		g0245d_paint_halfband(600, (uint32_t)((cv >> 16) & 0xFFFFu));
+-		g0245d_paint_halfband(640, (uint32_t)(cv & 0xFFFFu));
+-		g0245d_paint_halfband(700, (uint32_t)((pv >> 16) & 0xFFFFu));
+-		g0245d_paint_halfband(740, (uint32_t)(pv & 0xFFFFu));
+-	}
++		g0245d_paint_halfband(400, (uint32_t)(vb >> 32));
++		g0245d_paint_halfband(420, (uint32_t)vb);
++		g0245d_paint_halfband(500, (uint32_t)(pb >> 32));
++		g0245d_paint_halfband(520, (uint32_t)pb);
++		g0245d_paint_halfband(600, (uint32_t)(cv >> 32));
++		g0245d_paint_halfband(620, (uint32_t)cv);
++		g0245d_paint_halfband(700, 0xA5A5A5A5u);
++		g0245d_paint_halfband(740, 0x5A5A5A5Au);
++	}
++	g0245d_paint_row(780);
+ 	/* g0345d v169: explicit framebuffer mapping in the TTBR1 tables.
+ 	 * v167 showed gVirtBase == gPhysBase on this board, so the classic
+ 	 * physmap VA math produced the identity address and every post-switch

@@ -1,0 +1,35 @@
+name: Package (prerequisites pending)
+
+# Manual migration scaffold. No successful release is claimed by this workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: OS profile
+        type: choice
+        options: [ipados-17.7.11-21H461]
+        default: ipados-17.7.11-21H461
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: Package (blocked by legacy firmware integration)
+    runs-on: macos-26
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check documented release prerequisites
+        run: |
+          echo '::error::Standard release is pending: publish the companion firmware delta, reconcile DSC/FDF and fixed container inputs, then validate the clean macOS release. See docs/firmware-dependency.md and docs/publication.md.'
+          exit 1
+      # Once the prerequisites are implemented, replace the gate above with
+      # pinned sibling tools/firmware checkouts and official host tool setup.
+      # Keep the official script unchanged; configure board.toml instead.
+      - name: Standard package interface
+        run: bash scripts/package.sh --os "${{ inputs.os }}" --uefi ../uefi-g0345d

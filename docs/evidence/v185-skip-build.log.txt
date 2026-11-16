@@ -1,0 +1,144 @@
+unixnu: on Linux the kernel step uses the toolchain of scripts/linux/setup-toolchain.py; --skip-setup and seed-data-grow need macOS hdiutil
+== submodules {UNIXNU}
+== tree {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree
+== kernel: XNU
+== kernel: prepare XNU d8b80295118e
++ git clone --quiet --shared --no-checkout {UNIXNU}/out/feeds/xnu-b7545ced {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/.cache/xnu-work
+== kernel: patch apple-only-cpu-tunables.patch
+== kernel: patch architectural-timer-entry.patch
+== kernel: patch armvirt-platform-personality.patch
+== kernel: patch cxx-flag-dependencies.patch
+== kernel: patch disabled-deferred-reclaim.patch
+== kernel: patch external-archive-dependencies.patch
+== kernel: patch kernel-sdk-root.patch
+== kernel: patch local-availability.patch
+== kernel: patch mockfs-intermediate-lookup.patch
+== kernel: patch mockfs-memory-device-width.patch
+== kernel: patch mockfs-statfs.patch
+== kernel: patch mockfs-test-file.patch
+== kernel: patch mockfs-typed-allocation.patch
+== kernel: patch native-4k-bootstrap-capacity.patch
+== kernel: patch native-4k-signature-hash-cache.patch
+== kernel: patch native-4k-user-abi.patch
+== kernel: patch native-aes-personality.patch
+== kernel: patch native-arm-pan.patch
+== kernel: patch native-dt-panic-region.patch
+== kernel: patch native-lookup-trace.patch
+== kernel: patch native-priv-work-interval.patch
+== kernel: patch native-quiet-managed-page-report.patch
+== kernel: patch native-text-fixup.patch
+== kernel: patch native-trust-cache-runtime.patch
+== kernel: patch native-union-getattrlistbulk.patch
+== kernel: patch native-union-lower-directory.patch
+== kernel: patch native-work-interval-soft-fail.patch
+== kernel: patch native-work-interval-trace.patch
+== kernel: patch native-work-interval-instance.patch
+== kernel: patch non-apple-cache-monitor.patch
+== kernel: patch non-apple-iommu-bootstrap.patch
+== kernel: patch non-apple-pmap-field.patch
+== kernel: patch null-root-media.patch
+== kernel: patch offline-component-load-probes.patch
+== kernel: patch offline-legacy-start.patch
+== kernel: patch offline-native-gpu-broker.patch
+== kernel: patch offline-owner-boot-manifest.patch
+== kernel: patch offline-owner-cache-carrier.patch
+== kernel: patch offline-owner-root-binding-audit.patch
+== kernel: patch offline-owner-root-crypto-probe.patch
+== kernel: patch offline-owner-systemos-mount.patch
+== kernel: patch offline-owner-z-air-init.patch
+== kernel: patch offline-pgz-alignment-probe.patch
+== kernel: patch pgz-aligned-validation.patch
+== kernel: patch public-entitlements-header.patch
+== kernel: patch published-freezer-condition.patch
+== kernel: patch source-corecrypto14-bootstrap.patch
+== kernel: patch source-machine-layer.patch
+== kernel: patch source-pthread-bootstrap.patch
+== kernel: patch zzw-native-adreno-sandbox-grant.patch
+== kernel: patch zzwb-native-sandbox-grant-set-properties.patch
+== kernel: patch zzx-pmap-sync-64bit-pa.patch
+== kernel: patch zzy-native-gpu-addon-mount.patch
+== kernel: patch zzy-staged-system-apps.patch
+== kernel: patch zzyb-native-cryptex-os-view.patch
+== kernel: patch zzyc-owner-skip-launch-constraints.patch
+== kernel: patch 0001-msm8996-smp.patch
+== kernel: patch xnu-10063.141.1-security-init.patch
+== kernel: patch xnu-10063.141.1-sparse-index.patch
+== kernel: patch zzz-g0245d-linux-installfile-futimes.patch
+== kernel: patch zzz-g0245d-early-boot-marks.patch
+== kernel: patch zzz-g0245d-v122-postmmu-marks.patch
+== kernel: patch zzz-g0245d-v123-lr-fix-and-substages.patch
+== kernel: patch zzz-g0245d-v124-arm-init-substages.patch
+== kernel: patch zzz-g0245d-v125-disable-apple-regs.patch
+== kernel: patch zzz-g0245d-v126-kernel-bootstrap-marks.patch
+== kernel: patch zzz-g0245d-v127-visible-strip-remap.patch
+== kernel: patch zzz-g0245d-v128-arm-init-substages.patch
+== kernel: patch zzz-g0245d-v129-startup-bootstrap-marks.patch
+== kernel: patch zzz-g0245d-v130-rtclock-marks.patch
+== kernel: patch zzz-g0245d-v131-no-armio-early-return.patch
+== kernel: patch zzz-g0245d-v132-arm-init-ladder.patch
+== kernel: patch zzz-g0245d-v133-post-vm-physmap-paints.patch
+== kernel: patch zzz-g0245d-v134-arm-vm-init-inner-marks.patch
+== kernel: patch zzz-g0245d-v135-arm-vm-init-bisect.patch
+== kernel: patch zzz-g0245d-v136-callsite-mark.patch
+== kernel: patch zzz-g0245d-v137-maxmem-path.patch
+== kernel: patch zzz-g0245d-v141-console-width.patch
+== kernel: patch zzz-g0245d-v143-force-video-console.patch
+== kernel: patch zzz-g0245d-v144-force-fb-map.patch
+== kernel: patch zzz-g0245d-v147-console-24bpp.patch
+== kernel: patch zzz-g0245d-v148-text-console.patch
+== kernel: patch zzz-g0245d-v149-fb-marks.patch
+== kernel: patch zzz-g0245d-v150-marks-visible.patch
+== kernel: patch zzz-g0345d-v151-entry-red-probe.patch
+== kernel: patch zzz-g0345d-v152-direct-pa-probe.patch
+== kernel: patch zzz-g0345d-v153-substage-ladder.patch
+== kernel: patch zzz-g0345d-v160-direct-pa-marks.patch
+== kernel: patch zzz-g0345d-v161-fb-l1-index-fix.patch
+== kernel: patch zzz-g0345d-v162-vm-init-probes.patch
+== kernel: patch zzz-g0345d-v163-postswitch-blackbands.patch
+== kernel: patch zzz-g0345d-v164-altswitch-band.patch
+== kernel: patch zzz-g0345d-v165-black-console.patch
+== kernel: patch zzz-g0345d-v166-physmap-probe.patch
+== kernel: patch zzz-g0345d-v167-bitcode-probe.patch
+== kernel: patch zzz-g0345d-v168-bigcell-probe.patch
+== kernel: patch zzz-g0345d-v169-172-fb-slot.patch
+== kernel: patch zzz-g0345d-v173-safe-address-probe.patch
+== kernel: patch zzz-g0345d-v174-slot-ladder.patch
+== kernel: patch zzz-g0345d-v175-black-slot-ladder.patch
+== kernel: patch zzz-g0345d-v176-black-ladder-decl.patch
+== kernel: patch zzz-g0345d-v177-l2-store-split.patch
+== kernel: patch zzz-g0345d-v178-bootstrap-l2-va.patch
+== kernel: patch zzz-g0345d-v179-full-framebuffer-slot.patch
+== kernel: patch zzz-g0345d-v180-post-vm-ladder.patch
+== kernel: patch zzz-g0345d-v181-console-ladder.patch
+== kernel: patch zzz-g0345d-v182-bootstrap-ladder.patch
+== kernel: patch zzz-g0345d-v183-zalloc-dispatch.patch
+== kernel: patch zzz-g0345d-v184-kalloc-ladder.patch
+== kernel: patch zzz-g0345d-v185-fixed-view-probes.patch
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/prepare-xnu-source.py
+Restored 26 omitted public headers from Apple; blob hashes verified
+== kernel: prepare storage headers
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/prepare-storage-headers.py
+== kernel: archive-01-build-corecrypto-14
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-corecrypto-14.py
+== kernel: archive-02-build-corecrypto-14
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-corecrypto-14.py --namespace
+== kernel: component-ArmDTPlatform
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-arm-driver.py ArmDTPlatform
+== kernel: component-ArmCpu
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-arm-driver.py ArmCpu
+== kernel: component-SoftwareAES
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-arm-driver.py SoftwareAES
+== kernel: component-NativeUfs8996
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-arm-driver.py NativeUfs8996
+== kernel: component-Blsp8996
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-arm-driver.py Blsp8996
+== kernel: component-Adreno530
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-arm-driver.py Adreno530
+== kernel: archive-09-build-software-aes-bindings
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-software-aes-bindings.py
+== kernel: archive-10-build-mockfs-fixture
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-mockfs-fixture.py
+== kernel: archive-11-build-libpthread-kernel
++ python3 {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-libpthread-kernel.py
++ bash {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/tree/scripts/build-xnu-4k-baseline.sh
+== kernel: native only {UNIXNU}/out/g0345d/ipados-17.7.11-21H461/g0345d/kernel/kernel.macho sha256 aac6aceb8f601ab312ea8598e4f658abf7ec83706c0cbc8a4e75c40088dd781a

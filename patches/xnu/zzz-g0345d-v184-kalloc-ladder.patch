@@ -1,0 +1,77 @@
+--- a/osfmk/kern/startup.c
++++ b/osfmk/kern/startup.c
+@@ -408,11 +408,12 @@
+ 
+ 	if (g0345d_zalloc) {
+ 		g0245d_fill_fb_black();
+-		/* Four top bands identify the M40 diagnostic page. */
++		/* Five top bands identify the M41 diagnostic page. */
+ 		g0245d_paint_row_white(0);
+ 		g0245d_paint_row_white(40);
+ 		g0245d_paint_row_white(80);
+ 		g0245d_paint_row_white(120);
++		g0245d_paint_row_white(160);
+ 		g0245d_paint_row_white(200);
+ 		/* Calibration cells: alternating white/black, MSB first. */
+ 		g0345d_zalloc_probe(0, 0, 0, 0);
+--- a/osfmk/kern/kalloc.c
++++ b/osfmk/kern/kalloc.c
+@@ -2013,10 +2013,13 @@
+ 	}
+ }
+ 
++extern void g0245d_paint_row_white(int row);
++
+ __startup_func
+ static void
+ kalloc_init(void)
+ {
++	g0245d_paint_row_white(1240); /* G0345D v184: callback entered */
+ 	/*
+ 	 * Allocate scratch space to parse kalloc_type_views and create
+ 	 * other structures necessary to process them.
+@@ -2025,36 +2028,44 @@
+ 
+ 	static_assert(KHEAP_MAX_SIZE >= KALLOC_SAFE_ALLOC_SIZE);
+ 	kalloc_zsize_compute();
++	g0245d_paint_row_white(1280);
+ 
+ 	/* Initialize kalloc data buffers heap */
+ 	kalloc_heap_init(KHEAP_DATA_BUFFERS);
++	g0245d_paint_row_white(1320);
+ 
+ 	/* Initialize kalloc shared buffers heap */
+ 	kalloc_heap_init(KHEAP_SHARED);
++	g0245d_paint_row_white(1360);
+ 
+ 	kmem_alloc(kernel_map, (vm_offset_t *)&kt_buffer, kt_scratch_size,
+ 	    KMA_NOFAIL | KMA_ZERO | KMA_KOBJECT, VM_KERN_MEMORY_KALLOC);
++	g0245d_paint_row_white(1400);
+ 
+ 	/*
+ 	 * Handle fixed size views
+ 	 */
+ 	kalloc_type_view_init_fixed();
++	g0245d_paint_row_white(1440);
+ 
+ 	/*
+ 	 * Reset
+ 	 */
+ 	bzero(kt_buffer, kt_scratch_size);
++	g0245d_paint_row_white(1480);
+ 	kt_count = max_count;
+ 
+ 	/*
+ 	 * Handle variable size views
+ 	 */
+ 	kalloc_type_view_init_var();
++	g0245d_paint_row_white(1520);
+ 
+ 	/*
+ 	 * Free resources used
+ 	 */
+ 	kmem_free(kernel_map, (vm_offset_t) kt_buffer, kt_scratch_size);
++	g0245d_paint_row_white(1560);
+ }
+ STARTUP(ZALLOC, STARTUP_RANK_THIRD, kalloc_init);
+ 

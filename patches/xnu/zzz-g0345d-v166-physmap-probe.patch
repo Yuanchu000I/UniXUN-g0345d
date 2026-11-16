@@ -1,0 +1,54 @@
+diff --git a/osfmk/arm/arm_init.c b/osfmk/arm/arm_init.c
+index c96d007..2e35db7 100644
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -255,6 +255,27 @@ g0245d_paint_row_black(int row)
+ 	while (n--) *p++ = 0x00000000u;
+ }
+ 
++void
++g0245d_probe_paint(int which)
++{
++	const uint64_t rowbytes = 0xCA8ULL;
++	extern vm_offset_t gVirtBase;
++	extern vm_offset_t gPhysBase;
++	extern vm_map_address_t phystokv(pmap_paddr_t pa);
++	const uint64_t fb_pa = 0x83401000ULL + (uint64_t)which * 40ULL * rowbytes;
++	uint64_t va;
++	volatile uint32_t *p;
++	uint64_t n;
++	if (which == 1) {
++		va = (uint64_t)phystokv(fb_pa);
++	} else {
++		va = (uint64_t)gVirtBase + (fb_pa - (uint64_t)gPhysBase);
++	}
++	p = (volatile uint32_t *)(uintptr_t)va;
++	n = (24ULL * rowbytes) / 4;
++	while (n--) *p++ = 0xFFFFFFFFu;
++}
++
+ void
+ g0245d_fill_fb_black(void)
+ {
+diff --git a/osfmk/arm64/arm_vm_init.c b/osfmk/arm64/arm_vm_init.c
+index 25b12f3..ea1c62f 100644
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -2197,6 +2197,17 @@ arm_vm_init(uint64_t memory_size, boot_args * args)
+ 	g0245d_fill_fb_black();
+ 	extern void g0245d_paint_row_white(int row);
+ 	g0245d_paint_row_white(300);
++	/* g0345d v166: probe which physmap translation maps the fb. Three white
++	 * 24-row bands on the black field:
++	 *   band ~300 = gVirtBase + (fb - gPhysBase) (classic math)
++	 *   band ~340 = phystokv(fb) (ptov_table lookup)
++	 *   band ~380 = same as 0 (control) */
++	{
++		extern void g0245d_probe_paint(int which);
++		g0245d_probe_paint(0);
++		g0245d_probe_paint(1);
++		g0245d_probe_paint(2);
++	}
+ 
+ 	// From here on out, we're off the bootstrap translation tables.
+ 
