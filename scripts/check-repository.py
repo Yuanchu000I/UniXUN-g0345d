@@ -52,18 +52,24 @@ def verify():
     for name in required:
         need((ROOT / name).is_file(), f'missing required publication file: {name}')
     need(board.get('schema_version') == 2 and not board['board'].get('example'), 'board must be real format 2')
-    for key, value in [('name', 'g0345d'), ('soc', 'msm8996'), ('os_profile', 'ipados-17.7.11-21H461')]:
+    for key, value in [('name', 'g0345d'), ('soc', 'msm8996'), ('os_profile', 'ios-16.5-20F66')]:
         need(board['board'][key] == record['device'][key] == value, f'wrong identity: {key}')
     need(board['package']['unixnu'] == '../UniXNU', 'package tools path must stay portable')
     need(board['package']['defconfig'][board['board']['os_profile']] == board['kernel']['defconfig'] == 'g0345d_defconfig', 'defconfig mismatch')
     need(board['device_tree']['source'] == 'device:dts/g0345d.dts', 'wrong board DTS')
-    need('device:patches/xnu/series' in board['kernel']['patch_series'], 'missing device patch series')
+    need(board['kernel']['patch_series'] == [], 'unreviewed XNU 8796 patch series must remain empty')
+    proposed_profile = load('docs/os-profile-proposal/ios-16.5-20F66/profile.toml')
+    need(proposed_profile['os']['name'] == board['board']['os_profile'], 'OS profile proposal identity mismatch')
+    need(proposed_profile['os']['target'] == 'ios' and proposed_profile['os']['ios_version'] == '16.5', 'wrong OS family or version')
+    need(proposed_profile['ipsw']['version'] == '16.5' and proposed_profile['ipsw']['build'] == '20F66', 'wrong iPhone restore build')
+    need(proposed_profile['kernel'].get('patch_series') == [], 'unreviewed OS patch series must remain empty')
     snapshot = json.loads((ROOT / 'docs/provenance/source-snapshot.json').read_text(encoding='utf-8'))
     for name, digest in snapshot['files'].items():
+        # The iOS branch intentionally changes the defconfig. Other historical
+        # functional inputs remain byte-identical to the published snapshot.
+        if name == 'configs/g0345d_defconfig':
+            continue
         need(sha((ROOT / name).read_bytes()) == digest, f'exported functional input changed: {name}')
-    runtime = {key: value for key, value in board.items() if key != 'package'}
-    digest = sha(json.dumps(runtime, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode())
-    need(digest == snapshot['board_runtime_semantic_sha256'], 'runtime board settings differ from M42 source')
     series = [line.split('#', 1)[0].strip() for line in (ROOT / 'patches/xnu/series').read_text().splitlines()]
     series = [name for name in series if name]
     expected = [name.removeprefix('patches/xnu/') for name in snapshot['files'] if name.startswith('patches/xnu/')]
@@ -91,7 +97,7 @@ def verify():
                 pending.append(dep)
     need(selected <= {c for area in record['area'] for c in area['components']}, 'selected dependency lacks area')
     need('cellular' in {area['id'] for area in record['area']}, 'missing cellular area from official prose guide')
-    print(f'PASS: 55 exact functional inputs; 51 ordered patches; unchanged runtime board settings')
+    print(f'PASS: historical functional inputs and 51 retained device patches; iOS target metadata checked')
     print(f'PASS: {len(record["area"])} areas cover {len(selected)} components including dependencies')
     print('COMPATIBILITY: official strict catalog lacks ' + ', '.join(sorted(selected - upstream_ids)))
     print('MODE: unchanged official record checker + explicitly pinned fork catalog')

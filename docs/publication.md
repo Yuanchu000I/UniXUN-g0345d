@@ -6,7 +6,7 @@ The organization follows the official guides pinned in source-pins.toml.
 
 | Requirement | State in this export |
 | --- | --- |
-| Format 2 board and matching format 1 record | Present, G0345D/MSM8996/21H461 |
+| Format 2 board and matching format 1 record | Present, G0345D/MSM8996/ios-16.5-20F66 |
 | Required areas and selected component dependencies | 14 areas and 11 IDs, checked locally |
 | Ordered functional inputs and source pins | Preserved, hash checked; original dirty worktree identified |
 | Board package and firmware sources | Device selection present; companion firmware export pending |
@@ -15,7 +15,7 @@ The organization follows the official guides pinned in source-pins.toml.
 | End-to-end clean release | Pending; legacy firmware/container integration incomplete |
 | Record CI | Repository-specific workflow runs on push; check the matching commit in Actions |
 | Manual package CI | Explicit failing prerequisite gate; no artifacts produced |
-| GitHub repository | Published to Yuanchu000I/UniXUN-g0345d; original initialization history retained |
+| GitHub repository | Existing repository; this iOS 16.5 update is published on a separate branch |
 | unixnu topic, website | Topic configured during publication; website ingestion remains unverified |
 
 ## Record-checker compatibility
@@ -42,9 +42,10 @@ transfers, I2C transactions or GPU submission.
 
 ## Publication and future updates
 
-The source snapshot was committed using the owner's configured Git identity and
-published to [Yuanchu000I/UniXUN-g0345d](https://github.com/Yuanchu000I/UniXUN-g0345d)
-on 2026-11-16. The repository name retains the owner's chosen spelling.
+The original source snapshot was committed using the owner's configured Git
+identity and published to [Yuanchu000I/UniXUN-g0345d](https://github.com/Yuanchu000I/UniXUN-g0345d)
+on 2026-11-16. This iOS 16.5 update is kept on a separate branch so the earlier
+M42/v185 main snapshot remains reviewable.
 Its initial GitHub commit, `3058d69bb630776104fc78731f1d87c6db374210`,
 contained only a GPLv3 license. Both histories are retained by a merge.
 The original license text is archived verbatim at
@@ -61,7 +62,7 @@ git status --short
 python3 scripts/check-repository.py --base origin/main
 git diff --cached --check
 git commit -m "Describe the source or record change"
-git push origin main
+git push origin device/g0345d-ios16.5
 ```
 
 Verify the matching commit's [Porting record job](https://github.com/Yuanchu000I/UniXUN-g0345d/actions)

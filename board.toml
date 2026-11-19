@@ -5,7 +5,7 @@ example = false
 name = "g0345d"
 soc = "msm8996"
 soc_source = "msm8996"
-os_profile = "ipados-17.7.11-21H461"
+os_profile = "ios-16.5-20F66"
 description = "Gree G0345D (格力手机 G3)"
 kit = "g0345d"
 
@@ -23,8 +23,12 @@ windows = [{ name = "OS", component = "OS" }, { name = "SystemOS", component = "
 
 [kernel]
 defconfig = "g0345d_defconfig"
-config_fragments = ["arch:configs/common.config", "soc:configs/msm8996.config", "os:configs/ipados.config"]
-patch_series = ["arch:patches/xnu/series", "soc:patches/xnu/series", "os:patches/xnu/series", "device:patches/xnu/series"]
+config_fragments = ["arch:configs/common.config", "soc:configs/msm8996.config", "os:configs/ios.config"]
+# None of the inherited ARM64/MSM8996/device patches has been reviewed against
+# XNU 8796.101.5. The existing device patches target XNU 10063.141.1. This empty
+# list selects no patches; it is not a CLI build guard. Do not build until the
+# complete patch order has been reviewed and rebased for this target.
+patch_series = []
 # Same reasoning as g0245d: schema_version=2 archive_plan() switches to explicit
 # mode once any component: entry exists, so the device layer must list the full
 # set including the three MSM8996 drivers.
@@ -117,9 +121,8 @@ requires_kernel_header = true
 source = "device:dts/g0345d.dts"
 include_dirs = ["soc:dts"]
 
-# Prelink is skipped on this device (build kernel --skip-prelink), so no
-# kernelcache is needed yet.  When prelink lands, point kernelcache at a local
-# decompressed 21H461 kernelcache like g0245d does.
+# Prelink is not qualified for this target. Do not copy kernelcache or prelink
+# values from the iPhone10,3 donor until the exact 20F66 restore is verified.
 [kernel.prelink]
 
 # [ipsw] metadata comes from the os profile; --skip-prelink builds never
@@ -159,9 +162,10 @@ button-names = ["hold", "voldown", "volup"]
 [adt.buttons.u32]
 home-button-type = 2
 
-# Official package interface; clean release remains blocked as documented.
+# Official package interface; the iOS 16.5 release remains blocked by the
+# unresolved central profile, restore manifest, source and patch prerequisites.
 [package]
 unixnu = "../UniXNU"
 
 [package.defconfig]
-"ipados-17.7.11-21H461" = "g0345d_defconfig"
+"ios-16.5-20F66" = "g0345d_defconfig"

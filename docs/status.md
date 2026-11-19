@@ -1,10 +1,16 @@
 # G0345D port status
 
-Snapshot: 2026-11-16, M42 / v185. This is an experimental GREE G0345D
-(Snapdragon 820 / MSM8996) port of the `ipados-17.7.11-21H461` profile.
-It has not completed XNU startup or reached an interactive operating system.
+Target revision: 2026-11-19, iPhone iOS 16.5 build 20F66 / Darwin 22.5.0,
+with XNU 8796.101.5 as the open-source baseline. This is an experimental GREE
+G0345D (Snapdragon 820 / MSM8996) target; it has not been built or booted.
 
-## Latest historical hardware observation
+The published main branch retains the earlier M42/v185 iPadOS snapshot. A later
+M71/v213 development run on the same iPadOS/XNU baseline was reported to return
+from bsd_init after mounting a small md0 MockFS root. Its untracked patch set
+and full receipts are not included in this revision. These observations are
+historical and must not be reported as iOS 16.5 results.
+
+## Historical hardware observation
 
 The M42 framebuffer photograph decodes to phase `0x4107`, value
 `0x0467` (`1127`). Two independent analyses agree. The current STARTUP
@@ -25,11 +31,11 @@ See [M42 result](bringup/M42-photo-result.md),
 [probe map](bringup/M42-probe-map.md), and
 [M41 metadata audit](bringup/M41-kalloc-metadata-audit.md).
 
-## What the snapshot supports
+## What the repository supports
 
 | Area | Established scope | Still missing |
 | --- | --- | --- |
-| Configuration | G0345D DTS/defconfig and 51 ordered device patches are preserved | Clean-checkout end-to-end reproduction |
+| Configuration | G0345D DTS/defconfig and historical device inputs are preserved | iOS 16.5 source/profile resolution and a complete rebased patch order |
 | Firmware/loader | Historical temporary boot reached XNU through the legacy UEFI chain | Published companion firmware delta and standard release integration |
 | CPU/memory | Boot CPU executes through early VM and allocator checkpoints | Secondary cores, interrupt/IPI qualification, complete memory/DMA validation |
 | Display | Direct RGB888 framebuffer probe marks are visible | Native display/presentation and brightness control |
@@ -70,12 +76,22 @@ Record checking uses the official schema checker with a pinned fork component
 catalog containing MSM8996 IDs. A passing local record check does not mean the
 stock upstream workflow or catalog has accepted this device.
 
+## iOS 16.5 readiness
+
+The exact restore manifest and XNU 8796.101.5 source are missing. The proposed
+OS profile is documented under docs/os-profile-proposal/ios-16.5-20F66/, but
+UnixNu resolves profiles from the central UniXNU/profiles/os tree. The existing
+M71 patch stack targets XNU 10063.141.1 and is not selected for 8796.101.5.
+An empty patch list is not a CLI build guard. The next engineering step is to
+land the profile centrally, verify the restore inputs, then rebase and validate
+the ARM64/MSM8996/G0345D patch layers before any build or boot.
+
 ## Stopped experiment and next measurement
 
-After M42 photo analysis the user requested a stop. Repository preparation
-does not resume kernel or firmware builds, image production or device testing.
-No M43 probe is part of this snapshot. If experiments are explicitly resumed,
-the next measurement should distinguish policy calculation, its inner sort,
+This publication update does not include a kernel or firmware build, image
+production or device test. The M42/v185 files on main remain a separate
+historical snapshot. A future allocator investigation should distinguish policy
+calculation, its inner sort,
 the 29 fixed size classes, `create_zone_for_size`, shuffle/signature equivalence
 and type distribution before changing allocator behavior.
 

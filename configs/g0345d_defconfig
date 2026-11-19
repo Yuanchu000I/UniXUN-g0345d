@@ -1,11 +1,15 @@
 # Kernel configuration: CONFIG_XNU_<NAME> becomes XNU_<NAME> for the kernel build script.
 # y and n are 1 and 0, a quoted string or a number is passed through, {tree} is the build tree.
-# Stage 1 (bring-up): ARM64 + platform + software crypto only.
+# Stage 1: native-only kernel (--skip-prelink), platform and source crypto.
 CONFIG_XNU_SOURCE_CORECRYPTO14=y
 CONFIG_XNU_SOURCE_PTHREAD=y
 CONFIG_XNU_ARM_DT_PLATFORM=y
 CONFIG_XNU_ARMCPU=y
-CONFIG_XNU_CRYPTO_BOOTSTRAP="prelinked"
+# M54/v197: the native image has no original IOCryptoAcceleratorFamily.
+# NativeAES imports its parent metaclass/methods at absolute prelink addresses.
+# Enable it only with a qualified original-kext prelink closure.
+# CONFIG_XNU_NATIVE_AES is not set
+CONFIG_XNU_CRYPTO_BOOTSTRAP="source"
 # CONFIG_XNU_NATIVE_UFS is not set        (needs NativeUfs8996 component)
 # CONFIG_XNU_NATIVE_ADRENO is not set     (needs Adreno530 component)
 # CONFIG_XNU_NATIVE_LEGACY_DISPLAY is not set (needs GopFramebuffer + firmware FB)
@@ -30,3 +34,8 @@ CONFIG_XNU_EXTRA_LD_ARCHIVES="-Wl,-force_load,{tree}/build/native-ufs-8996/libNa
 
 # G0345D has no BCM2837 panic RAM. Use ADT pram only when supplied.
 CONFIG_XNU_DT_PANIC_REGION=y
+
+# M60/v202: native-only bring-up has no original Image4/AMFI providers.
+# Retain original runtime checks; enable only with a qualified provider closure.
+# This stage does not qualify trust enforcement for signed userland.
+# CONFIG_XNU_TRUST_CACHE_RUNTIME is not set

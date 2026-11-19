@@ -7,8 +7,8 @@ on:
       os:
         description: OS profile
         type: choice
-        options: [ipados-17.7.11-21H461]
-        default: ipados-17.7.11-21H461
+        options: [ios-16.5-20F66]
+        default: ios-16.5-20F66
 
 permissions:
   contents: read
