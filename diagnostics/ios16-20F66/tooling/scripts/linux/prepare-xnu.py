@@ -1,0 +1,221 @@
+#!/usr/bin/env python3
+"""The Linux-only steps of scripts/build-xnu-4k-baseline.sh, run from the build tree.
+
+    prepare-xnu.py source   after the xnu patches: rewrite the xnu sources that assume Apple's clang or BSD tools,
+                            and install TargetConditionals.h, which the iPhoneOS SDK provides, into the fakeroot.
+    prepare-xnu.py libs     after installhdrs: libcc_kext.a in the fakeroot. MakeInc.def links it as -lcc_kext; a Mac
+                            takes it from Apple clang.
+
+Each rewrite checks whether it is still needed, so both modes can run on every build.
+"""
+from pathlib import Path
+import os
+import hashlib
+import json
+import tempfile
+import shutil
+import subprocess
+import sys
+import tarfile
+import urllib.request
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+XNU = ROOT / '.cache/xnu-work'
+FAKEROOT = ROOT / '.cache/fakeroot'
+sys.path.insert(0, str(HERE.parent))
+from kernel_target import ARCH, TRIPLE, check_object
+# llvm-project at the commit setup-toolchain.py builds clang from, and the Libc that macOS 14.6 ships with
+# xnu-10063.141.1 (distribution-macOS release.json).
+LLVM_COMMIT = '58c46bae21181fb4240cf964461bea738d96d50e'
+LIBC_COMMIT = '899a3b2d52d95d75e05fb286a5e64975ec3de757'   # Libc-1592.100.35
+PROFILE_SOURCES = ('InstrProfiling', 'InstrProfilingBuffer', 'InstrProfilingPlatformDarwin', 'InstrProfilingWriter',
+                   'InstrProfilingInternal', 'InstrProfilingVersionVar')
+
+ISA_APPLE = '#if defined(__clang__) && ((defined(__apple_build_version__) && __apple_build_version__ > 5010000))\n'
+ISA_ANY = '#if defined(__clang__) && (!defined(__apple_build_version__) || __apple_build_version__ > 5010000)\n'
+SEEK_OLD = '''	if (offset != lseek(fd, offset, SEEK_SET)) {
+		err = kErrorDiskFull;
+	} else {
+		err = kErrorNone;
+	}
+'''
+SEEK_NEW = '''	if (offset != lseek(fd, offset, SEEK_SET)) {
+		struct stat st;
+		/* Linux lseek() returns 0 on character devices such as the
+		 * /dev/null that check_all_exports writes to; not an error. */
+		if (0 == fstat(fd, &st) && S_ISCHR(st.st_mode)) {
+			return kErrorNone;
+		}
+		err = kErrorDiskFull;
+	} else {
+		err = kErrorNone;
+	}
+'''
+
+
+def info(message):
+    print(f'[info] {message}', file=sys.stderr)
+
+
+def rewrite_auto_var_init():
+    # New clang keeps zero initialization but rejects its obsolete opt-in acknowledgement.
+    makeinc = XNU / 'makedefs/MakeInc.def'
+    text = makeinc.read_text()
+    option = '-enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang'
+    if option not in text:
+        return
+    zero = '\t-ftrivial-auto-var-init=zero ' + chr(92) + '\n'
+    old = zero + '\t' + option + ' ' + chr(92) + '\n'
+    if text.count(option) != 1 or text.count(old) != 1:
+        sys.exit(f'{makeinc}: unrecognized auto-var-init opt-in context; keep zero initialization')
+    makeinc.write_text(text.replace(old, zero, 1))
+    info('patched makedefs/MakeInc.def: removed obsolete opt-in; kept -ftrivial-auto-var-init=zero')
+
+
+def rewrite_sources():
+    rewrite_auto_var_init()
+    # bsd/kern/makesyscalls.sh writes `\(sy_call_t *\)` inside an awk string. BSD awk and gawk drop the unknown
+    # escape; Debian's default mawk keeps the backslash, and init_sysent.c does not compile. The escape is bogus
+    # either way: remove it, and any generated file that carries it.
+    script = XNU / 'bsd/kern/makesyscalls.sh'
+    text = script.read_text()
+    if '\\(sy_call_t *\\)' in text:
+        script.write_text(text.replace('\\(sy_call_t *\\)', '(sy_call_t *)'))
+        info('patched bsd/kern/makesyscalls.sh: dropped the \\( escapes mawk keeps')
+    for generated in (ROOT / 'build/xnu').rglob('*.c') if (ROOT / 'build/xnu').is_dir() else ():
+        if b'\\(sy_call_t' in generated.read_bytes():
+            generated.unlink()
+            info(f'removed mis-generated {generated}')
+
+    # arm64_isa_compatibility.h gives Apple clang newer than 5010000 the standard `v0.4s` SHA/AES assembler forms and
+    # every other compiler the pre-2014 `q0, q1` forms, which no current assembler accepts. Upstream clang has no
+    # __apple_build_version__ and is newer than 5010000.
+    isa = XNU / 'osfmk/arm64/corecrypto/arm64_isa_compatibility.h'
+    text = isa.read_text()
+    if ISA_APPLE in text:
+        isa.write_text(text.replace(ISA_APPLE, ISA_ANY))
+        info('patched corecrypto/arm64_isa_compatibility.h: standard vector syntax for non-Apple clang')
+
+    # SETUP/kextsymboltool's seekFile() treats `offset != lseek()` as a full disk. check_all_exports runs it with
+    # `-output /dev/null`, where Linux lseek() returns 0, so the export check failed after the kernel link. make
+    # rebuilds the tool when its source changes.
+    tool = XNU / 'SETUP/kextsymboltool/kextsymboltool.c'
+    text = tool.read_text()
+    if 'S_ISCHR' not in text:
+        if text.count(SEEK_OLD) != 1:
+            sys.exit(f'{tool}: seekFile() body not found')
+        text = text.replace(SEEK_OLD, SEEK_NEW)
+        if '#include <sys/stat.h>' not in text:
+            text = text.replace('#include <sys/types.h>', '#include <sys/types.h>\n#include <sys/stat.h>', 1)
+        tool.write_text(text)
+        info('patched SETUP/kextsymboltool/kextsymboltool.c: lseek() on /dev/null is not a write error')
+
+    (FAKEROOT / 'usr/include').mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(HERE / 'TargetConditionals.h', FAKEROOT / 'usr/include/TargetConditionals.h')
+
+
+def fetch(directory, url, commit, *paths):
+    """A sparse, blobless checkout of paths at commit."""
+    head = subprocess.run(['git', '-C', directory, 'rev-parse', 'HEAD'], capture_output=True, text=True)
+    if head.returncode == 0 and head.stdout.strip() == commit:
+        return
+    # G0245D (2026-11-13): git fetch 对 github 大仓被代理稳定 502（CONNECT tunnel failed），
+    # 唯一稳定通道是 codeload tarball。llvm-project 优先用本机同 commit 的 clang 构建源树
+    # （G0245D_LLVM_SOURCE，默认指向 build-xnu-clang-linux.sh 解包的 tc-work），零联网；
+    # 其余小仓走 codeload tarball 并只解出需要的 paths。marker 记录 commit，幂等。
+    marker = directory / '.g0245d-commit'
+    if marker.is_file() and marker.read_text().strip() == commit:
+        return
+    shutil.rmtree(directory, ignore_errors=True)
+    if "llvm-project" in url:
+        local = Path(os.environ.get(
+            "G0245D_LLVM_SOURCE",
+            "{LLVM_PROJECT_ROOT}"))
+        missing = [p for p in paths if not (local / p).is_dir()]
+        if not missing:
+            for p in paths:
+                (directory / p).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copytree(local / p, directory / p)
+            directory.mkdir(parents=True, exist_ok=True)
+            marker.write_text(commit + "\n")
+            info(f"{directory.name}: sparse-copied {len(paths)} paths from local source at {commit[:12]}")
+            return
+        info(f"{local}: local LLVM source lacks {missing}; fetching pinned source from codeload")
+    owner_repo = url.removeprefix('https://github.com/').removesuffix('.git')
+    tar_url = f'https://codeload.github.com/{owner_repo}/tar.gz/{commit}'
+    prefix_roots = {p.split('/')[0] for p in paths}
+    with urllib.request.urlopen(tar_url, timeout=300) as response:
+        with tarfile.open(fileobj=response, mode='r|gz') as archive:
+            top = None
+            for member in archive:
+                if top is None:
+                    top = member.name.split('/')[0]
+                    if any(member.name == f'{top}/{root}' for root in prefix_roots) or \
+                       not member.name.startswith(top + '/'):
+                        continue
+                rel = member.name[len(top) + 1:]
+                if not any(rel == p or rel.startswith(p + '/') for p in paths):
+                    continue
+                if member.isfile():
+                    target = directory / rel
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    with archive.extractfile(member) as src_fh, open(target, 'wb') as dst_fh:
+                        shutil.copyfileobj(src_fh, dst_fh)
+    marker.write_text(commit + '\n')
+    info(f'{directory.name}: fetched {len(paths)} paths from codeload tarball at {commit[:12]}')
+
+
+def build_cc_kext():
+    # Match the kernel's architecture and deployment; an unstamped archive may belong to another OS.
+    out = FAKEROOT / 'usr/local/lib/kernel/libcc_kext.a'
+    stamp = out.with_suffix('.target.json')
+    inputs = {'recipe': 1, 'arch': ARCH, 'triple': TRIPLE,
+              'sdk_version': os.environ.get('UNIXNU_SDK_VERSION', '17.0'),
+              'xnu_tag': os.environ.get('UNIXNU_XNU_TAG'),
+              'xnu_commit': os.environ.get('UNIXNU_XNU_COMMIT'),
+              'llvm_commit': LLVM_COMMIT, 'libc_commit': LIBC_COMMIT}
+    try:
+        previous = json.loads(stamp.read_text())
+    except (OSError, ValueError):
+        previous = None
+    if out.is_file() and previous == {'inputs': inputs, 'sha256': hashlib.sha256(out.read_bytes()).hexdigest()}:
+        return
+    src = ROOT / '.cache/linux'
+    fetch(src / 'llvm-project', 'https://github.com/llvm/llvm-project', LLVM_COMMIT,
+          'compiler-rt/lib/profile', 'compiler-rt/include/profile')
+    fetch(src / 'Libc', 'https://github.com/apple-oss-distributions/Libc.git', LIBC_COMMIT, 'include')
+    rt = src / 'llvm-project/compiler-rt'
+    out.parent.mkdir(parents=True, exist_ok=True)
+    # A failed compile/link must leave any previous archive and receipt untouched.
+    with tempfile.TemporaryDirectory(prefix='.cc_kext-', dir=out.parent) as directory:
+        temporary = Path(directory)
+        objects = []
+        for name in PROFILE_SOURCES:
+            obj = temporary / f'{name}.o'
+            subprocess.run(['xcrun', 'clang', '-target', TRIPLE, '-arch', ARCH, '-isysroot', FAKEROOT,
+                            '-mkernel', '-DKERNEL_USE', '-O3', '-fPIC', '-w',
+                            '-I', rt / 'include', '-I', FAKEROOT / 'System/Library/Frameworks/Kernel.framework/Headers',
+                            '-idirafter', src / 'Libc/include', '-idirafter', XNU / 'libsyscall/wrappers',
+                            '-c', rt / f'lib/profile/{name}.c', '-o', obj], check=True)
+            check_object(obj.read_bytes(), str(obj))
+            objects.append(obj)
+        candidate = temporary / out.name
+        subprocess.run(['xcrun', 'libtool', '-static', '-o', candidate, *objects], check=True)
+        data = candidate.read_bytes()
+        if not data.startswith(b'!<arch>\n') or len(data) <= 8:
+            raise SystemExit(f'{candidate}: libtool did not produce an archive')
+        receipt = temporary / stamp.name
+        receipt.write_text(json.dumps({'inputs': inputs, 'sha256': hashlib.sha256(data).hexdigest()}, indent=2) + '\n')
+        candidate.replace(out)
+        receipt.replace(stamp)
+    info(f'libcc_kext.a: {out} ({TRIPLE})')
+
+if __name__ == '__main__':
+    mode = sys.argv[1] if len(sys.argv) > 1 else ''
+    if mode == 'source':
+        rewrite_sources()
+    elif mode == 'libs':
+        build_cc_kext()
+    else:
+        sys.exit('usage: prepare-xnu.py source|libs')

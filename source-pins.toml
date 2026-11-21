@@ -1,5 +1,9 @@
 schema_version = 1
 snapshot_date = "2026-11-16"
+publication_update = "2026-11-21"
+current_diagnostics = "diagnostics/ios16-20F66/source-pins.json"
+historical_scope = "Pins below describe retired iPadOS history and publication schema, not v9/v10 diagnostic builds. Current XNU 8796.121.2 pins are separate."
+historical_main_commit = "53ce24cd0e727914f4e25f32b44815cd00885774"
 
 [official]
 repository = "https://github.com/UniXNU/UniXNU.git"

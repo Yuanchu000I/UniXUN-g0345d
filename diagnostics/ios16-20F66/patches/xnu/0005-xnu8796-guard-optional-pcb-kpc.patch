@@ -1,0 +1,21 @@
+--- a/osfmk/arm64/pcb.c
++++ b/osfmk/arm64/pcb.c
+@@ -181,6 +181,8 @@ machine_switch_context(thread_t old, thread_t new, void *continuation)
+ 		panic("machine_switch_context");
+ 	}
+ 
++#if KPC
+ 	kpc_off_cpu(old);
++#endif /* KPC */
+ 
+ 	machine_switch_pmap_and_extended_context(old, new);
+@@ -517,7 +519,9 @@ machine_stack_handoff(thread_t old, thread_t new)
+ 		panic("stack handoff with PAN disabled");
+ 	}
+ #endif
+ 
++#if KPC
+ 	kpc_off_cpu(old);
++#endif /* KPC */
+ 
+ 	stack = machine_stack_detach(old);

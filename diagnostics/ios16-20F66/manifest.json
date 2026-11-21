@@ -1,0 +1,396 @@
+{
+  "schema_version": 1,
+  "scope": "ios16-20F66-native-only-diagnostic",
+  "xnu_version": "8796.121.2",
+  "patch_count": 46,
+  "patch_order": [
+    "patches/xnu/0001-xnu8796-msm8996-machine-layer.patch",
+    "patches/xnu/architectural-timer-entry.patch",
+    "patches/xnu/armvirt-platform-personality.patch",
+    "patches/xnu/cxx-flag-dependencies.patch",
+    "patches/xnu/disabled-deferred-reclaim.patch",
+    "patches/xnu/kernel-sdk-root.patch",
+    "patches/xnu/local-availability.patch",
+    "patches/xnu/mockfs-intermediate-lookup.patch",
+    "patches/xnu/mockfs-memory-device-width.patch",
+    "patches/xnu/mockfs-statfs.patch",
+    "patches/xnu/mockfs-test-file.patch",
+    "patches/xnu/mockfs-typed-allocation.patch",
+    "patches/xnu/native-4k-bootstrap-capacity.patch",
+    "patches/xnu/native-4k-signature-hash-cache.patch",
+    "patches/xnu/native-4k-user-abi.patch",
+    "patches/xnu/native-dt-panic-region.patch",
+    "patches/xnu/non-apple-cache-monitor.patch",
+    "patches/xnu/non-apple-iommu-bootstrap.patch",
+    "patches/xnu/non-apple-pmap-field.patch",
+    "patches/xnu/null-root-media.patch",
+    "patches/xnu/source-corecrypto14-bootstrap.patch",
+    "patches/xnu/source-pthread-bootstrap.patch",
+    "patches/xnu/0001-ios165-m71-ramroot-checkpoints.patch",
+    "patches/xnu/0001-ios165-source-crypto-before-uuid.patch",
+    "patches/xnu/0001-xnu8796-atomic-object-json.patch",
+    "patches/xnu/0002-ios165-external-archive-dependencies.patch",
+    "patches/xnu/0001-xnu8796-clang24-types-and-stack-buffers.patch",
+    "patches/xnu/0002-ios165-m71-export-private-probe-header.patch",
+    "patches/xnu/0002-source-pthread-bootstrap-version514.patch",
+    "patches/xnu/0001-xnu8796-native-machine-source-selection.patch",
+    "patches/xnu/0002-xnu8796-msm8996-enable-native-providers.patch",
+    "patches/xnu/0003-xnu8796-msm8996-disable-unavailable-kpc.patch",
+    "patches/xnu/0002-xnu8796-guard-optional-ast-kperf.patch",
+    "patches/xnu/0003-xnu8796-guard-optional-running-timer-kperf.patch",
+    "patches/xnu/0004-xnu8796-guard-optional-task-kpc.patch",
+    "patches/xnu/0004-xnu8796-guard-scheduler-kperf-running.patch",
+    "patches/xnu/0001-xnu8796-apple-only-start-tunables.patch",
+    "patches/xnu/0005-xnu8796-guard-optional-pcb-kpc.patch",
+    "patches/xnu/0006-xnu8796-guard-optional-ktrace-kperf.patch",
+    "patches/xnu/0007-xnu8796-weak-cpu-probe-provider.patch",
+    "patches/xnu/attempt-28-xnu-entry-rgb888.patch",
+    "patches/xnu/stage5-pre-mmu-bands.patch",
+    "patches/xnu/stage5-postmmu.patch",
+    "patches/xnu/stage5-centry-v7.patch",
+    "patches/xnu/stage5-centry-v8.patch",
+    "patches/xnu/stage5-centry-v9.patch"
+  ],
+  "files": {
+    "LICENSE": {
+      "sha256": "5b1d3d911103cb0f41641ec0964c5ac1f7e229f57aa072b6ac38bae913a1307b",
+      "bytes": 2673
+    },
+    "NOTICE": {
+      "sha256": "66db811948b49667007930da558e351ebc24e13e2b9ece25e14389878448fd40",
+      "bytes": 497
+    },
+    "README.md": {
+      "sha256": "3da3a2320bed79397be714c9d7714396f61a17cb419b88ce0b4c572ec13df09d",
+      "bytes": 3480
+    },
+    "adapt_adt_window.py": {
+      "sha256": "5b02109a8cabdef4b1366168f1dfdc1b4d578a146e58ffce15f0f3e213c54d49",
+      "bytes": 3302
+    },
+    "adt-window-semantics.json": {
+      "sha256": "4e0de2de7ccbe5a04838ffe9f2053c53b5755a69dc3aab879800500fdb572bc3",
+      "bytes": 6659
+    },
+    "audit_native_kernel.py": {
+      "sha256": "5f3a5849cf58ad595764b54243576ea3bbad7694c77dc36835355ec0791f1cf8",
+      "bytes": 1208
+    },
+    "check_export.py": {
+      "sha256": "996cbcca4afbe73c7c59592eb469c85e29e6f92e285acbb9192da318d803b396",
+      "bytes": 6549
+    },
+    "components/Adreno530/Adreno530Regs.h": {
+      "sha256": "1e022829e945b208f753cb6cf654d42f2005bfd0afcd8d62defb6ff15ab41fd0",
+      "bytes": 1822
+    },
+    "components/Adreno530/NativeAdreno530.cpp": {
+      "sha256": "c72a83d32635b47867c13f3831c07fca59c435fb762000ede82c1ea92e2e0179",
+      "bytes": 7471
+    },
+    "components/ArmCpu/ArmCpu.cpp": {
+      "sha256": "48e74995bf25f7011e01998beaa8a28d88d26468e5092db6fde27ffa2e234123",
+      "bytes": 63259
+    },
+    "components/ArmCpu/LICENSE": {
+      "sha256": "9e18e2c43ae4e51da2d11fd777b5b11056476d6ba395e5e2270467dbf02d0adf",
+      "bytes": 2673
+    },
+    "components/ArmDTPlatform/ArmDTPlatform.cpp": {
+      "sha256": "5f3d2c5356e4e25865c987ae61a093bd6342bf7f45bfe096ab24e7f2b134ea5a",
+      "bytes": 12377
+    },
+    "components/ArmDTPlatform/LICENSE": {
+      "sha256": "03a8ab50f4b3b4c65f070d07302a3522e7badbf54dde090cca59bb3e746bba3f",
+      "bytes": 2682
+    },
+    "components/Blsp8996/Blsp8996Regs.h": {
+      "sha256": "e899e150713fff91b147ffc306a83625a13426b637c1295200c6c0a3cf066ee9",
+      "bytes": 2633
+    },
+    "components/Blsp8996/BlspI2c.cpp": {
+      "sha256": "72fc43a901a8e32e14cf8d837cb9be943eee285f2a4c08108ee246a91e588901",
+      "bytes": 7062
+    },
+    "components/NativeUfs8996/NativeUfs8996.cpp": {
+      "sha256": "946f01c0a813ff1306baaa18b111b209524311c97af79af64f14f7b212a1311b",
+      "bytes": 7972
+    },
+    "components/NativeUfs8996/Ufs8996Regs.h": {
+      "sha256": "8c48bc36bb2297cc444afd5fe2345c44b89a11aab5cc897aea71b96811219ae6",
+      "bytes": 2924
+    },
+    "config/device/board.toml": {
+      "sha256": "102e10232ab04a4b8f25b19db2c29e0a85ad455cebcabd18ca5598529b3b5cef",
+      "bytes": 5734
+    },
+    "config/device/configs/g0345d_defconfig": {
+      "sha256": "1ad501970608d5e88f94853589ffa82d1443ece4dd69064e9b45135b192e1081",
+      "bytes": 2942
+    },
+    "config/device/dts/g0345d.dts": {
+      "sha256": "513c470a203b01066d6b0c6b0fe292be35ffd90165bb3065aa1fd83f9439b2cd",
+      "bytes": 6580
+    },
+    "config/device/feeds.toml": {
+      "sha256": "9ce277566256ee7e67e83566c8d0b15e114e00a5e40755982eb391e795f7057b",
+      "bytes": 334
+    },
+    "config/resolved.config.in": {
+      "sha256": "d0942cd13d1b8c86aac68b05f3bd52ed4f0fc2bb57ce53e948620c3242f22a5a",
+      "bytes": 3769
+    },
+    "config/tools/profiles/arch/arm64/configs/common.config": {
+      "sha256": "6d65acf73f0b8252e386eccfaabe6093eed7ac3c90d940454eaf37763afdd790",
+      "bytes": 217
+    },
+    "config/tools/profiles/arch/arm64/profile.toml": {
+      "sha256": "9c3c54fbbb2ffd732fd270a3b79e569cd48ec5dc087f764889e29e88981a115c",
+      "bytes": 561
+    },
+    "config/tools/profiles/os/ios-16.5-20F66/configs/ios.config": {
+      "sha256": "588b31c3380e1d34a295cd2c9d6ea08f283aa15ca16ae3ca3a6991ade70c77a9",
+      "bytes": 131
+    },
+    "config/tools/profiles/os/ios-16.5-20F66/profile.toml": {
+      "sha256": "d8a28cac47d6ae3ffd5b6af9cef9770fcaee75f35b8554483daf2e85a9c35b31",
+      "bytes": 1719
+    },
+    "evidence-summary.json": {
+      "sha256": "16d468e61b0519aaec2284a17f7bed513321980e23e9aa66109ebc87e4d73c72",
+      "bytes": 3145
+    },
+    "licenses/XNU-APPLE_LICENSE": {
+      "sha256": "e5881019d8766c1e88a5fe1dbca4ba40c78011d41fcb18f6e9f50df60182685b",
+      "bytes": 19829
+    },
+    "licenses/device-LICENSE": {
+      "sha256": "5b1d3d911103cb0f41641ec0964c5ac1f7e229f57aa072b6ac38bae913a1307b",
+      "bytes": 2673
+    },
+    "licenses/tools-LICENSE": {
+      "sha256": "5b1d3d911103cb0f41641ec0964c5ac1f7e229f57aa072b6ac38bae913a1307b",
+      "bytes": 2673
+    },
+    "patches/tools/0002-portrait-menu-shows-all-entries.patch": {
+      "sha256": "f2cdf48ab4f84b7f1658ec25fbfb1993a07406a111fe713ed8cc2cc0be3fafd2",
+      "bytes": 3601
+    },
+    "patches/tools/0003-linux-host-without-root.patch": {
+      "sha256": "8ebaf10edd365fc0b551388cb8b999bea1f6930ad2969f713a381eff0837956d",
+      "bytes": 4601
+    },
+    "patches/xnu/0001-ios165-m71-ramroot-checkpoints.patch": {
+      "sha256": "019f0a5c8f46ac4eada51c08d82b0ac671332da9f3ccb5556e4c015a60af30bd",
+      "bytes": 4518
+    },
+    "patches/xnu/0001-ios165-source-crypto-before-uuid.patch": {
+      "sha256": "6038dbd2b2ebff37bebe80f10c0a4efd2535f9378f097094a3a59f5925630dc7",
+      "bytes": 2194
+    },
+    "patches/xnu/0001-xnu8796-apple-only-start-tunables.patch": {
+      "sha256": "f25056308b8883850adbb2adf57fe817040a337c962e09e3059cf905bf0055c1",
+      "bytes": 578
+    },
+    "patches/xnu/0001-xnu8796-atomic-object-json.patch": {
+      "sha256": "9a850b6046b0ed028f0ca2773289462d08ca18b4f839030131aafb40a0c95747",
+      "bytes": 2364
+    },
+    "patches/xnu/0001-xnu8796-clang24-types-and-stack-buffers.patch": {
+      "sha256": "b4e00d1521e6ae3e618198bd6b9207c9061933cd006064e7d93ef5dd9e71a7fe",
+      "bytes": 12756
+    },
+    "patches/xnu/0001-xnu8796-msm8996-machine-layer.patch": {
+      "sha256": "dfaff36ff79afa8fcd458602dc56bcbc5d8324651612cbe215249093d829b809",
+      "bytes": 10658
+    },
+    "patches/xnu/0001-xnu8796-native-machine-source-selection.patch": {
+      "sha256": "550eee5c41a53a3fa6dbe566cf49d515b3dd671bb22bb64b812d81db93eda1ab",
+      "bytes": 2782
+    },
+    "patches/xnu/0002-ios165-external-archive-dependencies.patch": {
+      "sha256": "1efee2a64ba78503db632937600bc3c5a89c5b6226e0b4aade69a68f6240c543",
+      "bytes": 967
+    },
+    "patches/xnu/0002-ios165-m71-export-private-probe-header.patch": {
+      "sha256": "f6a9a106c33d228ddcdcc87b05f55a19cd8491ab8da97698371b15c9a2a1518f",
+      "bytes": 193
+    },
+    "patches/xnu/0002-source-pthread-bootstrap-version514.patch": {
+      "sha256": "7f954f9a14893a35e74b9201d9cd4303b6a5f62a3345fb822375a08dddcd414e",
+      "bytes": 285
+    },
+    "patches/xnu/0002-xnu8796-guard-optional-ast-kperf.patch": {
+      "sha256": "31d4125a883c758255e4c6dbc4c9a0a3e01b33c86cd521dcef7fead8abb426c4",
+      "bytes": 558
+    },
+    "patches/xnu/0002-xnu8796-msm8996-enable-native-providers.patch": {
+      "sha256": "834a23965ec696be3128016b74fec7566c7fc47a0081bac57984f7e3df811211",
+      "bytes": 679
+    },
+    "patches/xnu/0003-xnu8796-guard-optional-running-timer-kperf.patch": {
+      "sha256": "d2b670336116e466c4096c475c931817714029ede285bbab97e4898314753bec",
+      "bytes": 390
+    },
+    "patches/xnu/0003-xnu8796-msm8996-disable-unavailable-kpc.patch": {
+      "sha256": "ecec62c83f3e36a05e7dc345b455a1db452e351323cde4c089200c95bbfc3365",
+      "bytes": 1345
+    },
+    "patches/xnu/0004-xnu8796-guard-optional-task-kpc.patch": {
+      "sha256": "326410bef685884a117dfca16422e0c7f247a9d7a8abbc98166c363b322e602c",
+      "bytes": 213
+    },
+    "patches/xnu/0004-xnu8796-guard-scheduler-kperf-running.patch": {
+      "sha256": "bb798b84dea187cb13dbe44acba8cd3bdd8f48a7f81b70a0cc8517b8ce6a07e8",
+      "bytes": 505
+    },
+    "patches/xnu/0005-xnu8796-guard-optional-pcb-kpc.patch": {
+      "sha256": "31d973e7f0d147310830687ac97f3d1a671c24f81cf733733a6de0ea7e22b9f6",
+      "bytes": 499
+    },
+    "patches/xnu/0006-xnu8796-guard-optional-ktrace-kperf.patch": {
+      "sha256": "3e197620844c2fe26df781f18444113df47c88c5b9687ae01105213228701941",
+      "bytes": 1076
+    },
+    "patches/xnu/0007-xnu8796-weak-cpu-probe-provider.patch": {
+      "sha256": "effdb68a145108035273bdbd63cb66b84b0f14e8ed398b719a6ef393283a6a16",
+      "bytes": 524
+    },
+    "patches/xnu/architectural-timer-entry.patch": {
+      "sha256": "809b0c951545d889a2a37c730189283e7e890340894bab6d937c914dbd20b8e5",
+      "bytes": 395
+    },
+    "patches/xnu/armvirt-platform-personality.patch": {
+      "sha256": "00e7054c9ff2ae82b66f27bfbefd7620e9000503ea5b38b80aa90aab1e4b7225",
+      "bytes": 990
+    },
+    "patches/xnu/attempt-28-xnu-entry-rgb888.patch": {
+      "sha256": "aa046760cf1032c3bff90a8707d4a9f43bf9cca3260411d29748b31bcac71b0e",
+      "bytes": 654
+    },
+    "patches/xnu/cxx-flag-dependencies.patch": {
+      "sha256": "a435e8797ed24a8338db53d0eaac49c163f90170c1fb7946d0c5cdee9d7d4b52",
+      "bytes": 4316
+    },
+    "patches/xnu/disabled-deferred-reclaim.patch": {
+      "sha256": "817a0b017aebb21f773aafe2b92a81be076abc66e29275d57220635339a407e1",
+      "bytes": 261
+    },
+    "patches/xnu/kernel-sdk-root.patch": {
+      "sha256": "2bcf10f4bf171afbc358cb64e9bc742563dd21f5eadf0e7a17936e87fa8ba43d",
+      "bytes": 1258
+    },
+    "patches/xnu/local-availability.patch": {
+      "sha256": "a051857d524f8836068fd2f1182ebe9e9d9ccf28b9560fb27ad634b0cb93270e",
+      "bytes": 503
+    },
+    "patches/xnu/mockfs-intermediate-lookup.patch": {
+      "sha256": "51a5b76873c2a39b777bd4f1f5e78730ce72e93d548de6fbe4655f107731fa00",
+      "bytes": 440
+    },
+    "patches/xnu/mockfs-memory-device-width.patch": {
+      "sha256": "506f4ba36e30a700f0d27370d07abbde6e2c689d13fbad3400a6b940569ae30a",
+      "bytes": 983
+    },
+    "patches/xnu/mockfs-statfs.patch": {
+      "sha256": "58c9a51909b12dca9cd1ac2fdb94be748b43be1c979383b9504a0304fb16a809",
+      "bytes": 1251
+    },
+    "patches/xnu/mockfs-test-file.patch": {
+      "sha256": "4a1ef86e0bdca7b633f59885961be1939574f8ba9814d1d75ebbfd0a7a8bd919",
+      "bytes": 9938
+    },
+    "patches/xnu/mockfs-typed-allocation.patch": {
+      "sha256": "44dfe8ea590336fae48a4d5f7b8fd478a435d591a34ba77fe1d0a961c630ad57",
+      "bytes": 707
+    },
+    "patches/xnu/native-4k-bootstrap-capacity.patch": {
+      "sha256": "4ac39b497d88b28432bc7844c7137c8d2acc1992bef53f68c3512523a80b13a3",
+      "bytes": 2300
+    },
+    "patches/xnu/native-4k-signature-hash-cache.patch": {
+      "sha256": "a12be973c4eb525cb4309c759d5bae970b158f2928f284615ba6d6969f445eb4",
+      "bytes": 10363
+    },
+    "patches/xnu/native-4k-user-abi.patch": {
+      "sha256": "981ac483ae898426486aab475e22b2286bc1d820ad047c566182c3fbf435f6d4",
+      "bytes": 3136
+    },
+    "patches/xnu/native-dt-panic-region.patch": {
+      "sha256": "b60c2a9a72ea23832f1e64348a5c5d1152cf05db6c156283dd8a93c804cd89cb",
+      "bytes": 1571
+    },
+    "patches/xnu/non-apple-cache-monitor.patch": {
+      "sha256": "116ee4e61fb68e4a403049e349ceb23334e2eff0bec0eb11dc3bd5f3259fabdf",
+      "bytes": 869
+    },
+    "patches/xnu/non-apple-iommu-bootstrap.patch": {
+      "sha256": "a53aaf1073976aed1561cb609763c7a4214e245a50fb534cc77b643808df9e70",
+      "bytes": 2647
+    },
+    "patches/xnu/non-apple-pmap-field.patch": {
+      "sha256": "82fe0a5021d59ddb766884f802f960ad67d61be63596f0bde136bf3875ff3ff8",
+      "bytes": 268
+    },
+    "patches/xnu/null-root-media.patch": {
+      "sha256": "a67ce9afd5af8178e83089ace6ce5d21f5e820b69e4c70dfc2cdae1be274678a",
+      "bytes": 835
+    },
+    "patches/xnu/series": {
+      "sha256": "9286c6cf9020c4922ce7e09e38017b34783acc3ec9d90039483987f9607f302d",
+      "bytes": 1649
+    },
+    "patches/xnu/source-corecrypto14-bootstrap.patch": {
+      "sha256": "041f0d0627e83f5c276cfa87130cec04907cdd02682428d069af2a9af2a16ebd",
+      "bytes": 1408
+    },
+    "patches/xnu/source-pthread-bootstrap.patch": {
+      "sha256": "1bbf00cc2b4e8f227dddf2807818d10e07325beea8e6c2c0b12106228d31d643",
+      "bytes": 948
+    },
+    "patches/xnu/stage5-centry-v7.patch": {
+      "sha256": "eab5dcc0c209aa46ddc3949f0e00371e4f6ac5406d8aa6af87c22fd0bb10dc39",
+      "bytes": 11451
+    },
+    "patches/xnu/stage5-centry-v8.patch": {
+      "sha256": "abcb005884a658d76a71cd5579f42702b4f23b7a6f1773da8836fab6e14a93b9",
+      "bytes": 634
+    },
+    "patches/xnu/stage5-centry-v9.patch": {
+      "sha256": "cdc8d76c4f03443936f7a607d69a9dfbc16aaeeefe59d0694025ae5caff80841",
+      "bytes": 1426
+    },
+    "patches/xnu/stage5-postmmu.patch": {
+      "sha256": "431657fa5969ab89004aeae9ea9d83fcb96fd5db8c63f714807cc19596965277",
+      "bytes": 2691
+    },
+    "patches/xnu/stage5-pre-mmu-bands.patch": {
+      "sha256": "33ecf429ee82a9ce0da514ec2fda40bffc630b72797df49dbd2f4affaa45ddc8",
+      "bytes": 3559
+    },
+    "source-pins.json": {
+      "sha256": "84f601b72b12a8f59687204e723020c71c375059643e2cb962f7b48fcd65b4e1",
+      "bytes": 9095
+    },
+    "tooling/scripts/build-libpthread-kernel.py": {
+      "sha256": "c1b2a2bfb9ab73992b15a1732a738d0e2da78865234df412bb78da49c5e58df7",
+      "bytes": 6019
+    },
+    "tooling/scripts/build-xnu-4k-baseline.sh": {
+      "sha256": "a844ae137168d2aec870717e2c0ea9e04f324f203c8d15168f81ee677c467634",
+      "bytes": 51169
+    },
+    "tooling/scripts/linux/prepare-xnu.py": {
+      "sha256": "a2d27efd3dd5d91a65537117da82952f5ff6a2537e2a029bf4ac64b26ea3249b",
+      "bytes": 11152
+    },
+    "tooling/scripts/unixnu/kernel.py": {
+      "sha256": "940d33861da622b31fa9f0362903a159f87a3b16ed75eaa9d73ba6d28a493cf1",
+      "bytes": 25924
+    },
+    "tooling/scripts/unixnu/patches.py": {
+      "sha256": "213b11ce95bae3be297e77110768c8fd99d3f6b88aa95149eb7b487f1c9cbaa4",
+      "bytes": 3453
+    }
+  }
+}

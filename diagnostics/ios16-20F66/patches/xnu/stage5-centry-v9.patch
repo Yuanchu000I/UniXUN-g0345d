@@ -1,0 +1,46 @@
+--- a/osfmk/arm64/machine_routines.c
++++ b/osfmk/arm64/machine_routines.c
+@@ -2284,8 +2284,8 @@
+ 	    "movk x9, #33625, lsl #16\n"
+ 	    "mov x10, #17280\n"
+ 	    "mov w11, #255\n"
+-	    "mov w12, #128\n"
+-	    "mov w13, #0\n"
++	    "mov w12, #255\n"
++	    "mov w13, #255\n"
+ 	    "1:\n"
+ 	    "strb w11, [x9], #1\n"
+ 	    "strb w12, [x9], #1\n"
+@@ -2356,6 +2356,32 @@
+ 	    "b.ne 1b\n"
+ 	    "dsb sy\n"
+ 	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
++	/* Diagnostic wfe_live_values: observe inputs without changing original arithmetic. */
++	__asm__ volatile(
++	    "movz x9, #51968\n"
++	    "movk x9, #33623, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #255\n"
++	    "mov w12, #255\n"
++	    "mov w13, #255\n"
++	    "cbnz %x[quotient], 2f\n"
++	    "mov w13, #0\n"
++	    "cmn %w[index], #1\n"
++	    "b.ne 2f\n"
++	    "mov w12, #0\n"
++	    "mov w13, #255\n"
++	    "cbnz %x[timebase], 2f\n"
++	    "mov w11, #0\n"
++	    "2:\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : [timebase] "r" (ticks_per_sec), [quotient] "r" (ticks_per_event), [index] "r" (bit_index)
++	    : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 	/* Round up to next power of two if ticks_per_event is initially power of two */
+ 	if ((ticks_per_event & ((1 << bit_index) - 1)) != 0) {
+ 		bit_index++;

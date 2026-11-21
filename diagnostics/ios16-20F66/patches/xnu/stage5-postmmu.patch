@@ -1,0 +1,93 @@
+--- a/osfmk/arm64/start.s
++++ b/osfmk/arm64/start.s
+@@ -715,8 +715,34 @@
+ 	.globl EXT(g0345d_stage5_tables_done)
+ LEXT(g0345d_stage5_tables_done)
+ 
++	// Stage 5 diagnostic identity mapping: one 2 MiB Device/XN block.
++	// Actual TCR uses 4 KiB granules and a 39-bit TTBR0 VA space.
++	// Refuse an occupied L1[2]; never overwrite an existing kernel mapping.
++	.globl EXT(g0345d_stage5_fb_map_probe)
++LEXT(g0345d_stage5_fb_map_probe)
++	ldr	x11, [x25, #16]
++	cbnz	x11, EXT(g0345d_stage5_fb_slot_busy)
++	// x2 is the last allocated page; the original pool was fully zeroed.
++	add	x2, x2, PGBYTES
++	add	x10, x25, #(BOOTSTRAP_TABLE_BYTES >> 12), lsl #12
++	cmp	x2, x10
++	b.hs	Lbootstrap_tables_exhausted
++	// MAIR AttrIdx3 is Device-nGnRnE. Preserve AF/SH/NG template bits.
++	MOV64 x9, (0x83400000 | (ARM_TTE_BOOT_BLOCK & ~ARM_TTE_BLOCK_ATTRINDXMASK) | ARM_TTE_BLOCK_ATTRINDX(CACHE_ATTRINDX_DISABLE) | ARM_TTE_BLOCK_PNX | ARM_TTE_BLOCK_NX)
++	str	x9, [x2, #208]
++	and	x11, x2, #(ARM_TTE_TABLE_MASK)
++	orr	x11, x11, #(ARM_TTE_BOOT_TABLE)
++	// Publish the parent only after preparing the sole L2 leaf.
++	str	x11, [x25, #16]
++	dsb	ish
++	.globl EXT(g0345d_stage5_fb_map_done)
++LEXT(g0345d_stage5_fb_map_done)
+ 
+ 	b		common_start
++	.globl EXT(g0345d_stage5_fb_slot_busy)
++LEXT(g0345d_stage5_fb_slot_busy)
++	// Mapping conflict: fail closed instead of relabeling it pool exhaustion.
++	b	EXT(g0345d_stage5_fb_slot_busy)
+ 
+ /*
+  * Begin common CPU initialization
+@@ -870,6 +896,27 @@
+ 	MSR_SCTLR_EL1_X0
+ 	isb		sy
+ 
++	// Stage 5 postisb: cold-only, mapped Device/XN framebuffer.
++	cbnz	x21, Lstage5_postisb_skip
++	.globl EXT(g0345d_stage5_postisb_probe)
++LEXT(g0345d_stage5_postisb_probe)
++	movz	x9, #60800
++	movk	x9, #33611, lsl #16
++	mov	x10, #17280
++	mov	w11, #255
++	mov	w12, #255
++	mov	w13, #255
++Lstage5_postisb_pixels:
++	strb	w11, [x9], #1
++	strb	w12, [x9], #1
++	strb	w13, [x9], #1
++	subs	x10, x10, #1
++	b.ne	Lstage5_postisb_pixels
++	dsb	sy
++	.globl EXT(g0345d_stage5_postisb_done)
++LEXT(g0345d_stage5_postisb_done)
++Lstage5_postisb_skip:
++
+ #if !VMAPPLE
+ 	MOV64   x1, SCTLR_EL1_DEFAULT
+ 	cmp		x0, x1
+@@ -935,6 +982,27 @@
+ #endif
+ 
+ 	// Return to arm_init()
++
++	// Stage 5 preret: cold-only, mapped Device/XN framebuffer.
++	cbnz	x21, Lstage5_preret_skip
++	.globl EXT(g0345d_stage5_preret_probe)
++LEXT(g0345d_stage5_preret_probe)
++	movz	x9, #33408
++	movk	x9, #33613, lsl #16
++	mov	x10, #17280
++	mov	w11, #128
++	mov	w12, #128
++	mov	w13, #128
++Lstage5_preret_pixels:
++	strb	w11, [x9], #1
++	strb	w12, [x9], #1
++	strb	w13, [x9], #1
++	subs	x10, x10, #1
++	b.ne	Lstage5_preret_pixels
++	dsb	sy
++	.globl EXT(g0345d_stage5_preret_done)
++LEXT(g0345d_stage5_preret_done)
++Lstage5_preret_skip:
+ 	ret
+ 
+ Ltrampoline:

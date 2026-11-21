@@ -1,0 +1,10 @@
+--- a/osfmk/kern/Makefile
++++ b/osfmk/kern/Makefile
+@@ -116,6 +116,7 @@
+ 	arcade.h \
+ 	btlog.h \
+ 	cpu_quiesce.h \
++	ios165_m71_ramroot_probe.h \
+ 	iotrace.h \
+ 	ipc_kobject.h \
+ 	lock_ptr.h \

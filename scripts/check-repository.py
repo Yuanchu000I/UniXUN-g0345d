@@ -48,7 +48,8 @@ def verify():
                 'scripts/package.sh', 'proprietary-files.txt', 'package/README.md',
                 'local.toml.example', '.github/workflows/porting-record.yml',
                 '.github/workflows/package.yml', 'docs/status.md', 'docs/publication.md',
-                'docs/firmware-dependency.md', 'docs/provenance/source-snapshot.json']
+                'docs/firmware-dependency.md', 'docs/provenance/source-snapshot.json',
+                'docs/ipados17-abandoned.md', 'docs/bringup/stage5-wfe-v10-20261121.md']
     for name in required:
         need((ROOT / name).is_file(), f'missing required publication file: {name}')
     need(board.get('schema_version') == 2 and not board['board'].get('example'), 'board must be real format 2')
@@ -62,19 +63,47 @@ def verify():
     need(proposed_profile['os']['name'] == board['board']['os_profile'], 'OS profile proposal identity mismatch')
     need(proposed_profile['os']['target'] == 'ios' and proposed_profile['os']['ios_version'] == '16.5', 'wrong OS family or version')
     need(proposed_profile['ipsw']['version'] == '16.5' and proposed_profile['ipsw']['build'] == '20F66', 'wrong iPhone restore build')
+    need(proposed_profile['ipsw']['product'] == 'iPhone10,3', 'wrong iPhone OS donor product')
+    need(proposed_profile['ipsw']['url'].endswith('/iPhone10,3,iPhone10,6_16.5_20F66_Restore.ipsw'), 'wrong iPhone restore URL')
+    need((proposed_profile['ipsw']['device_class'], proposed_profile['ipsw']['chip_id'], proposed_profile['ipsw']['board_id']) == ('d22ap', 0x8015, 0x06), 'wrong iPhone restore BuildManifest identity')
     need(proposed_profile['kernel'].get('patch_series') == [], 'unreviewed OS patch series must remain empty')
+    profile_path = Path('profiles/os/ios-16.5-20F66')
+    for relative in ('profile.toml', 'configs/ios.config', 'patches/xnu/series'):
+        need((ROOT / profile_path / relative).read_bytes() ==
+             (ROOT / 'docs/os-profile-proposal/ios-16.5-20F66' / relative).read_bytes(),
+             f'runtime/proposal profile differs: {relative}')
+    need(proposed_profile['kernel']['linux'] ==
+         {'sdk_version': '16.5', 'triple': 'arm64-apple-ios16.5'},
+         'wrong explicit Linux iOS target')
+    need(proposed_profile['kernel']['native_kernel'] ==
+         'build/xnu/ios-obj/DEVELOPMENT_ARM64_MSM8996/mach.development.msm8996.unstripped',
+         'native-only kernel staging input must identify G0345D/MSM8996')
+    audit = load('docs/os-profile-proposal/ios-16.5-20F66/patch-audit.toml')
+    need(audit['result'] == 'candidate-only' and audit['xnu_revision'] == proposed_profile['os']['xnu_revision'], 'patch audit does not match the proposed XNU baseline')
+    need(audit['method']['arm64_sequential_apply_count'] == len(audit['candidate_groups']['arm64']) == 21, 'candidate patch audit count mismatch')
+    need(audit['method']['msm8996_followup_apply_check'] and not audit['method']['g0345d_device_series_checked'], 'patch audit qualification mismatch')
+    need(audit['configuration_validation']['resolver_status_passed'] and audit['configuration_validation']['defconfig_passed'], 'profile configuration validation missing')
+    need(audit['component_abi']['ios_16_5_declared'] == [] and len(audit['component_abi']['ipados_17_7_11_only']) == 6, 'component ABI limitation was not recorded')
     snapshot = json.loads((ROOT / 'docs/provenance/source-snapshot.json').read_text(encoding='utf-8'))
+    retired = {name: digest for name, digest in snapshot['files'].items()
+               if name.startswith('patches/xnu/')}
+    need(len(retired) == snapshot['ordered_device_patch_count'] == 51,
+         'historical retired-patch manifest count changed')
     for name, digest in snapshot['files'].items():
-        # The iOS branch intentionally changes the defconfig. Other historical
-        # functional inputs remain byte-identical to the published snapshot.
-        if name == 'configs/g0345d_defconfig':
+        # M42 manifest stays historical. Its root patches are retired, while
+        # this branch intentionally changes the selected OS defconfig.
+        if name == 'configs/g0345d_defconfig' or name in retired:
             continue
-        need(sha((ROOT / name).read_bytes()) == digest, f'exported functional input changed: {name}')
-    series = [line.split('#', 1)[0].strip() for line in (ROOT / 'patches/xnu/series').read_text().splitlines()]
-    series = [name for name in series if name]
-    expected = [name.removeprefix('patches/xnu/') for name in snapshot['files'] if name.startswith('patches/xnu/')]
-    need(series == expected and len(series) == len(set(series)) == snapshot['ordered_device_patch_count'] == 51, 'active patch order/count changed')
-    need({p.name for p in (ROOT / 'patches/xnu').glob('*.patch')} == set(series), 'inactive or missing XNU patch')
+        need(sha((ROOT / name).read_bytes()) == digest,
+             f'preserved historical board input changed: {name}')
+    series = [line.split('#', 1)[0].strip() for line in
+              (ROOT / 'patches/xnu/series').read_text(encoding='utf-8').splitlines()]
+    need(not any(series), 'retired root XNU patch series must remain empty')
+    need(not list((ROOT / 'patches/xnu').glob('*.patch')),
+         'retired root XNU patch files must not be republished')
+    diagnostic_checker = ROOT / 'diagnostics/ios16-20F66/check_export.py'
+    need(diagnostic_checker.is_file(), 'missing exact 46-patch export checker')
+    subprocess.run([sys.executable, '-X', 'utf8', str(diagnostic_checker)], check=True)
     for name, digest in pins['validation']['sha256'].items():
         need(sha((ROOT / name).read_bytes()) == digest, f'pinned checker/catalog/template changed: {name}')
     need(pins['official']['commit'] == '21d683dff61c66f219f03ab9d8b9249026514788', 'unexpected official schema pin')
@@ -97,7 +126,7 @@ def verify():
                 pending.append(dep)
     need(selected <= {c for area in record['area'] for c in area['components']}, 'selected dependency lacks area')
     need('cellular' in {area['id'] for area in record['area']}, 'missing cellular area from official prose guide')
-    print(f'PASS: historical functional inputs and 51 retained device patches; iOS target metadata checked')
+    print('PASS: preserved board inputs; 51 patches retired; empty root series; exact diagnostic export checked')
     print(f'PASS: {len(record["area"])} areas cover {len(selected)} components including dependencies')
     print('COMPATIBILITY: official strict catalog lacks ' + ', '.join(sorted(selected - upstream_ids)))
     print('MODE: unchanged official record checker + explicitly pinned fork catalog')

@@ -1,0 +1,396 @@
+--- a/osfmk/arm64/start.s
++++ b/osfmk/arm64/start.s
+@@ -546,8 +546,8 @@
+ 	mov		sp, x0
+ 
+ 	// Load address to the C init routine into link register
+-	adrp	lr, EXT(arm_init)@page
+-	add		lr, lr, EXT(arm_init)@pageoff
++	adrp	lr, EXT(g0345d_stage5_cbridge_probe)@page
++	add		lr, lr, EXT(g0345d_stage5_cbridge_probe)@pageoff
+ 	add		lr, lr, x22							// Convert to KVA
+ 	sub		lr, lr, x23
+ 
+@@ -1062,6 +1062,30 @@
+ 	/* Return to arm_init() */
+ 	ret
+ 
++	.text
++	.align 2
++// Cold KVA entry bridge: no stack/call, restore original C-entry LR.
++.globl _g0345d_stage5_cbridge_probe
++_g0345d_stage5_cbridge_probe:
++movz x9, #6016
++movk x9, #33615, lsl #16
++mov x10, #17280
++mov w11, #0
++mov w12, #192
++mov w13, #255
++1:
++strb w11, [x9], #1
++strb w12, [x9], #1
++strb w13, [x9], #1
++subs x10, x10, #1
++b.ne 1b
++dsb sy
++.globl _g0345d_stage5_cbridge_done
++_g0345d_stage5_cbridge_done:
++	adrp lr, EXT(arm_init)@page
++	add lr, lr, EXT(arm_init)@pageoff
++	b EXT(arm_init)
++
+ //#include	"globals_asm.h"
+ 
+ /* vim: set ts=4: */
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -352,6 +352,23 @@
+ arm_init(
+ 	boot_args       *args)
+ {
++	/* Diagnostic stores follow the compiler-generated C entry prologue. */
++	__asm__ volatile(
++	    "movz x9, #44160\n"
++	    "movk x9, #33616, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #255\n"
++	    "mov w12, #128\n"
++	    "mov w13, #255\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
++
+ 	unsigned int    maxmem;
+ 	uint32_t        memsize;
+ 	uint64_t        xmaxmem;
+@@ -360,14 +377,62 @@
+ 	unsigned int dt_entry_size = 0;
+ 
+ 	arm_setup_pre_sign();
++	/* Diagnostic presign_return: retained stores after the preceding operation. */
++	__asm__ volatile(
++	    "movz x9, #16768\n"
++	    "movk x9, #33618, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #0\n"
++	    "mov w12, #128\n"
++	    "mov w13, #255\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 
+ 	arm_slide_rebase_and_sign_image();
++	/* Diagnostic rebase_return: retained stores after the preceding operation. */
++	__asm__ volatile(
++	    "movz x9, #54912\n"
++	    "movk x9, #33619, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #128\n"
++	    "mov w12, #255\n"
++	    "mov w13, #0\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 
+ 	/* If kernel integrity is supported, use a constant copy of the boot args. */
+ 	const_boot_args = *args;
+ 	BootArgs = args = &const_boot_args;
+ 
+ 	cpu_data_init(&BootCpuData);
++	/* Diagnostic cpudata_return: retained stores after the preceding operation. */
++	__asm__ volatile(
++	    "movz x9, #27520\n"
++	    "movk x9, #33621, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #255\n"
++	    "mov w12, #192\n"
++	    "mov w13, #0\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ #if defined(HAS_APPLE_PAC)
+ 	/* bootstrap cpu process dependent key for kernel has been loaded by start.s */
+ 	BootCpuData.rop_key = ml_default_rop_pid();
+@@ -375,11 +440,91 @@
+ #endif /* defined(HAS_APPLE_PAC) */
+ 
+ 	PE_init_platform(FALSE, args); /* Get platform expert set up */
++	/* Diagnostic early_pe_return: retained stores after the preceding operation. */
++	__asm__ volatile(
++	    "movz x9, #128\n"
++	    "movk x9, #33623, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #128\n"
++	    "mov w12, #255\n"
++	    "mov w13, #128\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 
+ #if __arm64__
++	/* Diagnostic pe_barrier_exit: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #51968\n"
++	    "movk x9, #33623, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #0\n"
++	    "mov w12, #0\n"
++	    "mov w13, #255\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 	configure_timer_apple_regs();
++	/* Diagnostic timer_return: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #51968\n"
++	    "movk x9, #33623, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #0\n"
++	    "mov w12, #255\n"
++	    "mov w13, #255\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 	wfe_timeout_configure();
++	/* Diagnostic wfe_config_return: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #51968\n"
++	    "movk x9, #33623, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #255\n"
++	    "mov w12, #0\n"
++	    "mov w13, #192\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 	wfe_timeout_init();
++	/* Diagnostic wfe_return: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #38272\n"
++	    "movk x9, #33624, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #96\n"
++	    "mov w12, #96\n"
++	    "mov w13, #255\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 
+ 	configure_misc_apple_boot_args();
+ 	configure_misc_apple_regs();
+@@ -445,7 +590,39 @@
+ 	}
+ #endif
+ 
++	/* Diagnostic topology_enter: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #10880\n"
++	    "movk x9, #33626, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #255\n"
++	    "mov w12, #160\n"
++	    "mov w13, #192\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 	ml_parse_cpu_topology();
++	/* Diagnostic topology_return: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #49024\n"
++	    "movk x9, #33627, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #64\n"
++	    "mov w12, #255\n"
++	    "mov w13, #192\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 
+ 
+ 	master_cpu = ml_get_boot_cpu_number();
+@@ -478,6 +655,22 @@
+ 	cpu_bootstrap();
+ 
+ 	rtclock_early_init();
++	/* Diagnostic rtclock_return: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #21632\n"
++	    "movk x9, #33629, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #255\n"
++	    "mov w12, #128\n"
++	    "mov w13, #96\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 
+ 	kernel_debug_string_early("kernel_startup_bootstrap");
+ 	kernel_startup_bootstrap();
+@@ -536,6 +729,22 @@
+ 	__builtin_arm_wsr("pan", 1);
+ #endif  /* __ARM_PAN_AVAILABLE__ */
+ 
++	/* Diagnostic pre_vm: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #59776\n"
++	    "movk x9, #33630, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #128\n"
++	    "mov w12, #255\n"
++	    "mov w13, #255\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 	arm_vm_init(xmaxmem, args);
+ 
+ 	if (debug_boot_arg) {
+--- a/osfmk/arm64/machine_routines.c
++++ b/osfmk/arm64/machine_routines.c
+@@ -2278,6 +2278,22 @@
+ 	uint64_t        ticks_per_sec, ticks_per_event, events_per_sec = 0;
+ 	uint32_t        bit_index;
+ 
++	/* Diagnostic wfe_config_enter: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #24576\n"
++	    "movk x9, #33625, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #255\n"
++	    "mov w12, #128\n"
++	    "mov w13, #0\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 	if (PE_parse_boot_argn("wfe_events_sec", &events_per_sec, sizeof(events_per_sec))) {
+ 		if (events_per_sec <= 0) {
+ 			events_per_sec = 1;
+@@ -2287,11 +2303,59 @@
+ 	} else {
+ 		events_per_sec = USEC_PER_SEC;
+ 	}
++	/* Diagnostic wfe_bootarg_return: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #62720\n"
++	    "movk x9, #33626, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #0\n"
++	    "mov w12, #192\n"
++	    "mov w13, #255\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 	ticks_per_sec = gPEClockFrequencyInfo.timebase_frequency_hz;
+ 	ticks_per_event = ticks_per_sec / events_per_sec;
++	/* Diagnostic wfe_ticks_ready: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #35328\n"
++	    "movk x9, #33628, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #255\n"
++	    "mov w12, #255\n"
++	    "mov w13, #128\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 
+ 	/* Bit index of next power of two greater than ticks_per_event */
+ 	bit_index = flsll(ticks_per_event) - 1;
++	/* Diagnostic wfe_index_ready: bounded stores at the original operation boundary. */
++	__asm__ volatile(
++	    "movz x9, #7936\n"
++	    "movk x9, #33630, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #192\n"
++	    "mov w12, #128\n"
++	    "mov w13, #255\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ 	/* Round up to next power of two if ticks_per_event is initially power of two */
+ 	if ((ticks_per_event & ((1 << bit_index) - 1)) != 0) {
+ 		bit_index++;

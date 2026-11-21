@@ -1,0 +1,58 @@
+schema_version = 1
+audit_date = "2026-11-19"
+result = "candidate-only"
+xnu_revision = "aca3beaa3dfbd42498b42c5e5ce20a938e6554e5"
+tools_revision = "1e0d72a34b952eacdec1f90941c617bf45860b76"
+soc_revision = "4007997af4ed9db34c8dadcd44d9ce7a8b22ab7a"
+
+[method]
+description = "Selected ARM64 patches were applied sequentially to a clean XNU worktree in their original relative order. The MSM8996 patch was then checked after the ARM64 stack. No source build, IPSW fetch, device boot, or active board/profile series change was performed."
+arm64_sequential_apply_count = 21
+msm8996_followup_apply_check = true
+g0345d_device_series_checked = false
+kernel_built = false
+device_tested = false
+
+[configuration_validation]
+resolver_status_passed = true
+defconfig_passed = true
+configuration = "g0345d_defconfig"
+ipsw_fetched = false
+kernel_built = false
+patch_order_count = 0
+
+[component_abi]
+ios_16_5_declared = []
+ipados_17_7_11_only = ["Adreno530", "ArmCpu", "ArmDTPlatform", "Blsp8996", "NativeUfs8996", "SoftwareAES"]
+note = "The pinned fork catalog advertises these selected components for iPadOS 17.7.11 only. Their iOS 16.5 compatibility has not been established; profile resolution does not change component ABI metadata."
+
+[candidate_groups]
+arm64 = [
+  "architectural-timer-entry.patch",
+  "armvirt-platform-personality.patch",
+  "cxx-flag-dependencies.patch",
+  "disabled-deferred-reclaim.patch",
+  "kernel-sdk-root.patch",
+  "local-availability.patch",
+  "mockfs-intermediate-lookup.patch",
+  "mockfs-memory-device-width.patch",
+  "mockfs-statfs.patch",
+  "mockfs-test-file.patch",
+  "mockfs-typed-allocation.patch",
+  "native-4k-bootstrap-capacity.patch",
+  "native-4k-signature-hash-cache.patch",
+  "native-4k-user-abi.patch",
+  "native-dt-panic-region.patch",
+  "non-apple-cache-monitor.patch",
+  "non-apple-iommu-bootstrap.patch",
+  "non-apple-pmap-field.patch",
+  "null-root-media.patch",
+  "source-corecrypto14-bootstrap.patch",
+  "source-pthread-bootstrap.patch",
+]
+conditional_soc = ["0001-msm8996-smp.patch"]
+
+[omissions]
+reason = "SMP remains disabled in G0345D defconfig and DTS. PAN, NativeAES, and runtime trust-cache paths are also disabled. The existing 51-patch device series targets XNU 10063.141.1 and was not applied to XNU 8796.101.5."
+smp_patch_selected = false
+active_patch_series_changed = false

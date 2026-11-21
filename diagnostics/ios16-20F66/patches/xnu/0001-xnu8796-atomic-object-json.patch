@@ -1,0 +1,45 @@
+--- a/makedefs/MakeInc.rule
++++ b/makedefs/MakeInc.rule
+@@ -387,6 +387,20 @@
+ # Generic Compilation rules
+ #
+ 
++# Native Clang -MJ fragments for C/C++ archive-builder compile recipes.
++# This is distinct from BUILD_JSON_COMPILATION_DATABASE, which skips compilation.
++# Remain opt-in so ordinary XNU 8796 builds retain their original commands.
++ifeq ($(BUILD_OBJECT_JSON_RECORDS),1)
++ifeq ($(BUILD_JSON_COMPILATION_DATABASE),1)
++$(error BUILD_OBJECT_JSON_RECORDS requires real compilation, not BUILD_JSON_COMPILATION_DATABASE)
++endif
++# Invalidate a stale success before starting, and publish only a successful
++# compiler's complete native fragment. mktemp/mv stay beside the destination.
++XNU_OBJECT_JSON_BEGIN = record="$@.json"; rm -f "$$record" || exit $$?; tmp=$$(mktemp "$$record.tmp.XXXXXX") || exit $$?; trap 'rm -f "$$tmp"' 0; trap 'exit 129' HUP; trap 'exit 130' INT; trap 'exit 143' TERM;
++XNU_OBJECT_JSON_FLAGS = -MJ "$$tmp"
++XNU_OBJECT_JSON_END = ; result=$$?; if [ "$$result" -ne 0 ]; then exit "$$result"; fi; test -s "$$tmp" && mv -f "$$tmp" "$$record"
++endif
++
+ #
+ # Compilation rules to generate .o from .s
+ #
+@@ -400,8 +414,8 @@
+ # Compilation rules to generate .o from .c for normal files
+ #
+ C_RULE_0=@$(LOG_CC) "$@"
+-C_RULE_1A=$(_v)${KCC} -c ${filter-out ${$@_CFLAGS_RM}, ${CFLAGS} ${CWARNFLAGS}} -MD -MF $(@:o=d) -MP ${$@_CFLAGS_ADD} ${$@_CWARNFLAGS_ADD} ${INCFLAGS} ${$@_INCFLAGS}
+-C_RULE_1B=$(<F)
++C_RULE_1A=$(_v)$(XNU_OBJECT_JSON_BEGIN) ${KCC} $(XNU_OBJECT_JSON_FLAGS) -c ${filter-out ${$@_CFLAGS_RM}, ${CFLAGS} ${CWARNFLAGS}} -MD -MF $(@:o=d) -MP ${$@_CFLAGS_ADD} ${$@_CWARNFLAGS_ADD} ${INCFLAGS} ${$@_INCFLAGS}
++C_RULE_1B=$(<F)$(XNU_OBJECT_JSON_END)
+ C_RULE_2=
+ 
+ C_RULE_3=
+@@ -424,8 +438,8 @@
+ #   The config tool slickly changes the last source filename char to 'o'
+ #   for the object filename.
+ P_RULE_0=@$(LOG_CXX) "$@"
+-P_RULE_1A=$(_v)${KC++} -o $@ -c ${CXXFLAGS} ${filter-out ${$@_CFLAGS_RM}, ${CFLAGS} ${CXXWARNFLAGS}} -MD -MF $(@:o=d) -MP ${$@_CFLAGS_ADD} ${$@_CXXWARNFLAGS_ADD} ${INCFLAGS} ${$@_INCFLAGS}
+-P_RULE_1B=$(<F)
++P_RULE_1A=$(_v)$(XNU_OBJECT_JSON_BEGIN) ${KC++} $(XNU_OBJECT_JSON_FLAGS) -o $@ -c ${CXXFLAGS} ${filter-out ${$@_CFLAGS_RM}, ${CFLAGS} ${CXXWARNFLAGS}} -MD -MF $(@:o=d) -MP ${$@_CFLAGS_ADD} ${$@_CXXWARNFLAGS_ADD} ${INCFLAGS} ${$@_INCFLAGS}
++P_RULE_1B=$(<F)$(XNU_OBJECT_JSON_END)
+ P_RULE_2=
+ 
+ P_RULE_3=

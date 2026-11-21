@@ -1,0 +1,18 @@
+--- a/osfmk/kern/sched_prim.c
++++ b/osfmk/kern/sched_prim.c
+@@ -3746,6 +3746,7 @@
+ 
+ 		running_timer_setup(processor, RUNNING_TIMER_QUANTUM, self,
+ 		    processor->quantum_end, processor->last_dispatch);
++#if KPERF
+ 		if (was_idle) {
+ 			/*
+ 			 * kperf's running timer is active whenever the idle thread for a
+@@ -3753,6 +3754,7 @@
+ 			 */
+ 			kperf_running_setup(processor, processor->last_dispatch);
+ 		}
++#endif
+ 		running_timers_activate(processor);
+ 		processor->first_timeslice = TRUE;
+ 	} else {

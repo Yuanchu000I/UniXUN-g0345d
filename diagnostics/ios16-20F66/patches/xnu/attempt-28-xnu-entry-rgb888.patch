@@ -1,0 +1,24 @@
+--- a/osfmk/arm64/start.s
++++ b/osfmk/arm64/start.s
+@@ -220,6 +220,21 @@
+ 	.align	3
+ 	.globl EXT(_start)
+ LEXT(_start)
++	// Attempt 28: prove XNU entry before the branch to start_first_cpu.
++	// MMU and D-cache are disabled by DarwinEnter; rows 32-63 are reserved
++	// for this marker in the G0345D RGB888 framebuffer. Keep Video[] zero.
++	ldr	x9, =0x8341A500	// 0x83401000 + 32 * 3240 bytes
++	mov	x10, #34560		// 1080 pixels x 32 rows
++	mov	w11, #0		// B
++	mov	w12, #0xFF		// G: XNU _start reached
++	mov	w13, #0		// R
++1:
++	strb	w11, [x9], #1
++	strb	w12, [x9], #1
++	strb	w13, [x9], #1
++	subs	x10, x10, #1
++	b.ne	1b
++	dsb	sy
+ 	b	EXT(start_first_cpu)
+ 
+ 

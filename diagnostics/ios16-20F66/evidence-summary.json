@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-21",
+  "scope": "native-only XNU 8796.121.2; prelink skipped; no 20F66 donor kexts",
+  "v9": {
+    "patch_count": 46,
+    "kernel_sha256": "af1550fdd5e219d54cb49e7a4806dcbfb8ef3778c03b381d4c88647355b94ab2",
+    "kernel_bytes": 17961240,
+    "image_sha256": "b4f30f28b476fd96c23f3d42d14fb638f2b0b6a970a1601f769a64a28fc44652",
+    "build_exit_code": 0,
+    "build_time_device_executed": false,
+    "observation_state": "v9-white-entry-and-red-live-classifier-visible",
+    "visual_observation": {
+      "inherited_entry_MMU_and_C_bands_visible": true,
+      "rows480_495": "red",
+      "wfe_config_enter_white": true,
+      "wfe_bootarg_return_gold": true,
+      "wfe_ticks_ready_pale_cyan": true,
+      "wfe_index_ready_pink_purple": true,
+      "poststore_orange_observed": false,
+      "configure_return_deep_purple_observed": false,
+      "init_return_coral_observed": false
+    },
+    "classifier": {
+      "ticks_per_event": 0,
+      "bit_index": "0xffffffff",
+      "ticks_per_sec": 0
+    },
+    "supported_boundary": "Red pixel stores in the v9 live-input classifier before the unchanged original variable shift, after UDIV, flsll, first index check and pink marker. Under the audited-v9 association the live timebase and quotient are zero and index is 0xffffffff.",
+    "not_established": [
+      "full classifier loop or final DSB completion",
+      "subsequent original shift or second overflow path",
+      "exact exception or fault PC",
+      "root cause of the zero timebase",
+      "arm64_eventi global store or WFE configuration/init return",
+      "repeatable stability, full platform expert, BSD, root mount or iOS userland"
+    ],
+    "association_limitation": "Visual identity and chronology support association but do not independently prove full image hash or fastboot transfer."
+  },
+  "v10": {
+    "kernel_sha256": "af1550fdd5e219d54cb49e7a4806dcbfb8ef3778c03b381d4c88647355b94ab2",
+    "kernel_rebuilt": false,
+    "image_sha256": "409f9bf8517294aeca48c5e0401195c19dbf3c75eb36995cea24e81c7e0c173e",
+    "field_change_count": 9,
+    "physical_ranges_preserved": 7,
+    "device_tested": false,
+    "boot_verified": false,
+    "host_adt_audit_state": "independent-host-adt-audit-passed"
+  },
+  "private_receipt_sha256": {
+    "v9-build": "57cb0df4366f82c89ecd9a1bf3570814db8ee17039a6578631537e9e8a15c5b4",
+    "v9-resolved-status": "140f081f63daf3e970e6937e0f31c6280bc70f17818750b60ece87dc1c30488c",
+    "v9-kernel-verification": "8bd8ad1b4712ce2f455000af198c5b3b69084e484e7955021436a4a5e3122ed7",
+    "v9-independent-kernel-audit": "be127cd9a055a0ac2d9a52ed059c23882969dedec2ea435736e99f54d5859ca9",
+    "v9-photo-observation": "d9e723edaa5b1652812ac5d7e3d11a63a673c49d605afe96046ab06de6ddfbf3",
+    "v10-build": "598c34a48a49b440696240e2d36e6716ebc6527d36794edd456e5aab3cf8b7bf",
+    "v10-adt-diff": "b0626f112ff72f5a059c79fcaaa71772bed16d02f8be03ffebd84af9564edefb",
+    "v10-independent-adt-audit": "962dceda819867c9f4280d4eb1e40abe3a51f92d734681b3c18807784025d423"
+  },
+  "original_resolved_config_sha256": "d0942cd13d1b8c86aac68b05f3bd52ed4f0fc2bb57ce53e948620c3242f22a5a"
+}

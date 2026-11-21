@@ -122,7 +122,7 @@ source = "device:dts/g0345d.dts"
 include_dirs = ["soc:dts"]
 
 # Prelink is not qualified for this target. Do not copy kernelcache or prelink
-# values from the iPhone10,3 donor until the exact 20F66 restore is verified.
+# values from the iPhone donor; derive them for G0345D against exact 20F66 inputs.
 [kernel.prelink]
 
 # [ipsw] metadata comes from the os profile; --skip-prelink builds never

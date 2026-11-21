@@ -1,102 +1,77 @@
 # G0345D port status
 
-Target revision: 2026-11-19, iPhone iOS 16.5 build 20F66 / Darwin 22.5.0,
-with XNU 8796.101.5 as the open-source baseline. This is an experimental GREE
-G0345D (Snapdragon 820 / MSM8996) target; it has not been built or booted.
+Updated 2026-11-21. Target: GREE G0345D / MSM8996, iPhone iOS 16.5 build
+20F66 / Darwin 22.5.0. Current diagnostics use native-only XNU 8796.121.2,
+46 patches, skipped prelink and no 20F66 donor kexts. No complete iOS system
+boot or qualified userland has been demonstrated.
 
-The published main branch retains the earlier M42/v185 iPadOS snapshot. A later
-M71/v213 development run on the same iPadOS/XNU baseline was reported to return
-from bsd_init after mounting a small md0 MockFS root. Its untracked patch set
-and full receipts are not included in this revision. These observations are
-historical and must not be reported as iOS 16.5 results.
+## Current Stage 5 checkpoint
 
-## Historical hardware observation
+The official seven-stage process remains in Stage 5 (kernel entry through
+platform expert), after early PE return and within WFE/clock initialization.
+Earlier evidence supports firmware, menu, payload and DarwinBoot handoff.
+Stage 5 is incomplete; Stage 6 storage/root and Stage 7 userland are unreached.
+Local v9/v10 iteration numbers are not official stage numbers.
 
-The M42 framebuffer photograph decodes to phase `0x4107`, value
-`0x0467` (`1127`). Two independent analyses agree. The current STARTUP
-callback is table index `878` (ZALLOC entry 6, zero based), function
-`0xfffffff0079d6f94` (`_kalloc_init`), with a null argument.
+The latest v9 white entry band and red classifier slot support real timebase=0,
+quotient=0 and index=0xffffffff at audited pixel stores before the original
+shift. They do not prove final DSB, subsequent shift/UBSAN, trap PC, precise
+zero-clock cause, function return or stability. Image association lacks an
+independent full-image transfer digest. See the
+[derived v9/v10 summary](bringup/stage5-wfe-v10-20261121.md).
 
-Fixed-view parsing, the count/capacity assertions, the first fixed-view qsort
-and `kalloc_type_create_iterators_fixed()` returned. The next interval contains
-`kalloc_type_create_zones_fixed()` and its adjacent probe boundaries; its return
-marker `0x4108` was not observed. This does not identify a particular size class,
-the first `zone_create` call, a fault instruction, or whether execution stopped
-or progressed too slowly to observe. The M41 on-disk metadata audit found 1,274
-fixed views, including 1,127 non-data/VM views, and 402 variable views; it did not
-establish corrupt on-disk metadata as the cause.
+v10 changes only nine ADT u64 fields (ten bytes), uses
+arm-io/ranges=(0,0x60000,0x9fa0000), and preserves every physical address and
+length of seven exported reg ranges. Real 19.2MHz, low-address hardware, WFE
+and UBSAN remain. It reuses the exact v9 kernel; there was no XNU rebuild or
+47th patch. Independent FAT/ADT and Windows fixed-envelope/FD/OEM DTB,
+boot-ID and decompression checks passed. Finalization is
+ready-for-temporary-device-test. **v10 has not been device-tested**.
 
-See [M42 result](bringup/M42-photo-result.md),
-[independent analysis](bringup/M42-photo-independent.md),
-[probe map](bringup/M42-probe-map.md), and
-[M41 metadata audit](bringup/M41-kalloc-metadata-audit.md).
+| Artifact identity only; binaries excluded | Bytes | SHA-256 |
+| --- | ---: | --- |
+| v10 image | 79,945,728 | 409f9bf8517294aeca48c5e0401195c19dbf3c75eb36995cea24e81c7e0c173e |
+| v9 kernel reused by v10 | 17,961,240 | af1550fdd5e219d54cb49e7a4806dcbfb8ef3778c03b381d4c88647355b94ab2 |
 
-## What the repository supports
+## Source qualification
+
+The [diagnostic export](../diagnostics/ios16-20F66/README.md) publishes the exact
+46-patch source series, tools and derived summaries. Private frozen receipts
+retain original contents; the curated publication commit is not misrepresented
+as the historical build commit. The isolated diagnostic record checker retained
+exit 1 with only device.soc must match board.toml; not all official checks passed.
+
+Root XNU 8796.101.5 remains an independent proposal, not the source of v9/v10.
+Board and profile patch lists are empty. Component hashes, kernelcache/prelink
+inputs and ABI compatibility remain unresolved. The root checker verifies
+applicable historical inputs and delegates current integrity to check_export.py;
+it does not build a kernel.
 
 | Area | Established scope | Still missing |
 | --- | --- | --- |
-| Configuration | G0345D DTS/defconfig and historical device inputs are preserved | iOS 16.5 source/profile resolution and a complete rebased patch order |
-| Firmware/loader | Historical temporary boot reached XNU through the legacy UEFI chain | Published companion firmware delta and standard release integration |
-| CPU/memory | Boot CPU executes through early VM and allocator checkpoints | Secondary cores, interrupt/IPI qualification, complete memory/DMA validation |
-| Display | Direct RGB888 framebuffer probe marks are visible | Native display/presentation and brightness control |
-| Storage | NativeUfs8996 probe archive is selected and linked | UFS transfer, LUN/GPT/root/Data validation |
-| Input/GPU | BLSP/Adreno530 probe scaffolds are selected and linked | Touch input, GPU submission/fences and OS frontend |
-| Network/cellular/audio/power | Required future work is recorded | Functional device validation |
-| Packaging | Official script interface and historical container checks are recorded | Standard macOS release producing verified artifacts from a clean checkout |
+| Configuration | G0345D identity, separate profile proposal and exact diagnostic export | Complete clean iOS integration |
+| Firmware/loader | Prior UEFI/menu/payload/DarwinBoot handoff evidence | Complete companion delta and standard release integration |
+| CPU | WFE classifier stores after early PE return | Hardware clock result, timer/IRQ/IPI, secondary cores and sustained scheduling |
+| Memory | Bounded framebuffer mapping; preserved seven MMIO physical ranges | Full VM, DMA and SMMU qualification |
+| Display | Direct RGB888 diagnostic stores visible | Native presentation, brightness and GPU submission |
+| Storage | NativeUfs8996 scaffold selected | Physical transfers, GPT/LUN, APFS/root/Data validation |
+| Input/GPU | BLSP/Adreno530 scaffolds selected | Touch reports, GPU submission/fences and frontend |
+| Network/cellular/audio/power | Future work recorded | Functional validation |
+| Packaging | v10 host FAT/ADT and container audits | Clean standard release with lawful inputs |
 
-The historical M42 fastboot log reports `Sending OKAY` (2.002 s),
-`Booting OKAY` (0.115 s), total 2.163 s. These are transfer/boot-command results;
-they do not establish full XNU or userland startup.
+## Retired history and verification language
 
-## Historical artifact identities
+iPadOS 17 work is abandoned. M42/v185 and M71/v213 observations belong to
+iPadOS 17.7.11 / XNU 10063.141.1; they never qualify the iOS target. The 51 root
+patches were hash-checked against the unchanged historical manifest and removed;
+[history remains available](ipados17-abandoned.md).
+Earlier [entry](bringup/stage4-entry-20261120.md),
+[CPU/bootstrap](bringup/stage5-cpu-mmu-20261120.md) and
+[post-MMU](bringup/stage5-postmmu-20261120.md) pages are dated checkpoints whose
+then-current next steps are superseded by the v9/v10 summary.
 
-Only text manifests, logs and analysis are included. Images, Apple inputs,
-OEM binaries, device identifiers/seeds and original photographs are excluded.
-
-| Artifact | Bytes | SHA-256 |
-| --- | ---: | --- |
-| M42 native kernel | 18,207,264 | `aac6aceb8f601ab312ea8598e4f658abf7ec83706c0cbc8a4e75c40088dd781a` |
-| M42 FAT payload | 25,165,824 | `410f7e14b837932a10471ee3765f9c7c7f2ac494bda1fa07259b88ccfd1174ad` |
-| M42 temporary-boot image | 79,945,728 | `498c23b58b71d64291bf921f7d4f95356fd0aba1fd8b872707df1e9f326ad726` |
-| M42 ADT | 12,984 | `bd019ec8bc0c0266ed3cce366e2aec5b1be23f6f14473c8b596adca93ebe112e` |
-
-The [historical manifest](evidence/g0345d-payload-M42-v185.img.json) identifies
-the retained container geometry. A regenerated ADT can have a different random
-seed and must be identified by its actual manifest hash.
-
-## Verification language
-
-`porting.toml` is the authoritative structured record. Its states are
-`implemented` or `planned`: the historical experiments used dirty development
-trees, and no complete published source commit identifies all firmware and
-tool changes. The retained logs are historical observations, not new
-`host-verified` or `device-verified` certification of this curated snapshot.
-
-Record checking uses the official schema checker with a pinned fork component
-catalog containing MSM8996 IDs. A passing local record check does not mean the
-stock upstream workflow or catalog has accepted this device.
-
-## iOS 16.5 readiness
-
-The exact restore manifest and XNU 8796.101.5 source are missing. The proposed
-OS profile is documented under docs/os-profile-proposal/ios-16.5-20F66/, but
-UnixNu resolves profiles from the central UniXNU/profiles/os tree. The existing
-M71 patch stack targets XNU 10063.141.1 and is not selected for 8796.101.5.
-An empty patch list is not a CLI build guard. The next engineering step is to
-land the profile centrally, verify the restore inputs, then rebase and validate
-the ARM64/MSM8996/G0345D patch layers before any build or boot.
-
-## Stopped experiment and next measurement
-
-This publication update does not include a kernel or firmware build, image
-production or device test. The M42/v185 files on main remain a separate
-historical snapshot. A future allocator investigation should distinguish policy
-calculation, its inner sort,
-the 29 fixed size classes, `create_zone_for_size`, shuffle/signature equivalence
-and type distribution before changing allocator behavior.
-
-Any future hardware experiment must use temporary `fastboot boot` only.
-Do not flash, change the fixed FD, alter header `kernel_size` or the frozen
-kernel/container layout, or bypass allocator initialization to obtain a later
-marker. See [hardware facts](hardware.md) and
-[firmware dependencies](firmware-dependency.md).
+porting.toml uses implemented/planned states. Passing the local record-schema
+checker with the pinned fork catalog is not stock upstream catalog acceptance,
+hardware certification or a clean release. Original photos, raw ADT, binaries,
+seeds, serials, private reports and local absolute paths are excluded. Future
+authorized tests use temporary fastboot boot only and never flash partitions.

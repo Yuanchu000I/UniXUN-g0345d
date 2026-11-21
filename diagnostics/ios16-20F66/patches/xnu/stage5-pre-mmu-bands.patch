@@ -1,0 +1,137 @@
+--- a/osfmk/arm64/start.s
++++ b/osfmk/arm64/start.s
+@@ -477,6 +477,25 @@
+ 	.globl EXT(start_first_cpu)
+ LEXT(start_first_cpu)
+ 
++	// Stage 5 cpu: pre-MMU RGB888 diagnostic; no stack or call.
++	.globl EXT(g0345d_stage5_cpu_probe)
++LEXT(g0345d_stage5_cpu_probe)
++	movz	x9, #1152
++	movk	x9, #33604, lsl #16
++	mov	x10, #17280
++	mov	w11, #255
++	mov	w12, #0
++	mov	w13, #0
++Lstage5_cpu_pixels:
++	strb	w11, [x9], #1
++	strb	w12, [x9], #1
++	strb	w13, [x9], #1
++	subs	x10, x10, #1
++	b.ne	Lstage5_cpu_pixels
++	dsb	sy
++	.globl EXT(g0345d_stage5_cpu_done)
++LEXT(g0345d_stage5_cpu_done)
++
+ 	// Unlock the core for debugging
+ 	msr		OSLAR_EL1, xzr
+ 	msr		DAIFSet, #(DAIFSC_ALL)				// Disable all interrupts
+@@ -531,6 +550,25 @@
+ 	add		lr, lr, EXT(arm_init)@pageoff
+ 	add		lr, lr, x22							// Convert to KVA
+ 	sub		lr, lr, x23
++
++	// Stage 5 stacks: pre-MMU RGB888 diagnostic; no stack or call.
++	.globl EXT(g0345d_stage5_stacks_probe)
++LEXT(g0345d_stage5_stacks_probe)
++	movz	x9, #39296
++	movk	x9, #33605, lsl #16
++	mov	x10, #17280
++	mov	w11, #255
++	mov	w12, #255
++	mov	w13, #0
++Lstage5_stacks_pixels:
++	strb	w11, [x9], #1
++	strb	w12, [x9], #1
++	strb	w13, [x9], #1
++	subs	x10, x10, #1
++	b.ne	Lstage5_stacks_pixels
++	dsb	sy
++	.globl EXT(g0345d_stage5_stacks_done)
++LEXT(g0345d_stage5_stacks_done)
+ 
+ 	/*
+ 	 * Set up the bootstrap page tables with a single block entry for the V=P
+@@ -632,12 +670,50 @@
+ 
+ 	b Lbootstrap_tables_ready
+ Lbootstrap_tables_exhausted:
+-	// MMU is still off. Stop with the offending cursor/end preserved for
+-	// the early debugger rather than corrupting memory or forging a map.
+-	b Lbootstrap_tables_exhausted
++	// MMU is still off. Preserve offending cursor x2 and end x10.
++	// Draw once, then stop without corrupting memory or forging a map.
++
++	// Stage 5 exhausted: pre-MMU RGB888 diagnostic; no stack or call.
++	.globl EXT(g0345d_stage5_exhausted_probe)
++LEXT(g0345d_stage5_exhausted_probe)
++	movz	x9, #22656
++	movk	x9, #33610, lsl #16
++	mov	x11, #17280
++	mov	w12, #128
++	mov	w13, #255
++Lstage5_exhausted_pixels:
++	strb	wzr, [x9], #1
++	strb	w12, [x9], #1
++	strb	w13, [x9], #1
++	subs	x11, x11, #1
++	b.ne	Lstage5_exhausted_pixels
++	dsb	sy
++	.globl EXT(g0345d_stage5_exhausted_done)
++LEXT(g0345d_stage5_exhausted_done)
++Lstage5_exhausted_halt:
++	b Lstage5_exhausted_halt
+ Lbootstrap_tables_ready:
+ 	/* Ensure TTEs are visible */
+ 	dsb		ish
++
++	// Stage 5 tables: pre-MMU RGB888 diagnostic; no stack or call.
++	.globl EXT(g0345d_stage5_tables_probe)
++LEXT(g0345d_stage5_tables_probe)
++	movz	x9, #11904
++	movk	x9, #33607, lsl #16
++	mov	x10, #17280
++	mov	w11, #0
++	mov	w12, #255
++	mov	w13, #255
++Lstage5_tables_pixels:
++	strb	w11, [x9], #1
++	strb	w12, [x9], #1
++	strb	w13, [x9], #1
++	subs	x10, x10, #1
++	b.ne	Lstage5_tables_pixels
++	dsb	sy
++	.globl EXT(g0345d_stage5_tables_done)
++LEXT(g0345d_stage5_tables_done)
+ 
+ 
+ 	b		common_start
+@@ -769,6 +845,28 @@
+ 
+ 	// Enable caches, MMU, ROP and JOP
+ 	MOV64   x0, SCTLR_EL1_DEFAULT
++	// Cold-boot diagnostic only; preserve the warm path and SCTLR value x0.
++	cbnz	x21, Lstage5_sctlr_skip
++
++	// Stage 5 sctlr: pre-MMU RGB888 diagnostic; no stack or call.
++	.globl EXT(g0345d_stage5_sctlr_probe)
++LEXT(g0345d_stage5_sctlr_probe)
++	movz	x9, #50048
++	movk	x9, #33608, lsl #16
++	mov	x10, #17280
++	mov	w11, #255
++	mov	w12, #0
++	mov	w13, #255
++Lstage5_sctlr_pixels:
++	strb	w11, [x9], #1
++	strb	w12, [x9], #1
++	strb	w13, [x9], #1
++	subs	x10, x10, #1
++	b.ne	Lstage5_sctlr_pixels
++	dsb	sy
++	.globl EXT(g0345d_stage5_sctlr_done)
++LEXT(g0345d_stage5_sctlr_done)
++Lstage5_sctlr_skip:
+ 	MSR_SCTLR_EL1_X0
+ 	isb		sy
+ 

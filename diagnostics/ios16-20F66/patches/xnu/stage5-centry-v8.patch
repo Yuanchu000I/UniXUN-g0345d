@@ -1,0 +1,25 @@
+--- a/osfmk/arm64/machine_routines.c
++++ b/osfmk/arm64/machine_routines.c
+@@ -2382,6 +2382,22 @@
+ 	}
+ 
+ 	arm64_eventi = bit_index;
++	/* Diagnostic wfe_eventi_stored: bounded stores after arm64_eventi assignment. */
++	__asm__ volatile(
++	    "movz x9, #51968\n"
++	    "movk x9, #33623, lsl #16\n"
++	    "mov x10, #17280\n"
++	    "mov w11, #0\n"
++	    "mov w12, #128\n"
++	    "mov w13, #255\n"
++	    "1:\n"
++	    "strb w11, [x9], #1\n"
++	    "strb w12, [x9], #1\n"
++	    "strb w13, [x9], #1\n"
++	    "subs x10, x10, #1\n"
++	    "b.ne 1b\n"
++	    "dsb sy\n"
++	    : : : "x9", "x10", "x11", "x12", "x13", "cc", "memory");
+ }
+ 
+ boolean_t

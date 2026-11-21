@@ -1,0 +1,39 @@
+[os]
+name = "ios-16.5-20F66"
+arch = "arm64"
+target = "ios"
+ios_version = "16.5"
+darwin = "22.5.0"
+xnu_version = "8796.101.5"
+xnu_revision = "aca3beaa3dfbd42498b42c5e5ce20a938e6554e5"
+driverkit_tag = "xnu-8796.101.5"
+trustcache_tag = "xnu-8796.101.5"
+abi = []
+
+# The restore identity below selects the iPhone OS family donor. It does not
+# describe the G0345D board, SoC, device tree, or firmware.
+[ipsw]
+url = "https://updates.cdn-apple.com/2023SpringFCS/fullrestores/032-85130/6AB0D10A-8AF9-4F6C-8CF5-A1B315CABE88/iPhone10,3,iPhone10,6_16.5_20F66_Restore.ipsw"
+product = "iPhone10,3"
+version = "16.5"
+build = "20F66"
+# These restore identity fields were verified from the 20F66 BuildManifest.
+# They identify the iPhone OS donor, not G0345D.
+device_class = "d22ap"
+chip_id = 0x8015
+board_id = 0x06
+# Component hashes, fetch members, and kernelcache/prelink inputs remain
+# unresolved; do not run an IPSW-consuming build from this proposal.
+
+[kernel]
+patch_series = []
+# Requires the profile-driven Linux/native-kernel tools compatibility patch.
+# Expected target staging input. This does not select or implement XNU's machine
+# config; the current BCM2837-only build path must be fixed before a target build.
+native_kernel = "build/xnu/ios-obj/DEVELOPMENT_ARM64_MSM8996/mach.development.msm8996.unstripped"
+# No prelink values are copied from the NX769J donor. Derive kernelcache hash,
+# slide, roots, and any security initializer against the selected restore image.
+
+[kernel.linux]
+sdk_version = "16.5"
+triple = "arm64-apple-ios16.5"

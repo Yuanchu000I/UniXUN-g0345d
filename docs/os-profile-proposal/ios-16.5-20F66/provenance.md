@@ -14,10 +14,12 @@ layout, and board drivers.
 
 ## Deliberately unresolved inputs
 
-The exact iOS 16.5 restore URL, restore device_class, chip_id, board_id, and
-IPSW member hashes are not recorded here. Resolve them from the selected
-20F66 restore manifest before running a build that consumes an IPSW. No hash,
-UUID, or restore identity values are guessed.
+The selected iPhone10,3/iPhone10,6 20F66 restore URL is recorded in
+profile.toml. A lightweight BuildManifest read verified device_class = d22ap,
+chip_id = 0x8015, and board_id = 0x06; these identify the iPhone OS donor and
+do not describe G0345D. Component SHA-256 values, fetch member selection, and a
+complete local IPSW verification are still pending. No unverified hash, UUID,
+or prelink value is guessed.
 
 The profile contains no ADT identity, DeviceTree, nonce, kernelcache hash,
 prelink slide, root list, early-security initializer, or other NX769J prelink
@@ -43,6 +45,32 @@ empty pending rebasing and applicability checks on the selected source.
    against the pinned XNU baseline before invoking kernel build or device boot.
 5. Record the resolved source SHA, IPSW member hashes, prelink report, build
    inputs, and hardware checkpoints before treating the profile as integrated.
+
+## Host patch audit
+
+On 2026-11-19, a clean isolated XNU 8796.101.5 worktree was used for
+sequential apply-check and application. Twenty-one ARM64 candidates selected from the pinned
+official series applied in their original relative order, and the MSM8996
+0001-msm8996-smp.patch also passed git apply --check after them. The audit did
+not apply G0345D's historical 51-patch series, did not compile XNU, and did
+not change the active board or OS patch_series; its candidate list and
+limitations are recorded in patch-audit.toml.
+
+A separate host diagnostic experiment completed on 2026-11-19 against XNU
+8796.121.2 (`c54f35ca767986246321eb901baf8f5ff7923f6a`) and selected
+`DEVELOPMENT_ARM64_BCM2837`. Its ARM64 artifact passed a host-only static audit,
+but it is not an MSM8996 build. This later experiment does not replace the
+selected 8796.101.5 proposal baseline or change the scope/result of the
+8796.101.5 candidate patch audit. The [machine-layer audit](machine-layer-audit.md)
+records its qualification limits and the missing build support.
+
+The portable runtime copy is now in profiles/os/ios-16.5-20F66. Run
+`python3 scripts/stage-os-profile.py --tools /path/to/UniXNU` to install its
+three files into an explicitly selected tools checkout. The script rejects
+different existing files and never enables a patch stack. Its profile declares
+the expected target native-kernel staging path and Linux SDK/triple 16.5; these require the
+profile-driven tooling compatibility patch. Original kernelcache/prelink
+qualification remains a separate unresolved input.
 
 ## Sources
 

@@ -1,0 +1,21 @@
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -91,5 +91,18 @@
+ #if HIBERNATION
+ #include <IOKit/IOPlatformExpert.h>
+ #endif /* HIBERNATION */
+ 
++/*
++ * The G0345D ArmCpu archive weak-imports this optional event hook. The
++ * iOS 16.5 host port has no CPU probe backend yet, so provide a weak no-op
++ * implementation for the static kernel link.
++ */
++__attribute__((weak))
++void
++g0345d_cpu_probe(unsigned int phase, unsigned int value)
++{
++	(void)phase;
++	(void)value;
++}
++
+ extern void     patch_low_glo(void);

@@ -1,0 +1,44 @@
+# Kernel configuration: CONFIG_XNU_<NAME> becomes XNU_<NAME> for the kernel build script.
+# y and n are 1 and 0, a quoted string or a number is passed through, {tree} is the build tree.
+# Stage 1: native-only kernel (--skip-prelink), platform and source crypto.
+CONFIG_XNU_SOURCE_CORECRYPTO14=y
+CONFIG_XNU_SOURCE_PTHREAD=y
+CONFIG_XNU_ARM_DT_PLATFORM=y
+CONFIG_XNU_ARMCPU=y
+# M54/v197: the native image has no original IOCryptoAcceleratorFamily.
+# NativeAES imports its parent metaclass/methods at absolute prelink addresses.
+# Enable it only with a qualified original-kext prelink closure.
+# CONFIG_XNU_NATIVE_AES is not set
+CONFIG_XNU_CRYPTO_BOOTSTRAP="source"
+# CONFIG_XNU_NATIVE_UFS is not set        (needs NativeUfs8996 component)
+# CONFIG_XNU_NATIVE_ADRENO is not set     (needs Adreno530 component)
+# CONFIG_XNU_NATIVE_LEGACY_DISPLAY is not set (needs GopFramebuffer + firmware FB)
+# v138 (2026-11-13): PAN is ARMv8.1+; MSM8996 Kryo is ARMv8.0 (no PAN).
+# arch common.config sets CONFIG_XNU_NATIVE_PAN=y, which makes native-arm-pan.patch
+# define __ARM_PAN_AVAILABLE__=1 in BCM2837.h, so arm_init.c executes
+# __builtin_arm_wsr("pan", 1) between paint_stage(20) and paint_stage(21)
+# -> undefined-instruction exception on Kryo -> freeze (v137 freeze, K=8).
+# Turning it off also drops the -march=armv8.1-a on copyio/pcb/platform_tests,
+# whose user_access_enable/disable would fault later for the same reason.
+# CONFIG_XNU_NATIVE_PAN is not set
+# Secondary CPU bring-up: enable after the GIC 3-cell specifier check passes.
+# CONFIG_XNU_ARMCPU_SECONDARY is not set
+# arch:configs/common.config turns on CONFIG_XNU_BUILD_ARCHIVES=y, so
+# build_archives() compiles every selected kernel-stage component. The three
+# MSM8996 driver archives have no dedicated XNU_* link gate in
+# build-xnu-4k-baseline.sh, so they are linked through the generic
+# CONFIG_XNU_EXTRA_LD_ARCHIVES extension point (same pattern as fuxi/sheng).
+# {tree} is expanded to the absolute build-tree path in scripts/unixnu/kernel.py.
+# Msm8996Platform is an embedded kit with no archive of its own.
+CONFIG_XNU_EXTRA_LD_ARCHIVES="-Wl,-force_load,{tree}/build/native-ufs-8996/libNativeUfs8996.a -Wl,-force_load,{tree}/build/blsp-8996/libBlsp8996.a -Wl,-force_load,{tree}/build/adreno530/libAdreno530.a"
+
+# G0345D has no BCM2837 panic RAM. Use ADT pram only when supplied.
+CONFIG_XNU_DT_PANIC_REGION=y
+
+# M60/v202: native-only bring-up has no original Image4/AMFI providers.
+# Retain original runtime checks; enable only with a qualified provider closure.
+# This stage does not qualify trust enforcement for signed userland.
+# CONFIG_XNU_TRUST_CACHE_RUNTIME is not set
+# Companion paths for the existing opaque CONFIG_XNU_EXTRA_LD_ARCHIVES flags.
+# Keep the existing linker flags and their order unchanged.
+CONFIG_XNU_EXTRA_LD_ARCHIVE_DEPENDENCIES="{tree}/build/native-ufs-8996/libNativeUfs8996.a {tree}/build/blsp-8996/libBlsp8996.a {tree}/build/adreno530/libAdreno530.a"

@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "xnu": {
+    "repository": "https://github.com/apple-oss-distributions/xnu.git",
+    "tag": "xnu-8796.121.2",
+    "observed_reference_revision": null,
+    "public_tag_commit_independently_resolved": false
+  },
+  "tools": {
+    "repository": "https://github.com/midopix/UniXNU.git",
+    "baseline_commit": "1e0d72a34b952eacdec1f90941c617bf45860b76",
+    "original_audited_file_sha256": {
+      "scripts/unixnu/kernel.py": "940d33861da622b31fa9f0362903a159f87a3b16ed75eaa9d73ba6d28a493cf1",
+      "scripts/unixnu/patches.py": "213b11ce95bae3be297e77110768c8fd99d3f6b88aa95149eb7b487f1c9cbaa4",
+      "scripts/linux/prepare-xnu.py": "4420f6907d92a95127ad71fe06a78a89af4c15ebeec8997a872cedad8ca34a2a",
+      "scripts/build-xnu-4k-baseline.sh": "a844ae137168d2aec870717e2c0ea9e04f324f203c8d15168f81ee677c467634",
+      "scripts/build-libpthread-kernel.py": "c1b2a2bfb9ab73992b15a1732a738d0e2da78865234df412bb78da49c5e58df7"
+    },
+    "path_substitution_file": "scripts/linux/prepare-xnu.py",
+    "path_substitution_placeholder": "{LLVM_PROJECT_ROOT}"
+  },
+  "modules": [
+    {
+      "kind": "driver",
+      "name": "Adreno530",
+      "revision": "1e0d72a34b952eacdec1f90941c617bf45860b76",
+      "pin": "LOCAL-SCAFFOLD",
+      "public_project": "https://github.com/UniXNU/Adreno530.git",
+      "project_locator_inferred": false,
+      "source_exported": true
+    },
+    {
+      "kind": "driver",
+      "name": "ArmCpu",
+      "revision": "d90e457b8392623853ec85c860feef546c767621",
+      "pin": "93a5030c5d983d0ef90f0fca93879d6e36ad1ba8",
+      "public_project": "https://github.com/UniXNU/ArmCpu.git",
+      "project_locator_inferred": true,
+      "source_exported": true
+    },
+    {
+      "kind": "driver",
+      "name": "ArmDTPlatform",
+      "revision": "e8bd8d5de395c6cbc00d762c1bef57dbd15a448d",
+      "pin": "417ff95d6a6e8607ddea9309ec45c3bfd4a67c60",
+      "public_project": "https://github.com/UniXNU/ArmDTPlatform.git",
+      "project_locator_inferred": true,
+      "source_exported": true
+    },
+    {
+      "kind": "driver",
+      "name": "Blsp8996",
+      "revision": "1e0d72a34b952eacdec1f90941c617bf45860b76",
+      "pin": "LOCAL-SCAFFOLD",
+      "public_project": "https://github.com/UniXNU/Blsp8996.git",
+      "project_locator_inferred": false,
+      "source_exported": true
+    },
+    {
+      "kind": "driver",
+      "name": "DarwinBoot",
+      "revision": "a7b2e17260e987c30e125d5773a3f1088e25d581",
+      "pin": "3c75734014cdab0acd9541e88057b7606ee7ae08",
+      "public_project": "https://github.com/UniXNU/DarwinBoot.git",
+      "project_locator_inferred": true,
+      "source_exported": false
+    },
+    {
+      "kind": "driver",
+      "name": "NativeUfs8996",
+      "revision": "1e0d72a34b952eacdec1f90941c617bf45860b76",
+      "pin": "LOCAL-SCAFFOLD",
+      "public_project": "https://github.com/UniXNU/NativeUfs8996.git",
+      "project_locator_inferred": false,
+      "source_exported": true
+    },
+    {
+      "kind": "kit",
+      "name": "ArmSmmu4K",
+      "revision": "83969cd874503e65997ff7639f7dcf3d0a92cd17",
+      "pin": "83969cd874503e65997ff7639f7dcf3d0a92cd17",
+      "public_project": "https://github.com/UniXNU/ArmSmmu4K.git",
+      "project_locator_inferred": true,
+      "source_exported": false
+    },
+    {
+      "kind": "kit",
+      "name": "Msm8996Platform",
+      "revision": "1e0d72a34b952eacdec1f90941c617bf45860b76",
+      "pin": "LOCAL-SCAFFOLD",
+      "public_project": "https://github.com/UniXNU/UniXNU-msm8996-common.git",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "kit",
+      "name": "VerifiedRoot",
+      "revision": "974f043d0c71ba2e60331483a41c6c6d35274ee3",
+      "pin": "974f043d0c71ba2e60331483a41c6c6d35274ee3",
+      "public_project": "https://github.com/UniXNU/VerifiedRoot.git",
+      "project_locator_inferred": true,
+      "source_exported": false
+    },
+    {
+      "kind": "kit",
+      "name": "XnuPrelink",
+      "revision": "8f4f3866545727e2dc3d2c8cb60f8a87a9539c12",
+      "pin": "c645d76bb0ab8c506a76840ddf93a2276d419a0e",
+      "public_project": "https://github.com/UniXNU/XnuPrelink.git",
+      "project_locator_inferred": true,
+      "source_exported": false
+    },
+    {
+      "kind": "package",
+      "name": "main",
+      "revision": "1e0d72a34b952eacdec1f90941c617bf45860b76",
+      "pin": null,
+      "public_project": null,
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "patch",
+      "name": "libpthread",
+      "revision": "1e0d72a34b952eacdec1f90941c617bf45860b76",
+      "pin": "c0e60fb5ecfc54cf379c261d3f9572cc22ded891",
+      "public_project": null,
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "patch",
+      "name": "mesa",
+      "revision": "1e0d72a34b952eacdec1f90941c617bf45860b76",
+      "pin": null,
+      "public_project": null,
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "patch",
+      "name": "unixnu",
+      "revision": null,
+      "pin": null,
+      "public_project": null,
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "patch",
+      "name": "xnu",
+      "revision": null,
+      "pin": "d8b80295118ef25ac3a784134bcf95cd8e88109f",
+      "public_project": null,
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "patch",
+      "name": "xnu-12377",
+      "revision": "1e0d72a34b952eacdec1f90941c617bf45860b76",
+      "pin": null,
+      "public_project": null,
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "refer",
+      "name": "AvailabilityVersions",
+      "revision": "933f9360f1b70dfbda5548386a3d65e0358b4f7d",
+      "pin": null,
+      "public_project": "https://github.com/apple-oss-distributions/availabilityversions",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "refer",
+      "name": "IOStorageFamily",
+      "revision": "e45fbe30a7879e0b16e26dddb78538f1b00e0bff",
+      "pin": null,
+      "public_project": "https://github.com/apple-oss-distributions/iostoragefamily",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "refer",
+      "name": "corecrypto-2023",
+      "revision": "11fba65b12d8830630e248dfa8344caf8b065f26",
+      "pin": null,
+      "public_project": "https://github.com/onlya/corecrypto-2023",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "refer",
+      "name": "edk2",
+      "revision": null,
+      "pin": "cfb93724a06ff86ff5ba971413368a7809ee42a5",
+      "public_project": "https://github.com/microsoft/mu_basecore.git",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "refer",
+      "name": "libdispatch",
+      "revision": "30fe6a7d945340ce69cef121132f049e810089a5",
+      "pin": null,
+      "public_project": "https://github.com/apple-oss-distributions/libdispatch",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "refer",
+      "name": "libplatform",
+      "revision": "a00a4cc36da2110578bcf3b8eeeeb93dcc7f4e11",
+      "pin": null,
+      "public_project": "https://github.com/apple-oss-distributions/libplatform",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "refer",
+      "name": "libpthread",
+      "revision": "a6c70ca0e544347a0377babf748f831577ec24f9",
+      "pin": "a6c70ca0e544347a0377babf748f831577ec24f9",
+      "public_project": "https://github.com/apple-oss-distributions/libpthread.git",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "refer",
+      "name": "mu_basecore",
+      "revision": "cfb93724a06ff86ff5ba971413368a7809ee42a5",
+      "pin": null,
+      "public_project": "https://github.com/microsoft/mu_basecore",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "refer",
+      "name": "xnu",
+      "revision": "c54f35ca767986246321eb901baf8f5ff7923f6a",
+      "pin": null,
+      "public_project": "https://github.com/apple-oss-distributions/xnu.git",
+      "project_locator_inferred": false,
+      "source_exported": false
+    },
+    {
+      "kind": "soc",
+      "name": "msm8996",
+      "revision": "4007997af4ed9db34c8dadcd44d9ce7a8b22ab7a",
+      "pin": null,
+      "public_project": "https://github.com/midopix/unixnu-msm8996-common",
+      "project_locator_inferred": false,
+      "source_exported": false
+    }
+  ],
+  "limits": [
+    "Observed local revisions and catalog pins differ. Additional dirty deltas may remain.",
+    "Inferred public project locators are discovery hints, not verified remote revision availability.",
+    "This diagnostic XNU 8796.121.2 export is separate from the root XNU 8796.101.5 proposal.",
+    "No clean-checkout build, firmware/prelink closure or iOS boot qualification is claimed."
+  ]
+}

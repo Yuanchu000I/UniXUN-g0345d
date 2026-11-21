@@ -1,0 +1,76 @@
+--- a/osfmk/prng/prng_random.c
++++ b/osfmk/prng/prng_random.c
+@@ -426,12 +426,15 @@
+ #include <kern/startup.h>
+ #include <mach/kmod.h>
+ #include <mach-o/loader.h>
++#include <libkern/crypto/crypto_internal.h>
++
++void source_corecrypto14_bootstrap(void);
+ 
+ extern struct mach_header_64 _mh_execute_header;
+ extern kern_return_t corecrypto_kext_start(kmod_info_t *, void *);
+ SECURITY_READ_ONLY_LATE(kern_return_t) source_corecrypto14_status = KERN_FAILURE;
+ 
+-static void
++void
+ source_corecrypto14_bootstrap(void)
+ {
+ 	static kmod_info_t info = {
+@@ -440,6 +443,20 @@
+ 		.version = "14.0",
+ 	};
+ 	uint32_t mode = 0;
++	static bool started;
++
++	/* Both entry points run serially on the boot CPU, before SMP startup. */
++	assert(cpu_number() == master_cpu);
++	if (source_corecrypto14_status == KERN_SUCCESS) {
++		if (!crypto_init || g_crypto_funcs == NULL || !prng_ready) {
++			panic("source corecrypto initialized state is incomplete");
++		}
++		return;
++	}
++	if (started || crypto_init || g_crypto_funcs != NULL || prng_ready) {
++		panic("source corecrypto duplicate or recursive initialization");
++	}
++	started = true;
+ 
+ 	if (PE_parse_boot_argn("fips_mode", &mode, sizeof(mode)) && mode != 0) {
+ 		panic("source corecrypto verification requires complete default POST");
+@@ -449,6 +466,10 @@
+ 	if (source_corecrypto14_status != KERN_SUCCESS) {
+ 		panic("source corecrypto initialization failed: %d", source_corecrypto14_status);
+ 	}
+-}
++	if (!crypto_init || g_crypto_funcs == NULL || !prng_ready) {
++		panic("source corecrypto did not register crypto and PRNG");
++	}
++}
++/* Reentry validates the completed provider and returns without registering twice. */
+ STARTUP(EARLY_BOOT, STARTUP_RANK_FIRST, source_corecrypto14_bootstrap);
+ #endif
+--- a/pexpert/arm/pe_init.c
++++ b/pexpert/arm/pe_init.c
+@@ -238,6 +238,10 @@
+ 
+ 	return 0;
+ }
++
++#if defined(XNU_SOURCE_CORECRYPTO14)
++extern void source_corecrypto14_bootstrap(void);
++#endif
+ 
+ void
+ PE_init_iokit(void)
+@@ -367,6 +371,10 @@
+ 	}
+ 
+ 	InitIOKit(PE_state.deviceTreeHead);
++#if defined(XNU_SOURCE_CORECRYPTO14)
++	/* configureDefaults uses SHA1 to derive the platform UUID. */
++	source_corecrypto14_bootstrap();
++#endif
+ 	ConfigureIOKit();
+ }
+ 
